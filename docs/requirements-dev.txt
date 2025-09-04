@@ -2,7 +2,7 @@
 
 # Dev tools
 pytest~=8.2
-black~=24.8
+black~=25.1
 ruff~=0.5.5
 isort~=5.13
 mypy~=1.10
