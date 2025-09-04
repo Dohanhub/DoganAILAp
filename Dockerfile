@@ -31,10 +31,10 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy requirements and install dependencies
-COPY requirements.lock.txt ./
+COPY requirements.txt ./
 COPY requirements-api.txt ./
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
- && (pip install --no-cache-dir --require-hashes -r requirements.lock.txt || pip install --no-cache-dir -r requirements-api.txt) \
+ && pip install --no-cache-dir -r requirements-api.txt \
  && pip check
 
 # Final stage: minimal runtime with non-root user
@@ -46,7 +46,7 @@ LABEL maintainer="DoganAI Team <team@doganai.com>" \
       org.opencontainers.image.description="Comprehensive compliance and governance platform" \
       org.opencontainers.image.vendor="DoganAI" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/Dohanhub/DoganAI-Compliance-Kit"
+      org.opencontainers.image.source="https://github.com/Dohanhub/DoganAILAp"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

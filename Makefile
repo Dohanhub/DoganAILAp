@@ -189,3 +189,125 @@ update: ## Update dependencies
 		pnpm update; \
 	fi
 	@echo "$(GREEN)Dependencies updated!$(NC)"
+
+# Docker targets
+docker-build: ## Build Docker image
+	@echo "$(BLUE)Building Docker image: $(IMAGE)$(NC)"
+	docker build -t $(IMAGE) .
+	@echo "$(GREEN)Docker image built!$(NC)"
+
+docker-build-no-cache: ## Build Docker image without cache
+	@echo "$(BLUE)Building Docker image without cache: $(IMAGE)$(NC)"
+	docker build --no-cache -t $(IMAGE) .
+	@echo "$(GREEN)Docker image built!$(NC)"
+
+docker-run: ## Run Docker container locally
+	@echo "$(BLUE)Running Docker container...$(NC)"
+	docker run --env-file .env.template -p 8000:8000 $(IMAGE)
+
+docker-run-detached: ## Run Docker container in background
+	@echo "$(BLUE)Running Docker container in background...$(NC)"
+	docker run -d --name doganai-compliance-kit --env-file .env.template -p 8000:8000 $(IMAGE)
+	@echo "$(GREEN)Container started! Access at http://localhost:8000$(NC)"
+
+docker-stop: ## Stop running Docker container
+	@echo "$(BLUE)Stopping Docker container...$(NC)"
+	docker stop doganai-compliance-kit || true
+	docker rm doganai-compliance-kit || true
+	@echo "$(GREEN)Container stopped!$(NC)"
+
+docker-logs: ## View Docker container logs
+	@echo "$(BLUE)Viewing Docker container logs...$(NC)"
+	docker logs -f doganai-compliance-kit
+
+docker-shell: ## Open shell in running container
+	@echo "$(BLUE)Opening shell in container...$(NC)"
+	docker exec -it doganai-compliance-kit /bin/bash
+
+# Docker Compose targets
+compose-up: ## Start services with docker-compose
+	@echo "$(BLUE)Starting services with docker-compose...$(NC)"
+	@if [ ! -f ".env" ]; then \
+		echo "$(YELLOW)Creating .env from template...$(NC)"; \
+		cp .env.template .env; \
+	fi
+	docker-compose -f docker-compose.production.yml up -d
+	@echo "$(GREEN)Services started! App: http://localhost:8000$(NC)"
+
+compose-up-monitoring: ## Start services with monitoring stack
+	@echo "$(BLUE)Starting services with monitoring...$(NC)"
+	@if [ ! -f ".env" ]; then \
+		echo "$(YELLOW)Creating .env from template...$(NC)"; \
+		cp .env.template .env; \
+	fi
+	docker-compose -f docker-compose.production.yml --profile monitoring up -d
+	@echo "$(GREEN)Services with monitoring started!$(NC)"
+	@echo "$(BLUE)App: http://localhost:8000$(NC)"
+	@echo "$(BLUE)Grafana: http://localhost:3000 (admin/admin)$(NC)"
+	@echo "$(BLUE)Prometheus: http://localhost:9090$(NC)"
+
+compose-down: ## Stop docker-compose services
+	@echo "$(BLUE)Stopping docker-compose services...$(NC)"
+	docker-compose -f docker-compose.production.yml down
+	@echo "$(GREEN)Services stopped!$(NC)"
+
+compose-logs: ## View docker-compose logs
+	@echo "$(BLUE)Viewing docker-compose logs...$(NC)"
+	docker-compose -f docker-compose.production.yml logs -f
+
+compose-ps: ## Show docker-compose service status
+	@echo "$(BLUE)Docker-compose service status:$(NC)"
+	docker-compose -f docker-compose.production.yml ps
+
+compose-restart: ## Restart docker-compose services
+	@echo "$(BLUE)Restarting docker-compose services...$(NC)"
+	$(MAKE) compose-down
+	$(MAKE) compose-up
+	@echo "$(GREEN)Services restarted!$(NC)"
+
+# Database targets in Docker
+docker-migrate: ## Run database migrations in Docker
+	@echo "$(BLUE)Running database migrations in Docker...$(NC)"
+	docker-compose -f docker-compose.production.yml exec app alembic upgrade head
+	@echo "$(GREEN)Database migrations complete!$(NC)"
+
+docker-db-backup: ## Backup database from Docker
+	@echo "$(BLUE)Creating database backup...$(NC)"
+	@BACKUP_FILE="backup_$$(date +%Y%m%d_%H%M%S).sql"; \
+	docker-compose -f docker-compose.production.yml exec -T db pg_dump -U postgres compliance_kit > "$$BACKUP_FILE"; \
+	echo "$(GREEN)Database backup created: $$BACKUP_FILE$(NC)"
+
+# Docker cleanup targets
+docker-clean: ## Clean Docker containers and images
+	@echo "$(BLUE)Cleaning Docker containers and images...$(NC)"
+	docker-compose -f docker-compose.production.yml down -v --remove-orphans
+	docker system prune -f
+	@echo "$(GREEN)Docker cleanup complete!$(NC)"
+
+docker-clean-all: ## Clean all Docker resources including volumes
+	@echo "$(RED)WARNING: This will remove all Docker volumes and data!$(NC)"
+	@read -p "Are you sure? Type 'yes' to continue: " confirm; \
+	if [ "$$confirm" = "yes" ]; then \
+		docker-compose -f docker-compose.production.yml down -v --rmi all; \
+		docker system prune -a -f --volumes; \
+		echo "$(GREEN)All Docker resources cleaned!$(NC)"; \
+	else \
+		echo "$(YELLOW)Docker cleanup cancelled.$(NC)"; \
+	fi
+
+# Combined targets for easy use
+docker-dev: docker-build compose-up ## Build and start development environment
+	@echo "$(GREEN)Development environment ready!$(NC)"
+
+docker-prod: docker-build compose-up-monitoring ## Build and start production environment with monitoring
+	@echo "$(GREEN)Production environment ready!$(NC)"
+
+# Docker health check
+docker-health: ## Check health of Docker services
+	@echo "$(BLUE)Checking Docker service health...$(NC)"
+	@if docker-compose -f docker-compose.production.yml ps | grep -q "Up"; then \
+		echo "$(GREEN)Services are running$(NC)"; \
+		docker-compose -f docker-compose.production.yml exec app curl -s http://localhost:8000/health || echo "$(YELLOW)Health check failed$(NC)"; \
+	else \
+		echo "$(RED)Services are not running$(NC)"; \
+	fi
