@@ -101,18 +101,10 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -fsS --max-time 5 http://127.0.0.1:8000/health || exit 1
 
-# Use Gunicorn with Uvicorn workers for production with security configurations
-CMD ["gunicorn", "src.main:app", \
-     "--worker-class", "uvicorn.workers.UvicornWorker", \
+# Use Uvicorn directly for simplicity
+CMD ["/opt/venv/bin/uvicorn", "src.main:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
      "--workers", "2", \
-     "--bind", "0.0.0.0:8000", \
-     "--timeout", "60", \
-     "--graceful-timeout", "30", \
-     "--keep-alive", "30", \
-     "--max-requests", "1000", \
-     "--max-requests-jitter", "50", \
-     "--preload", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-", \
-     "--log-level", "info", \
-     "--capture-output"]
+     "--loop", "uvloop", \
+     "--http", "httptools"]
