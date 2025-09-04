@@ -558,9 +558,9 @@ opentelemetry-exporter-otlp-proto-http==1.26.0 \
     --hash=sha256:5801ebbcf7b527377883e6cbbdda35ee712dc55114fff1e93dfee210be56c908 \
     --hash=sha256:ee72a87c48ec977421b02f16c52ea8d884122470e0be573905237b540f4ee562
     # via opentelemetry-exporter-otlp
-opentelemetry-instrumentation==0.47b0 \
-    --hash=sha256:88974ee52b1db08fc298334b51c19d47e53099c33740e48c4f084bd1afd052d5 \
-    --hash=sha256:96f9885e450c35e3f16a4f33145f2ebf620aea910c9fd74a392bbc0f807a350f
+opentelemetry-instrumentation==0.57b0 \
+    --hash=sha256:9109280f44882e07cec2850db28210b90600ae9110b42824d196de357cbddf7e \
+    --hash=sha256:f2a30135ba77cdea2b0e1df272f4163c154e978f57214795d72f40befd4fcf05
     # via
     #   opentelemetry-instrumentation-asgi
     #   opentelemetry-instrumentation-fastapi
