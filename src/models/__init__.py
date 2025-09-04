@@ -1,4 +1,5 @@
 from .models import (
+    User,
     AuditLog,
     ComplianceCache,
     PolicyVersion,
@@ -8,6 +9,7 @@ from .models import (
 )
 
 __all__ = [
+    'User',
     'AuditLog',
     'ComplianceCache',
     'PolicyVersion',

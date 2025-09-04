@@ -1,4 +1,5 @@
-from pydantic import BaseSettings, PostgresDsn
+from pydantic_settings import BaseSettings
+from pydantic import PostgresDsn
 from typing import Optional
 
 class Settings(BaseSettings):
@@ -6,11 +7,11 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "DoganAI Compliance Kit"
     
     # Database
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
+    POSTGRES_SERVER: str = "localhost"
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "postgres"
+    POSTGRES_DB: str = "compliance_kit"
+    SQLALCHEMY_DATABASE_URI: Optional[str] = None
     
     class Config:
         env_file = ".env"

@@ -3,10 +3,10 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from src.core.security import get_password_hash, verify_password
-from src.models.user import User
+from src.models import User
 from src.schemas.user import UserCreate, UserUpdate
 
-def get_user(db: Session, user_id: int) -> Optional[User]:
+def get_user(db: Session, user_id: str) -> Optional[User]:
     return db.query(User).filter(User.id == user_id).first()
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -23,6 +23,7 @@ def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
 def create_user(db: Session, user_in: UserCreate) -> User:
     db_user = User(
         email=user_in.email,
+        username=user_in.email.split('@')[0],  # Use email prefix as username
         hashed_password=get_password_hash(user_in.password),
         full_name=user_in.full_name,
         is_active=user_in.is_active,
@@ -49,7 +50,7 @@ def update_user(db: Session, db_user: User, user_in: UserUpdate) -> User:
     db.refresh(db_user)
     return db_user
 
-def delete_user(db: Session, user_id: int) -> bool:
+def delete_user(db: Session, user_id: str) -> bool:
     user = get_user(db, user_id=user_id)
     if not user:
         return False

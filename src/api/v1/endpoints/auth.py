@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from src.api.v1.deps import get_db
+from src.api.v1.deps import get_db, get_current_user
 from src.core import security
 from src.core.config import settings
 from src.schemas.token import Token
@@ -43,7 +43,7 @@ def login_access_token(
     }
 
 @router.post("/login/test-token", response_model=User)
-def test_token(current_user: User = Depends(security.get_current_user)) -> Any:
+def test_token(current_user: User = Depends(get_current_user)) -> Any:
     """
     Test access token
     """
