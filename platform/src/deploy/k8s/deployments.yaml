@@ -1,0 +1,471 @@
+# ========================================
+# 1. CORE APPLICATION ENGINE (3 App Servers)
+# ========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-server-1
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+    instance: "1"
+    tier: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-server
+      instance: "1"
+  template:
+    metadata:
+      labels:
+        app: app-server
+        instance: "1"
+        tier: application
+    spec:
+      containers:
+        - name: app-server
+          image: doganai/compliance-ui:latest
+          ports:
+            - containerPort: 8001
+              name: http
+            - containerPort: 9100
+              name: metrics
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NODE_ENV
+            - name: APP_INSTANCE
+              value: "1"
+            - name: DATABASE_URL
+              value: "postgresql://postgres:$(POSTGRES_PASSWORD)@db-primary:5432/doganai"
+            - name: REDIS_URL
+              value: "redis://redis:6379"
+            - name: VECTOR_DB_URL
+              value: "http://weaviate:8080"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-password
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-logs
+              mountPath: /app/logs
+      volumes:
+        - name: app-logs
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-server-2
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+    instance: "2"
+    tier: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-server
+      instance: "2"
+  template:
+    metadata:
+      labels:
+        app: app-server
+        instance: "2"
+        tier: application
+    spec:
+      containers:
+        - name: app-server
+          image: doganai/compliance-ui:latest
+          ports:
+            - containerPort: 8001
+              name: http
+            - containerPort: 9100
+              name: metrics
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NODE_ENV
+            - name: APP_INSTANCE
+              value: "2"
+            - name: DATABASE_URL
+              value: "postgresql://postgres:$(POSTGRES_PASSWORD)@db-primary:5432/doganai"
+            - name: REDIS_URL
+              value: "redis://redis:6379"
+            - name: VECTOR_DB_URL
+              value: "http://weaviate:8080"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-password
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-logs
+              mountPath: /app/logs
+      volumes:
+        - name: app-logs
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-server-3
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+    instance: "3"
+    tier: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-server
+      instance: "3"
+  template:
+    metadata:
+      labels:
+        app: app-server
+        instance: "3"
+        tier: application
+    spec:
+      containers:
+        - name: app-server
+          image: doganai/compliance-ui:latest
+          ports:
+            - containerPort: 8001
+              name: http
+            - containerPort: 9100
+              name: metrics
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NODE_ENV
+            - name: APP_INSTANCE
+              value: "3"
+            - name: DATABASE_URL
+              value: "postgresql://postgres:$(POSTGRES_PASSWORD)@db-primary:5432/doganai"
+            - name: REDIS_URL
+              value: "redis://redis:6379"
+            - name: VECTOR_DB_URL
+              value: "http://weaviate:8080"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-password
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-logs
+              mountPath: /app/logs
+      volumes:
+        - name: app-logs
+          emptyDir: {}
+---
+# ========================================
+# 2. DATABASE ENGINE (Primary + Replica)
+# ========================================
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-primary
+  namespace: doganai-compliance
+  labels:
+    app: postgres
+    role: primary
+    tier: database
+spec:
+  serviceName: db-primary
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      role: primary
+  template:
+    metadata:
+      labels:
+        app: postgres
+        role: primary
+        tier: database
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-user
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-db
+            - name: POSTGRES_INITDB_ARGS
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_INITDB_ARGS
+            - name: POSTGRES_MAX_CONNECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_MAX_CONNECTIONS
+            - name: POSTGRES_SHARED_BUFFERS
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_SHARED_BUFFERS
+            - name: POSTGRES_EFFECTIVE_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_EFFECTIVE_CACHE_SIZE
+            - name: POSTGRES_WORK_MEM
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_WORK_MEM
+            - name: POSTGRES_MAINTENANCE_WORK_MEM
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_MAINTENANCE_WORK_MEM
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -d
+                - doganai
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -d
+                - doganai
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: postgres-config
+              mountPath: /etc/postgresql/postgresql.conf
+              subPath: postgresql.conf
+      volumes:
+        - name: postgres-config
+          configMap:
+            name: database-config
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: doganai-fast-ssd
+        resources:
+          requests:
+            storage: 100Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-replica
+  namespace: doganai-compliance
+  labels:
+    app: postgres
+    role: replica
+    tier: database
+spec:
+  serviceName: db-replica
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      role: replica
+  template:
+    metadata:
+      labels:
+        app: postgres
+        role: replica
+        tier: database
+    spec:
+      containers:
+        - name: postgres-replica
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-user
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-db
+            - name: POSTGRES_INITDB_ARGS
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_INITDB_ARGS
+            - name: POSTGRES_MAX_CONNECTIONS
+              value: "100"
+            - name: POSTGRES_SHARED_BUFFERS
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_SHARED_BUFFERS
+            - name: POSTGRES_EFFECTIVE_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_EFFECTIVE_CACHE_SIZE
+            - name: POSTGRES_WORK_MEM
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_WORK_MEM
+            - name: POSTGRES_MAINTENANCE_WORK_MEM
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_MAINTENANCE_WORK_MEM
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -d
+                - doganai
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -d
+                - doganai
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: postgres-config
+              mountPath: /etc/postgresql/postgresql.conf
+              subPath: postgresql.conf
+      volumes:
+        - name: postgres-config
+          configMap:
+            name: database-config
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: doganai-fast-ssd
+        resources:
+          requests:
+            storage: 100Gi

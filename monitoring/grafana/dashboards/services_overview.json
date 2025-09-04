@@ -1,0 +1,40 @@
+{
+  "title": "Services Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(up, job)",
+        "refresh": 2
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "bargauge",
+      "title": "Targets Up",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "sum by (job, instance) (up)"}
+      ],
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Scrape Duration",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "avg by (job) (scrape_duration_seconds{job=~\"$job\"})", "legendFormat": "{{job}}"}
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 }
+    }
+  ]
+}
+

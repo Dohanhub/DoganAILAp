@@ -1,0 +1,49 @@
+{{- if .Values.argoRollouts.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "doganai.fullname" . }}-web
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.argoRollouts.web.replicas | default 2 }}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-web
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-web
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.image.web.repository }}:{{ .Values.image.web.tag }}
+          imagePullPolicy: {{ .Values.image.web.pullPolicy }}
+          env:
+            - name: NEXT_PUBLIC_API_BASE
+              value: {{ .Values.env.web.NEXT_PUBLIC_API_BASE | quote }}
+          ports:
+            - containerPort: 3001
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources: {{ toYaml .Values.resources.web | nindent 12 }}
+  strategy:
+    canary:
+      canaryService: {{ include "doganai.fullname" . }}-web-canary
+      stableService: {{ include "doganai.fullname" . }}-web
+      trafficRouting:
+        nginx:
+          stableIngress: {{ include "doganai.fullname" . }}-web
+      steps: {{ toYaml .Values.argoRollouts.web.steps | nindent 6 }}
+{{- end }}
+

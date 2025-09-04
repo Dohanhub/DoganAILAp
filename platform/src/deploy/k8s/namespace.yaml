@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: doganai-compliance
+  labels:
+    name: doganai-compliance
+    environment: production
+    app: compliance-kit
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: doganai-monitoring
+  labels:
+    name: doganai-monitoring
+    environment: production
+    app: monitoring
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: doganai-logging
+  labels:
+    name: doganai-logging
+    environment: production
+    app: logging

@@ -1,0 +1,21 @@
+{
+  "name": "doganai-stack",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": "20.x"
+  },
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "predev": "node scripts/preflight.js",
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "start": "turbo run start",
+    "tokens:build": "pnpm -w --filter @doganai/tokens run build",
+    "sdk:generate": "pnpm -w --filter @doganai/sdk run generate"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.0"
+  }
+}

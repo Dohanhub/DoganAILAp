@@ -1,0 +1,17 @@
+// DoganAI Compliance Kit - Prisma Schema
+// This file provides the Prisma client configuration
+// Note: Database schema is managed by SQL migrations, not Prisma migrations
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Note: This schema is for Prisma client generation only.
+// The actual database schema is managed by SQL migrations in the /migrations directory.
+// Tables are defined in V1__doganai_core.sql and V2__rls_policies.sql

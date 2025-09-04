@@ -1,0 +1,24 @@
+﻿reg_id,name,type,domain,site
+REG-CST,"CST (Communications, Space & Technology Commission)",Government regulator,"Telecom, cloud, IoT, platforms",https://www.cst.gov.sa/en
+REG-NCA,National Cybersecurity Authority (NCA),Government regulator,"Cybersecurity controls (ECC, DCC, CSCC, OTCC, NCS)",https://nca.gov.sa
+REG-SDAIA,SDAIA / PDPL,Government regulator,Personal data protection & data governance,https://sdaia.gov.sa
+REG-DGA,Digital Government Authority (DGA),Government authority,"Digital policy, open data, API guidelines",https://dga.gov.sa/en
+REG-ZATCA,"ZATCA (Zakat, Tax and Customs Authority)",Government regulator,Tax/e-invoicing; customs,https://zatca.gov.sa
+REG-SAMA,SAMA (Saudi Central Bank),Government regulator,"Banking, payments, open banking",https://www.sama.gov.sa
+REG-CMA,CMA (Capital Market Authority),Government regulator,"Securities, fintech sandbox (capital markets)",https://cma.org.sa
+REG-SFDA,SFDA (Saudi Food & Drug Authority),Government regulator,"Food, drug, devices, cosmetics",https://www.sfda.gov.sa/en
+REG-CHI,CHI / NHIC (NPHIES),Government regulator / HIE,Health insurance & clinical data exchange,https://www.chi.gov.sa
+REG-GAMR,GAMR (General Authority of Media Regulation),Government regulator,"Media, audiovisual, games",https://gmedia.gov.sa/en
+REG-MC,MC (Ministry of Commerce) / Saudi Business Center,Government ministry,"Commercial registration (CR), corporate services",https://mc.gov.sa/en
+REG-MISA,MISA (Ministry of Investment),Government ministry,Foreign investment licensing,https://misa.gov.sa
+REG-HRSD,HRSD (Ministry of Human Resources & Social Development),Government ministry,"Labor, freelancer docs",https://www.hrsd.gov.sa/en
+REG-SAIP,SAIP (Saudi Authority for Intellectual Property),Authority,"IP rights (patents, trademarks, copyright)",https://www.saip.gov.sa/en/
+REG-SASO,SASO / SABER,Authority,Product conformity & safety,https://www.saso.gov.sa/en/
+REG-GEOSA,GEOSA (Geospatial Authority),Authority,Geospatial policies & data standards,https://www.geoportal.sa/geoportal/
+REG-TGA,Transport General Authority (TGA),Government regulator,Transport & logistics,https://tga.gov.sa
+REG-GACA,GACA (General Authority of Civil Aviation),Government regulator,Aviation (air cargo & logistics),https://gaca.gov.sa/en
+REG-GAMR-MOM,Ministry of Media (oversight),Government ministry,Media policy & oversight,https://www.media.gov.sa/
+REG-GDPR,EU GDPR,International regulation,Data protection (EU),https://commission.europa.eu/law/law-topic/data-protection
+REG-CCPA,California CCPA/CPRA,International regulation,Consumer privacy (CA/US),https://cppa.ca.gov
+REG-PCI,PCI DSS,Private standard,Payment card data security,https://www.pcisecuritystandards.org/
+REG-ISO27001,ISO/IEC 27001,International standard,Information security management,https://www.iso.org/standard/27001

@@ -1,0 +1,180 @@
+# DoganAI Compliance Kit - Code Coverage Configuration
+# This file configures coverage.py for comprehensive code coverage analysis
+
+[run]
+# Source code directories to analyze
+source = engine, improvements, ui, .
+
+# Include patterns
+include = 
+    engine/*
+    improvements/*
+    ui/*
+    *.py
+
+# Exclude patterns
+omit = 
+    */tests/*
+    */test_*
+    */__pycache__/*
+    */venv/*
+    */env/*
+    */migrations/*
+    */node_modules/*
+    setup.py
+    manage.py
+    */conftest.py
+    test_*.py
+    *_test.py
+    */site-packages/*
+    .tox/*
+    build/*
+    dist/*
+    *.egg-info/*
+    .git/*
+    .vs/*
+    .local/*
+    .streamlit/*
+    attached_assets/*
+    benchmarks/*
+    compose/*
+    db/*
+    docs/*
+    external_modules/*
+    i18n/*
+    infra/*
+    init-scripts/*
+    k8s/*
+    locales/*
+    mappings/*
+    microservices/*
+    monitoring/*
+    policies/*
+    redis-config/*
+    schemas/*
+    scripts/*
+    tools/*
+    vendors/*
+
+# Enable branch coverage
+branch = True
+
+# Parallel processing
+parallel = True
+
+# Coverage data file
+data_file = .coverage
+
+# Plugins
+plugins = 
+
+[report]
+# Minimum coverage percentage required
+fail_under = 80
+
+# Show missing lines in report
+show_missing = True
+
+# Skip covered files in report
+skip_covered = False
+
+# Skip empty files
+skip_empty = True
+
+# Sort by coverage percentage
+sort = Cover
+
+# Precision for coverage percentages
+precision = 2
+
+# Exclude lines from coverage
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+    
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+    
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+    if __name__ == "__main__":
+    
+    # Don't complain about abstract methods
+    @(abc\.)?abstractmethod
+    
+    # Don't complain about type checking imports
+    if TYPE_CHECKING:
+    
+    # Don't complain about platform specific code
+    if sys.platform
+    
+    # Don't complain about deprecated code
+    @deprecated
+    
+    # Don't complain about logging statements
+    logger\.
+    logging\.
+    
+    # Don't complain about pass statements
+    pass
+    
+    # Don't complain about ellipsis
+    \.\.\.
+
+# Partial branches to exclude
+partial_branches =
+    # Have to re-enable the standard pragma
+    pragma: no branch
+    
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+    if __name__ == "__main__":
+
+[html]
+# HTML report directory
+directory = coverage_html_report
+
+# Title for HTML report
+title = DoganAI Compliance Kit - Code Coverage Report
+
+# Show contexts in HTML report
+show_contexts = True
+
+# Skip covered files in HTML report
+skip_covered = False
+
+# Skip empty files in HTML report
+skip_empty = True
+
+[xml]
+# XML report file
+output = coverage.xml
+
+[json]
+# JSON report file
+output = coverage.json
+
+# Show contexts in JSON report
+show_contexts = True
+
+# Pretty print JSON
+pretty_print = True
+
+[lcov]
+# LCOV report file
+output = coverage.lcov
+
+[paths]
+# Path mapping for different environments
+source =
+    .
+    /app
+    C:\*\DoganAI-Compliance-Kit
+    D:\*\DoganAI-Compliance-Kit

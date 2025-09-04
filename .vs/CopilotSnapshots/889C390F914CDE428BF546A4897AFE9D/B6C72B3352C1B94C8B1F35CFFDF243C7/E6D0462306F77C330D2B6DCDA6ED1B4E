@@ -1,0 +1,163 @@
+﻿/**
+ * DoganAI Compliance Kit - Main Application Component
+ * Enterprise-grade compliance management platform
+ */
+
+import React, { Suspense, useEffect } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './hooks/useAuth'
+import { LoadingSpinner } from './components/ui/LoadingSpinner'
+import { AppLayout } from './components/layout/AppLayout'
+
+// Lazy load components for better performance
+const Dashboard = React.lazy(() => import('./pages/Dashboard'))
+const Login = React.lazy(() => import('./pages/Login'))
+const ComplianceFrameworks = React.lazy(() => import('./pages/ComplianceFrameworks'))
+const RiskManagement = React.lazy(() => import('./pages/RiskManagement'))
+const Assessments = React.lazy(() => import('./pages/Assessments'))
+const Reports = React.lazy(() => import('./pages/Reports'))
+const AuditTrail = React.lazy(() => import('./pages/AuditTrail'))
+const Settings = React.lazy(() => import('./pages/Settings'))
+const NotFound = React.lazy(() => import('./pages/NotFound'))
+
+// Protected route wrapper
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  return <AppLayout>{children}</AppLayout>
+}
+
+// Public route wrapper (for login page)
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  return <>{children}</>
+}
+
+// Loading fallback component
+const PageLoadingFallback: React.FC = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <LoadingSpinner size="lg" />
+      <p className="mt-4 text-sm text-gray-500">Loading page...</p>
+    </div>
+  </div>
+)
+
+export default function App() {
+  const { checkAuth } = useAuth()
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Suspense fallback={<PageLoadingFallback />}>
+        <Routes>
+          {/* Public routes */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+
+          {/* Protected routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/compliance"
+            element={
+              <ProtectedRoute>
+                <ComplianceFrameworks />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/risk-management"
+            element={
+              <ProtectedRoute>
+                <RiskManagement />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/assessments"
+            element={
+              <ProtectedRoute>
+                <Assessments />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute>
+                <Reports />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/audit"
+            element={
+              <ProtectedRoute>
+                <AuditTrail />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Default redirects */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </div>
+  )
+}

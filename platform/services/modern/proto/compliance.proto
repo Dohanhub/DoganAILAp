@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+package doganai.compliance.v1;
+
+option go_package = "github.com/doganai/platform/api/compliance/v1";
+
+import "google/protobuf/timestamp.proto";
+
+// Compliance service definition
+service Compliance {
+  // Check compliance for an organization
+  rpc CheckCompliance(ComplianceRequest) returns (ComplianceResponse);
+  
+  // Stream real-time compliance updates
+  rpc StreamCompliance(StreamRequest) returns (stream ComplianceUpdate);
+  
+  // Generate compliance report
+  rpc GenerateReport(ReportRequest) returns (ReportResponse);
+  
+  // Get audit trail
+  rpc GetAuditTrail(AuditRequest) returns (AuditResponse);
+}
+
+// Request message for compliance check
+message ComplianceRequest {
+  string organization_id = 1;
+  repeated string frameworks = 2;  // If empty, check all frameworks
+  bool force_refresh = 3;
+  map<string, string> metadata = 4;
+}
+
+// Response message for compliance check
+message ComplianceResponse {
+  string organization_id = 1;
+  int64 timestamp = 2;
+  repeated FrameworkResult framework_results = 3;
+  double overall_score = 4;
+  string status = 5;  // COMPLIANT, PARTIALLY_COMPLIANT, NON_COMPLIANT
+  map<string, string> metadata = 6;
+}
+
+// Individual framework compliance result
+message FrameworkResult {
+  string framework = 1;  // NCA, SAMA, PDPL, ISO27001, NIST
+  double score = 2;
+  
+  // Framework-specific fields
+  oneof details {
+    NCADetails nca_details = 3;
+    SAMADetails sama_details = 4;
+    PDPLDetails pdpl_details = 5;
+    ISO27001Details iso_details = 6;
+    NISTDetails nist_details = 7;
+  }
+}
+
+// NCA specific details
+message NCADetails {
+  int32 requirements_met = 1;
+  int32 requirements_total = 2;
+  int32 critical_issues = 3;
+  repeated string failed_controls = 4;
+}
+
+// SAMA specific details
+message SAMADetails {
+  bool basel_compliant = 1;
+  string aml_status = 2;
+  double capital_adequacy_ratio = 3;
+  repeated string violations = 4;
+}
+
+// PDPL specific details
+message PDPLDetails {
+  string data_protection_level = 1;
+  string consent_management = 2;
+  bool data_breach_notification = 3;
+  repeated string privacy_gaps = 4;
+}
+
+// ISO 27001 specific details
+message ISO27001Details {
+  int32 controls_implemented = 1;
+  int32 controls_total = 2;
+  repeated string missing_controls = 3;
+  google.protobuf.Timestamp last_audit = 4;
+}
+
+// NIST framework details
+message NISTDetails {
+  double identify_score = 1;
+  double protect_score = 2;
+  double detect_score = 3;
+  double respond_score = 4;
+  double recover_score = 5;
+}
+
+// Stream request for real-time updates
+message StreamRequest {
+  string organization_id = 1;
+  repeated string frameworks = 2;
+  int32 interval_seconds = 3;
+}
+
+// Real-time compliance update
+message ComplianceUpdate {
+  string organization_id = 1;
+  string framework = 2;
+  double score = 3;
+  string change_type = 4;  // IMPROVED, DEGRADED, STABLE
+  google.protobuf.Timestamp timestamp = 5;
+  map<string, string> changes = 6;
+}
+
+// Report request
+message ReportRequest {
+  string organization_id = 1;
+  string report_type = 2;  // SUMMARY, DETAILED, EXECUTIVE, TECHNICAL
+  string format = 3;  // PDF, JSON, HTML, EXCEL
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  repeated string frameworks = 6;
+}
+
+// Report response
+message ReportResponse {
+  string report_id = 1;
+  bytes content = 2;
+  string format = 3;
+  google.protobuf.Timestamp generated_at = 4;
+  map<string, string> metadata = 5;
+}
+
+// Audit request
+message AuditRequest {
+  string organization_id = 1;
+  google.protobuf.Timestamp start_time = 2;
+  google.protobuf.Timestamp end_time = 3;
+  repeated string event_types = 4;
+  int32 limit = 5;
+}
+
+// Audit response
+message AuditResponse {
+  repeated AuditEvent events = 1;
+  int32 total_count = 2;
+  google.protobuf.Timestamp oldest_event = 3;
+  google.protobuf.Timestamp newest_event = 4;
+}
+
+// Audit event
+message AuditEvent {
+  string event_id = 1;
+  string event_type = 2;
+  string organization_id = 3;
+  string user_id = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  map<string, string> details = 6;
+  string ip_address = 7;
+  string user_agent = 8;
+}

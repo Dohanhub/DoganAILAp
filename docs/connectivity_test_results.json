@@ -1,0 +1,74 @@
+{
+  "test_time": "2025-08-29T05:14:31.544819",
+  "total_authorities": 5,
+  "accessible_websites": 4,
+  "accessible_apis": 0,
+  "authorities": {
+    "NCA": {
+      "authority": "NCA",
+      "name": "National Commercial Authority",
+      "website_url": "https://nca.gov.sa",
+      "website_accessible": true,
+      "website_response_time": 702.38,
+      "website_status_code": 200,
+      "api_url": "https://api.nca.gov.sa",
+      "api_accessible": false,
+      "api_response_time": null,
+      "api_status_code": null,
+      "working_endpoints": []
+    },
+    "SAMA": {
+      "authority": "SAMA",
+      "name": "Saudi Arabian Monetary Authority",
+      "website_url": "https://sama.gov.sa",
+      "website_accessible": false,
+      "website_response_time": null,
+      "website_status_code": null,
+      "website_error": "[WinError 64] The specified network name is no longer available",
+      "api_url": "https://api.sama.gov.sa",
+      "api_accessible": false,
+      "api_response_time": null,
+      "api_status_code": null,
+      "working_endpoints": []
+    },
+    "MoH": {
+      "authority": "MoH",
+      "name": "Ministry of Health",
+      "website_url": "https://moh.gov.sa",
+      "website_accessible": true,
+      "website_response_time": 757.22,
+      "website_status_code": 200,
+      "api_url": "https://api.moh.gov.sa",
+      "api_accessible": false,
+      "api_response_time": null,
+      "api_status_code": null,
+      "working_endpoints": []
+    },
+    "CITC": {
+      "authority": "CITC",
+      "name": "Communications and IT Commission",
+      "website_url": "https://citc.gov.sa",
+      "website_accessible": true,
+      "website_response_time": 307.57,
+      "website_status_code": 200,
+      "api_url": "https://api.citc.gov.sa",
+      "api_accessible": false,
+      "api_response_time": null,
+      "api_status_code": null,
+      "working_endpoints": []
+    },
+    "CMA": {
+      "authority": "CMA",
+      "name": "Capital Market Authority",
+      "website_url": "https://cma.org.sa",
+      "website_accessible": true,
+      "website_response_time": 935.68,
+      "website_status_code": 200,
+      "api_url": "https://api.cma.org.sa",
+      "api_accessible": false,
+      "api_response_time": null,
+      "api_status_code": null,
+      "working_endpoints": []
+    }
+  }
+}

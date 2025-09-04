@@ -1,0 +1,283 @@
+# DoganAI Compliance Kit - Environment Configuration
+# Copy this file to .env and fill in your actual API keys
+
+# =============================================================================
+# SAUDI REGULATORY AUTHORITIES API KEYS
+# =============================================================================
+
+# National Commercial Authority (NCA)
+NCA_API_URL=https://api.nca.gov.sa
+NCA_API_KEY=your_nca_api_key_here
+NCA_API_VERSION=v1
+NCA_RATE_LIMIT=60
+
+# Saudi Arabian Monetary Authority (SAMA)
+SAMA_API_URL=https://api.sama.gov.sa
+SAMA_API_KEY=your_sama_api_key_here
+SAMA_TOKEN_ENDPOINT=https://auth.sama.gov.sa/oauth/token
+SAMA_CLIENT_ID=your_sama_client_id
+SAMA_CLIENT_SECRET=your_sama_client_secret
+SAMA_API_VERSION=v1
+SAMA_RATE_LIMIT=100
+
+# Ministry of Health (MoH)
+MOH_API_URL=https://api.moh.gov.sa
+MOH_API_KEY=your_moh_api_key_here
+MOH_API_VERSION=v1
+MOH_RATE_LIMIT=60
+
+# Communications and Information Technology Commission (CITC)
+CITC_API_URL=https://api.citc.gov.sa
+CITC_API_KEY=your_citc_api_key_here
+CITC_API_VERSION=v1
+CITC_RATE_LIMIT=60
+
+# Capital Market Authority (CMA)
+CMA_API_URL=https://api.cma.org.sa
+CMA_API_KEY=your_cma_api_key_here
+CMA_API_VERSION=v1
+CMA_RATE_LIMIT=60
+
+# =============================================================================
+# AI/ML VENDOR API KEYS
+# =============================================================================
+
+# IBM Watson
+IBM_WATSON_API_KEY=your_ibm_watson_api_key_here
+IBM_WATSON_URL=https://api.us-south.assistant.watson.cloud.ibm.com
+IBM_WATSON_ASSISTANT_ID=your_watson_assistant_id_here
+
+# Microsoft Azure Cognitive Services
+AZURE_COGNITIVE_KEY=your_azure_cognitive_key_here
+AZURE_COGNITIVE_ENDPOINT=https://your-resource.cognitiveservices.azure.com
+
+# AWS AI Services
+AWS_ACCESS_KEY_ID=your_aws_access_key_here
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key_here
+AWS_DEFAULT_REGION=us-east-1
+
+# =============================================================================
+# DATABASE CONFIGURATION
+# =============================================================================
+
+# PostgreSQL
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=doganai_compliance
+POSTGRES_USER=doganai_user
+POSTGRES_PASSWORD=your_secure_password_here
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=your_redis_password_here
+
+# Weaviate Vector Database
+WEAVIATE_HOST=localhost
+WEAVIATE_PORT=8080
+WEAVIATE_API_KEY=your_weaviate_api_key_here
+
+# =============================================================================
+# MONITORING & LOGGING
+# =============================================================================
+
+# Elasticsearch
+ELASTICSEARCH_HOST=localhost
+ELASTICSEARCH_PORT=9200
+ELASTICSEARCH_USERNAME=elastic
+ELASTICSEARCH_PASSWORD=your_elasticsearch_password_here
+
+# Prometheus
+PROMETHEUS_HOST=localhost
+PROMETHEUS_PORT=9090
+
+# Grafana
+GRAFANA_HOST=localhost
+GRAFANA_PORT=3000
+GRAFANA_ADMIN_USER=admin
+GRAFANA_ADMIN_PASSWORD=your_grafana_password_here
+
+# =============================================================================
+# SECURITY & AUTHENTICATION
+# =============================================================================
+
+# JWT Secret
+JWT_SECRET_KEY=your_jwt_secret_key_here_make_it_long_and_random
+
+# API Rate Limiting
+API_RATE_LIMIT_PER_MINUTE=100
+API_RATE_LIMIT_PER_HOUR=1000
+
+# CORS Settings
+CORS_ORIGINS=http://localhost:3000,http://localhost:8501,https://yourdomain.com
+
+# =============================================================================
+# APPLICATION SETTINGS
+# =============================================================================
+
+# Environment
+ENVIRONMENT=development
+DEBUG=true
+LOG_LEVEL=INFO
+
+# Server Settings
+HOST=0.0.0.0
+PORT=8000
+WORKERS=4
+
+# Cache Settings
+CACHE_TTL_MINUTES=30
+CACHE_MAX_SIZE=1000
+
+# =============================================================================
+# EXTERNAL INTEGRATIONS
+# =============================================================================
+
+# Email Service (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your_email@gmail.com
+SMTP_PASSWORD=your_app_password_here
+
+# SMS Service (Twilio)
+TWILIO_ACCOUNT_SID=your_twilio_account_sid_here
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+TWILIO_PHONE_NUMBER=your_twilio_phone_number_here
+
+# =============================================================================
+# COMPLIANCE SPECIFIC SETTINGS
+# =============================================================================
+
+# Compliance Engine
+COMPLIANCE_ENGINE_ENABLED=true
+COMPLIANCE_SCORE_THRESHOLD=70.0
+COMPLIANCE_ALERT_ENABLED=true
+COMPLIANCE_REPORTING_FREQUENCY=daily
+
+# Risk Assessment
+RISK_ASSESSMENT_ENABLED=true
+RISK_SCORE_THRESHOLD=50.0
+RISK_ALERT_ENABLED=true
+
+# Audit Trail
+AUDIT_TRAIL_ENABLED=true
+AUDIT_RETENTION_DAYS=2555
+AUDIT_ENCRYPTION_ENABLED=true
+
+# =============================================================================
+# DEVELOPMENT & TESTING
+# =============================================================================
+
+# Test Mode
+TEST_MODE=false
+MOCK_DATA_ENABLED=true
+API_MOCKING_ENABLED=true
+
+# Development Tools
+SWAGGER_UI_ENABLED=true
+API_DOCS_ENABLED=true
+HEALTH_CHECK_ENABLED=true
+
+# =============================================================================
+# DEPLOYMENT & SCALING
+# =============================================================================
+
+# Kubernetes
+K8S_NAMESPACE=doganai-compliance
+K8S_REPLICAS=3
+K8S_RESOURCE_LIMITS_CPU=1000m
+K8S_RESOURCE_LIMITS_MEMORY=2Gi
+K8S_RESOURCE_REQUESTS_CPU=500m
+K8S_RESOURCE_REQUESTS_MEMORY=1Gi
+
+# Auto Scaling
+HPA_ENABLED=true
+HPA_MIN_REPLICAS=3
+HPA_MAX_REPLICAS=10
+HPA_TARGET_CPU_UTILIZATION=70
+
+# =============================================================================
+# BACKUP & DISASTER RECOVERY
+# =============================================================================
+
+# Database Backup
+BACKUP_ENABLED=true
+BACKUP_FREQUENCY=daily
+BACKUP_RETENTION_DAYS=30
+BACKUP_ENCRYPTION_ENABLED=true
+
+# File Storage
+STORAGE_BACKUP_ENABLED=true
+STORAGE_BACKUP_LOCATION=s3://your-backup-bucket
+STORAGE_ENCRYPTION_ENABLED=true
+
+# =============================================================================
+# NOTIFICATIONS & ALERTS
+# =============================================================================
+
+# Slack Integration
+SLACK_WEBHOOK_URL=your_slack_webhook_url_here
+SLACK_CHANNEL=#compliance-alerts
+
+# Microsoft Teams
+TEAMS_WEBHOOK_URL=your_teams_webhook_url_here
+
+# Email Alerts
+EMAIL_ALERTS_ENABLED=true
+ALERT_EMAIL_RECIPIENTS=admin@yourcompany.com,compliance@yourcompany.com
+
+# =============================================================================
+# COMPLIANCE FRAMEWORKS
+# =============================================================================
+
+# ISO Standards
+ISO_27001_ENABLED=true
+ISO_27002_ENABLED=true
+ISO_31000_ENABLED=true
+
+# Saudi Standards
+SASO_ENABLED=true
+SAMA_FRAMEWORK_ENABLED=true
+NCA_GUIDELINES_ENABLED=true
+
+# Industry Standards
+PCI_DSS_ENABLED=true
+SOC_2_ENABLED=true
+GDPR_ENABLED=true
+
+# =============================================================================
+# CUSTOM INTEGRATIONS
+# =============================================================================
+
+# Custom API Endpoints
+CUSTOM_API_ENABLED=false
+CUSTOM_API_BASE_URL=https://api.yourcompany.com
+CUSTOM_API_KEY=your_custom_api_key_here
+
+# Third-party Services
+THIRD_PARTY_SERVICES_ENABLED=false
+THIRD_PARTY_API_KEY=your_third_party_api_key_here
+
+# =============================================================================
+# NOTES & INSTRUCTIONS
+# =============================================================================
+
+# 1. Copy this file to .env in your project root
+# 2. Replace all placeholder values with your actual API keys and credentials
+# 3. Never commit .env files to version control
+# 4. Use different keys for development, staging, and production
+# 5. Rotate API keys regularly for security
+# 6. Use strong, unique passwords for all services
+# 7. Enable encryption wherever possible
+# 8. Monitor API usage and set appropriate rate limits
+# 9. Test all integrations before deploying to production
+# 10. Keep backup copies of your configuration securely
+
+# For production deployment:
+# - Set ENVIRONMENT=production
+# - Set DEBUG=false
+# - Use strong, unique secrets
+# - Enable all security features
+# - Configure proper monitoring and alerting
+# - Set up automated backups
+# - Enable encryption for all data at rest and in transit

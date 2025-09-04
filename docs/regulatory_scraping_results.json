@@ -1,0 +1,337 @@
+{
+  "scan_time": "2025-08-29T04:47:00.262746",
+  "total_sites": 5,
+  "accessible_sites": 5,
+  "failed_sites": 0,
+  "connectivity": {
+    "NCA": {
+      "name": "NCA",
+      "url": "https://nca.gov.sa",
+      "status": "online",
+      "status_code": 200,
+      "response_time_ms": 665.11,
+      "content_type": "text/html; charset=utf-8",
+      "server": "unknown",
+      "accessible": true
+    },
+    "SAMA": {
+      "name": "SAMA",
+      "url": "https://sama.gov.sa",
+      "status": "online",
+      "status_code": 200,
+      "response_time_ms": 1221.51,
+      "content_type": "text/html; charset=utf-8",
+      "server": "unknown",
+      "accessible": true
+    },
+    "MoH": {
+      "name": "MoH",
+      "url": "https://moh.gov.sa",
+      "status": "online",
+      "status_code": 200,
+      "response_time_ms": 708.98,
+      "content_type": "text/html; charset=utf-8",
+      "server": "unknown",
+      "accessible": true
+    },
+    "CITC": {
+      "name": "CITC",
+      "url": "https://citc.gov.sa",
+      "status": "online",
+      "status_code": 200,
+      "response_time_ms": 185.14,
+      "content_type": "text/html; charset=utf-8",
+      "server": "unknown",
+      "accessible": true
+    },
+    "CMA": {
+      "name": "CMA",
+      "url": "https://cma.org.sa",
+      "status": "online",
+      "status_code": 200,
+      "response_time_ms": 860.2,
+      "content_type": "text/html; charset=utf-8",
+      "server": "unknown",
+      "accessible": true
+    }
+  },
+  "scraped_data": {
+    "NCA": {
+      "authority": "NCA",
+      "base_url": "https://nca.gov.sa",
+      "last_updated": "2025-08-29T04:47:03.907175",
+      "data_sources": [
+        {
+          "endpoint": "/en",
+          "title": "National Cybersecurity Authority | NCA",
+          "extracted_data": [
+            "compliance(7)",
+            "license(11)",
+            "registration(36)",
+            "regulation(10)",
+            "standard(26)",
+            "requirement(18)"
+          ]
+        },
+        {
+          "endpoint": "/ar",
+          "title": "الهيئة الوطنية للأمن السيبراني | NCA",
+          "extracted_data": [
+            "license(3)",
+            "registration(16)",
+            "regulation(4)",
+            "standard(14)",
+            "requirement(4)"
+          ]
+        },
+        {
+          "endpoint": "/services",
+          "title": "الخدمات | NCA",
+          "extracted_data": [
+            "license(3)",
+            "registration(16)",
+            "regulation(4)",
+            "standard(4)",
+            "requirement(9)"
+          ]
+        },
+        {
+          "endpoint": "/companies",
+          "title": "الهيئة الوطنية للأمن السيبراني",
+          "extracted_data": [
+            "license(3)",
+            "registration(10)",
+            "regulation(4)",
+            "standard(4)"
+          ]
+        },
+        {
+          "endpoint": "/violations",
+          "title": "الهيئة الوطنية للأمن السيبراني",
+          "extracted_data": [
+            "violation(7)",
+            "license(3)",
+            "registration(10)",
+            "regulation(4)",
+            "standard(4)"
+          ]
+        }
+      ],
+      "compliance_info": [
+        {
+          "text": "Registrations and Licensing",
+          "link": "https://nca.gov.sa/en/registration-and-licensing/"
+        }
+      ]
+    },
+    "SAMA": {
+      "authority": "SAMA",
+      "base_url": "https://sama.gov.sa",
+      "last_updated": "2025-08-29T04:47:10.770920",
+      "indicators": [
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_1"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_2"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_3"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_4"
+        },
+        {
+          "type": "percentage",
+          "value": "25",
+          "unit": "%",
+          "context": "indicator_5"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_1"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_2"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_3"
+        },
+        {
+          "type": "percentage",
+          "value": "1",
+          "unit": "%",
+          "context": "indicator_4"
+        },
+        {
+          "type": "percentage",
+          "value": "1",
+          "unit": "%",
+          "context": "indicator_5"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_1"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_2"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_3"
+        },
+        {
+          "type": "percentage",
+          "value": "1",
+          "unit": "%",
+          "context": "indicator_4"
+        },
+        {
+          "type": "percentage",
+          "value": "2",
+          "unit": "%",
+          "context": "indicator_5"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_1"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_2"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_3"
+        },
+        {
+          "type": "percentage",
+          "value": "1",
+          "unit": "%",
+          "context": "indicator_4"
+        },
+        {
+          "type": "percentage",
+          "value": "2",
+          "unit": "%",
+          "context": "indicator_5"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_1"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_2"
+        },
+        {
+          "type": "percentage",
+          "value": "100",
+          "unit": "%",
+          "context": "indicator_3"
+        },
+        {
+          "type": "percentage",
+          "value": "1",
+          "unit": "%",
+          "context": "indicator_4"
+        },
+        {
+          "type": "percentage",
+          "value": "2",
+          "unit": "%",
+          "context": "indicator_5"
+        }
+      ],
+      "regulations": [
+        {
+          "title": "Saudi Riyal Symbol Guidelines",
+          "link": "https://www.sama.gov.sa/en-US/Currency/SRS/Pages/Guidelines.aspx",
+          "type": "regulation"
+        },
+        {
+          "title": "Saudi Riyal Symbol Guidelines",
+          "link": "https://www.sama.gov.sa/en-US/Currency/SRS/Pages/Guidelines.aspx",
+          "type": "regulation"
+        },
+        {
+          "title": "Saudi Riyal Symbol Guidelines",
+          "link": "https://www.sama.gov.sa/en-US/Currency/SRS/Pages/Guidelines.aspx",
+          "type": "regulation"
+        },
+        {
+          "title": "Saudi Riyal Symbol Guidelines",
+          "link": "https://www.sama.gov.sa/en-US/Currency/SRS/Pages/Guidelines.aspx",
+          "type": "regulation"
+        }
+      ],
+      "press_releases": []
+    },
+    "MoH": {
+      "authority": "MoH",
+      "base_url": "https://moh.gov.sa",
+      "last_updated": "2025-08-29T04:47:21.647855",
+      "facilities": [],
+      "standards": [
+        {
+          "keyword": "iso",
+          "found": true,
+          "context": "health_standards"
+        },
+        {
+          "keyword": "standard",
+          "found": true,
+          "context": "health_standards"
+        },
+        {
+          "keyword": "iso",
+          "found": true,
+          "context": "health_standards"
+        },
+        {
+          "keyword": "quality",
+          "found": true,
+          "context": "health_standards"
+        }
+      ],
+      "announcements": []
+    }
+  }
+}

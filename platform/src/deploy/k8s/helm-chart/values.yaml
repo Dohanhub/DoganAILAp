@@ -1,0 +1,609 @@
+# ========================================
+# DoganAI Compliance Kit - Helm Values
+# ========================================
+
+# Global configuration
+global:
+  environment: production  # dev, staging, production
+  clusterDomain: cluster.local
+  imageRegistry: doganai
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  
+  # Storage configuration
+  storage:
+    class: doganai-fast-ssd
+    gpuClass: doganai-gpu-storage
+    
+  # Security configuration
+  security:
+    enableRBAC: true
+    enableNetworkPolicies: true
+    enablePodSecurityPolicies: false
+    
+  # Monitoring configuration
+  monitoring:
+    enabled: true
+    prometheus:
+      enabled: true
+      retention: 30d
+    grafana:
+      enabled: true
+      adminPassword: admin123
+    alertmanager:
+      enabled: true
+      
+  # Logging configuration
+  logging:
+    enabled: true
+    elasticsearch:
+      enabled: true
+      replicas: 1
+    kibana:
+      enabled: true
+    logstash:
+      enabled: true
+
+# ========================================
+# APPLICATION CONFIGURATION
+# ========================================
+app:
+  enabled: true
+  replicas: 3
+  
+  image:
+    repository: compliance-ui
+    tag: latest
+    pullPolicy: IfNotPresent
+    
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+      cpu: 1000m
+      
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+    
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: compliance.dogan-ai.com
+        paths:
+          - path: /
+            pathType: Prefix
+      - host: api.dogan-ai.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: doganai-tls-secret
+        hosts:
+          - compliance.dogan-ai.com
+          - api.dogan-ai.com
+
+# ========================================
+# DATABASE CONFIGURATION
+# ========================================
+database:
+  enabled: true
+  
+  postgres:
+    enabled: true
+    image:
+      repository: postgres
+      tag: "15-alpine"
+      pullPolicy: IfNotPresent
+      
+    primary:
+      enabled: true
+      replicas: 1
+      resources:
+        requests:
+          memory: 2Gi
+          cpu: 1000m
+        limits:
+          memory: 4Gi
+          cpu: 2000m
+      storage:
+        size: 100Gi
+        class: doganai-fast-ssd
+        
+    replica:
+      enabled: true
+      replicas: 1
+      resources:
+        requests:
+          memory: 2Gi
+          cpu: 1000m
+        limits:
+          memory: 4Gi
+          cpu: 2000m
+      storage:
+        size: 100Gi
+        class: doganai-fast-ssd
+        
+    config:
+      maxConnections: 200
+      sharedBuffers: 256MB
+      effectiveCacheSize: 1GB
+      workMem: 4MB
+      maintenanceWorkMem: 64MB
+      
+  redis:
+    enabled: true
+    image:
+      repository: redis
+      tag: "7-alpine"
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+        
+    storage:
+      size: 50Gi
+      class: doganai-fast-ssd
+      
+    config:
+      maxMemory: 2gb
+      maxMemoryPolicy: allkeys-lru
+
+# ========================================
+# VECTOR DATABASE CONFIGURATION
+# ========================================
+weaviate:
+  enabled: true
+  
+  image:
+    repository: semitechnologies/weaviate
+    tag: "1.22.4"
+    pullPolicy: IfNotPresent
+    
+  replicas: 1
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
+      
+  storage:
+    size: 200Gi
+    class: doganai-fast-ssd
+    
+  config:
+    queryDefaultsLimit: 25
+    authenticationAnonymousAccessEnabled: true
+    defaultVectorizerModule: none
+    enableModules: "text2vec-openai,text2vec-cohere,text2vec-huggingface,ref2vec-centroid,generative-openai,qna-openai"
+    clusterHostname: node1
+    vectorDistanceMetric: cosine
+    enableCuda: false
+
+# ========================================
+# AI ENGINE CONFIGURATION
+# ========================================
+aiEngine:
+  enabled: true
+  replicas: 2
+  
+  image:
+    repository: compliance-ai-ml
+    tag: latest
+    pullPolicy: IfNotPresent
+    
+  resources:
+    requests:
+      memory: 4Gi
+      cpu: 2000m
+    limits:
+      memory: 8Gi
+      cpu: 4000m
+      
+  gpu:
+    enabled: true
+    count: 1
+    type: nvidia.com/gpu
+    memory: 80GB
+    
+  storage:
+    size: 1Ti
+    class: doganai-gpu-storage
+    
+  config:
+    modelPath: /models
+    gpuMemoryLimit: 80GB
+    enableTensorRT: true
+    enableONNX: true
+
+# ========================================
+# LOAD BALANCER CONFIGURATION
+# ========================================
+loadBalancer:
+  enabled: true
+  
+  nginx:
+    enabled: true
+    image:
+      repository: nginx
+      tag: alpine
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 512M
+        cpu: 250m
+      limits:
+        memory: 1Gi
+        cpu: 500m
+        
+    config:
+      workerConnections: 1024
+      rateLimitZone: "10m"
+      rateLimit: "10r/s"
+      
+  haproxy:
+    enabled: true
+    image:
+      repository: haproxy
+      tag: "2.8-alpine"
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 512M
+        cpu: 250m
+      limits:
+        memory: 1Gi
+        cpu: 500m
+        
+    config:
+      maxConnections: 4096
+      statsPort: 8404
+      statsAuth: "admin:Admin@123"
+
+# ========================================
+# MONITORING CONFIGURATION
+# ========================================
+monitoring:
+  enabled: true
+  
+  prometheus:
+    enabled: true
+    image:
+      repository: prom/prometheus
+      tag: latest
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+        
+    storage:
+      size: 100Gi
+      class: doganai-fast-ssd
+      
+    config:
+      scrapeInterval: 15s
+      evaluationInterval: 15s
+      retention: 30d
+      
+  grafana:
+    enabled: true
+    image:
+      repository: grafana/grafana
+      tag: latest
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 512M
+        cpu: 250m
+      limits:
+        memory: 1Gi
+        cpu: 500m
+        
+    storage:
+      size: 20Gi
+      class: doganai-fast-ssd
+      
+    config:
+      adminPassword: admin123
+      security:
+        allowEmbedding: true
+        allowAnonymous: false
+        
+  alertmanager:
+    enabled: true
+    image:
+      repository: prom/alertmanager
+      tag: latest
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 512M
+        cpu: 250m
+      limits:
+        memory: 1Gi
+        cpu: 500m
+        
+    config:
+      global:
+        smtp_smarthost: "smtp.gmail.com:587"
+        smtp_from: "alertmanager@dogan-ai.com"
+      route:
+        group_by: ['alertname']
+        group_wait: 10s
+        group_interval: 10s
+        repeat_interval: 1h
+        receiver: 'web.hook'
+      receivers:
+        - name: 'web.hook'
+          webhook_configs:
+            - url: 'http://127.0.0.1:5001/'
+
+# ========================================
+# LOGGING CONFIGURATION
+# ========================================
+logging:
+  enabled: true
+  
+  elasticsearch:
+    enabled: true
+    image:
+      repository: docker.elastic.co/elasticsearch/elasticsearch
+      tag: "8.11.0"
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+        
+    storage:
+      size: 500Gi
+      class: doganai-fast-ssd
+      
+    config:
+      discoveryType: single-node
+      xpackSecurityEnabled: false
+      esJavaOpts: "-Xms2g -Xmx2g"
+      clusterName: doganai-compliance
+      
+  logstash:
+    enabled: true
+    image:
+      repository: docker.elastic.co/logstash/logstash
+      tag: "8.11.0"
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+        
+    config:
+      lsJavaOpts: "-Xms1g -Xmx1g"
+      pipeline:
+        workers: 2
+        batchSize: 125
+        batchDelay: 50
+        
+  kibana:
+    enabled: true
+    image:
+      repository: docker.elastic.co/kibana/kibana
+      tag: "8.11.0"
+      pullPolicy: IfNotPresent
+      
+    replicas: 1
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+        
+    config:
+      elasticsearchHosts: "http://elasticsearch:9200"
+      server:
+        port: 5601
+        host: "0.0.0.0"
+
+# ========================================
+# DATABASE ADMIN CONFIGURATION
+# ========================================
+dbAdmin:
+  enabled: true
+  
+  image:
+    repository: dpage/pgadmin4
+    tag: latest
+    pullPolicy: IfNotPresent
+    
+  replicas: 1
+  resources:
+    requests:
+      memory: 512M
+      cpu: 250m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+      
+  config:
+    email: admin@dogan-ai.com
+    password: Admin@123
+    serverMode: false
+    
+  ingress:
+    enabled: true
+    className: nginx
+    hosts:
+      - host: admin.dogan-ai.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: admin-tls-secret
+        hosts:
+          - admin.dogan-ai.com
+
+# ========================================
+# SECURITY CONFIGURATION
+# ========================================
+security:
+  enabled: true
+  
+  # Network policies
+  networkPolicies:
+    enabled: true
+    
+  # Pod security policies
+  podSecurityPolicies:
+    enabled: false
+    
+  # RBAC
+  rbac:
+    enabled: true
+    
+  # Secrets management
+  secrets:
+    enabled: true
+    externalSecrets:
+      enabled: false
+      
+  # Certificates
+  certificates:
+    enabled: true
+    certManager:
+      enabled: true
+      clusterIssuer: letsencrypt-prod
+      
+  # Encryption
+  encryption:
+    enabled: true
+    atRest:
+      enabled: true
+    inTransit:
+      enabled: true
+
+# ========================================
+# BACKUP & RECOVERY CONFIGURATION
+# ========================================
+backup:
+  enabled: true
+  
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  
+  database:
+    enabled: true
+    retention: 30d
+    compression: true
+    
+  logs:
+    enabled: true
+    retention: 90d
+    compression: true
+    
+  storage:
+    enabled: true
+    retention: 365d
+    compression: true
+    
+  destinations:
+    - name: local
+      type: local
+      path: /backups
+    - name: s3
+      type: s3
+      bucket: doganai-backups
+      region: us-east-1
+      credentials:
+        accessKeyId: ""
+        secretAccessKey: ""
+
+# ========================================
+# SCALING CONFIGURATION
+# ========================================
+scaling:
+  enabled: true
+  
+  horizontalPodAutoscaler:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+    
+  verticalPodAutoscaler:
+    enabled: false
+    
+  clusterAutoscaler:
+    enabled: false
+    
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# ========================================
+# RESOURCE QUOTAS
+# ========================================
+quotas:
+  enabled: true
+  
+  compute:
+    requests:
+      cpu: "8"
+      memory: "16Gi"
+    limits:
+      cpu: "16"
+      memory: "32Gi"
+      
+  storage:
+    requests:
+      storage: "1Ti"
+    limits:
+      storage: "2Ti"
+      
+  objects:
+    pods: "100"
+    services: "50"
+    persistentvolumeclaims: "20"
+    configmaps: "100"
+    secrets: "50"

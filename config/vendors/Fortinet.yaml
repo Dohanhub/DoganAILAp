@@ -1,0 +1,48 @@
+vendor: "Fortinet"
+solution: "FortiGate Security Fabric"
+description: "Integrated cybersecurity platform from Fortinet"
+website: "https://www.fortinet.com"
+contact: "sales@fortinet.com"
+
+capabilities:
+  - control_id: "NCA-001"
+    implementation: "FULL"
+    evidence: "FortiAuthenticator provides MFA and RBAC with Active Directory integration"
+    scope: "Network Access Control and Authentication"
+    notes: "Supports LDAP, RADIUS, and SAML integration"
+    certification: "Common Criteria, FIPS 140-2"
+    
+  - control_id: "NCA-002"
+    implementation: "FULL"
+    evidence: "FortiGate SSL VPN and IPSec with AES-256 encryption"
+    scope: "Network Traffic Encryption"
+    notes: "End-to-end encryption for all network communications"
+    certification: "FIPS 140-2, Common Criteria"
+    
+  - control_id: "NCA-003"
+    implementation: "FULL"
+    evidence: "FortiSIEM provides automated incident response and workflow management"
+    scope: "Security Incident and Event Management"
+    notes: "Automated playbooks and integration with security fabric"
+    certification: "ISO 27001"
+    
+  - control_id: "NCA-004"
+    implementation: "FULL"
+    evidence: "FortiGate IPS and vulnerability scanning with automatic signature updates"
+    scope: "Network Vulnerability Management"
+    notes: "Real-time vulnerability detection and prevention"
+    certification: "NSS Labs, ICSA"
+    
+  - control_id: "NCA-005"
+    implementation: "FULL"
+    evidence: "FortiAnalyzer provides comprehensive logging and real-time monitoring"
+    scope: "Security Analytics and Monitoring"
+    notes: "Centralized logging with AI-powered threat analytics"
+    certification: "Common Criteria, SOC 2"
+
+metadata:
+  last_updated: "2024-01-15"
+  contact_person: "Fortinet Middle East Team"
+  region_coverage: "Global with strong Middle East presence"
+  local_support: true
+  partner_network: "Extensive channel partner network in Saudi Arabia"

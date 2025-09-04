@@ -1,0 +1,40 @@
+{{- if .Values.app.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "doganai.fullname" . }}-ingress
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.app.ingress.className | default "nginx" | quote }}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ .Values.app.ingress.proxyBodySize | default "20m" | quote }}
+    nginx.ingress.kubernetes.io/limit-connections: {{ .Values.app.ingress.limitConnections | default 50 | quote }}
+    nginx.ingress.kubernetes.io/limit-rpm: {{ .Values.app.ingress.limitRpm | default 300 | quote }}
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: {{ .Values.app.ingress.limitBurstMultiplier | default 2 | quote }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      add_header Content-Security-Policy "default-src 'self'" always;
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+spec:
+  tls:
+  {{- range .Values.app.ingress.tls }}
+    - hosts: {{ toYaml .hosts | nindent 8 }}
+      secretName: {{ .secretName }}
+  {{- end }}
+  rules:
+  {{- range .Values.app.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType | default "Prefix" }}
+            backend:
+              service:
+                name: {{ include "doganai.fullname" $ }}-app
+                port:
+                  number: 8001
+        {{- end }}
+  {{- end }}
+{{- end }}

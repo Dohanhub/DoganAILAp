@@ -1,0 +1,96 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: doganai-db
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-doganai}
+      - POSTGRES_USER=${POSTGRES_USER:-doganai}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U ${POSTGRES_USER:-doganai} -d ${POSTGRES_DB:-doganai}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: doganai-redis
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: doganai-api
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-doganai}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-doganai}
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+      - ALLOWED_ORIGINS=http://localhost:3001
+      - OTEL_ENABLED=true
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      migrate:
+        condition: service_started
+    volumes:
+      - ./app/uploads:/app/app/uploads
+      - ./app/scraped:/app/app/scraped
+    ports:
+      - "8010:8000"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-doganai}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-doganai}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["alembic","upgrade","head"]
+
+  web:
+    image: node:20-alpine
+    container_name: doganai-web
+    working_dir: /workspace
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:8010
+    volumes:
+      - ./:/workspace
+    command: sh -lc "corepack enable && corepack prepare pnpm@9 --activate && pnpm -w install && pnpm -w run tokens:build && pnpm --filter @apps/web dev -p 3001 --host 0.0.0.0"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.95.0
+    container_name: otel-collector
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "4318:4318"
+      - "4317:4317"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+
+volumes:
+  db_data:

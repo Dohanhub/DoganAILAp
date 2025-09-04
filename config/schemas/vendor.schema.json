@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["vendor", "solution", "capabilities"],
+  "properties": {
+    "vendor": {"type": "string"},
+    "solution": {"type": "string"},
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["control_id", "evidence"],
+        "properties": {
+          "control_id": {"type": "string"},
+          "evidence": {"type": "string"}
+        }
+      }
+    }
+  }
+}

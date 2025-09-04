@@ -1,0 +1,35 @@
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-redis
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-redis
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-redis
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  selector:
+    app: {{ include "doganai.fullname" . }}-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+{{- end }}
+

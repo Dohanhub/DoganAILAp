@@ -1,0 +1,11 @@
+{{- if .Values.podSecurity.manageNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Release.Namespace }}
+  labels:
+    pod-security.kubernetes.io/enforce: {{ .Values.podSecurity.level | default "restricted" | quote }}
+    pod-security.kubernetes.io/enforce-version: {{ .Values.podSecurity.version | default "latest" | quote }}
+    pod-security.kubernetes.io/audit: {{ .Values.podSecurity.audit | default "baseline" | quote }}
+    pod-security.kubernetes.io/warn: {{ .Values.podSecurity.warn | default "baseline" | quote }}
+{{- end }}

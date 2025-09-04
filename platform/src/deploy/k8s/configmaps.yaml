@@ -1,0 +1,412 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: doganai-compliance
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  API_VERSION: "v1"
+  CORS_ORIGINS: "https://compliance.dogan-ai.com,https://admin.dogan-ai.com"
+  # SESSION_SECRET moved to Kubernetes Secret (see secrets.yaml)
+  JWT_EXPIRY: "24h"
+  RATE_LIMIT_WINDOW: "15m"
+  RATE_LIMIT_MAX_REQUESTS: "1000"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: doganai-compliance
+data:
+  POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+  POSTGRES_MAX_CONNECTIONS: "200"
+  POSTGRES_SHARED_BUFFERS: "256MB"
+  POSTGRES_EFFECTIVE_CACHE_SIZE: "1GB"
+  POSTGRES_WORK_MEM: "4MB"
+  POSTGRES_MAINTENANCE_WORK_MEM: "64MB"
+  POSTGRES_WAL_BUFFERS: "16MB"
+  POSTGRES_CHECKPOINT_SEGMENTS: "32"
+  POSTGRES_CHECKPOINT_COMPLETION_TARGET: "0.9"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: doganai-compliance
+data:
+  REDIS_MAXMEMORY: "2gb"
+  REDIS_MAXMEMORY_POLICY: "allkeys-lru"
+  REDIS_SAVE: "900 1 300 10 60 10000"
+  REDIS_TIMEOUT: "300"
+  REDIS_TCP_KEEPALIVE: "300"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weaviate-config
+  namespace: doganai-compliance
+data:
+  QUERY_DEFAULTS_LIMIT: "25"
+  AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "false"
+  PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+  DEFAULT_VECTORIZER_MODULE: "none"
+  ENABLE_MODULES: "text2vec-openai,text2vec-cohere,text2vec-huggingface,ref2vec-centroid,generative-openai,qna-openai"
+  CLUSTER_HOSTNAME: "node1"
+  VECTOR_DISTANCE_METRIC: "cosine"
+  ENABLE_CUDA: "false"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  namespace: doganai-logging
+data:
+  discovery.type: "single-node"
+  xpack.security.enabled: "true"
+  ES_JAVA_OPTS: "-Xms2g -Xmx2g"
+  cluster.name: "doganai-compliance"
+  network.host: "0.0.0.0"
+  http.port: "9200"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: doganai-compliance
+data:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+    
+    http {
+        upstream app_servers {
+            least_conn;
+            server app-server-1:8001 max_fails=3 fail_timeout=30s;
+            server app-server-2:8001 max_fails=3 fail_timeout=30s;
+            server app-server-3:8001 max_fails=3 fail_timeout=30s;
+        }
+        
+        limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+        limit_req_zone $binary_remote_addr zone=login:10m rate=1r/s;
+        
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "no-referrer-when-downgrade" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';" always;
+        
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_proxied expired no-cache no-store private must-revalidate auth;
+        gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss;
+        
+        server {
+            listen 80;
+            server_name localhost;
+            
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+            
+            location /api/ {
+                limit_req zone=api burst=20 nodelay;
+                proxy_pass http://app_servers;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_connect_timeout 30s;
+                proxy_send_timeout 30s;
+                proxy_read_timeout 30s;
+            }
+            
+            location / {
+                proxy_pass http://app_servers;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_connect_timeout 30s;
+                proxy_send_timeout 30s;
+                proxy_read_timeout 30s;
+                
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+            }
+            
+            location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+                expires 1y;
+                add_header Cache-Control "public, immutable";
+                proxy_pass http://app_servers;
+            }
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+  namespace: doganai-compliance
+data:
+  haproxy.cfg: |
+    global
+        daemon
+        maxconn 4096
+        log stdout format raw local0 info
+        user haproxy
+        group haproxy
+    
+    defaults
+        mode http
+        log global
+        option httplog
+        option dontlognull
+        option forwardfor
+        option http-server-close
+        timeout connect 5000
+        timeout client 50000
+        timeout server 50000
+        timeout http-request 10s
+        timeout http-keep-alive 10s
+        timeout check 10s
+    
+    listen stats
+        bind *:8404
+        mode http
+        stats enable
+        stats uri /stats
+        stats refresh 10s
+        stats auth admin:Admin@123
+    
+    frontend app_frontend
+        bind *:8080
+        mode http
+        default_backend app_backend
+        
+        stick-table type ip size 100k expire 30s store http_req_rate(10s)
+        http-request track-sc0 src
+        http-request deny deny_status 429 if { sc_http_req_rate(0) gt 100 }
+        
+        http-response set-header X-Frame-Options SAMEORIGIN
+        http-response set-header X-XSS-Protection "1; mode=block"
+        http-response set-header X-Content-Type-Options nosniff
+        http-response set-header Referrer-Policy "no-referrer-when-downgrade"
+    
+    backend app_backend
+        mode http
+        balance roundrobin
+        option httpchk GET /health
+        http-check expect status 200
+        default-server inter 3s fall 3 rise 2
+        
+        server app1 app-server-1:8001 check weight 100 maxconn 1000
+        server app2 app-server-2:8001 check weight 100 maxconn 1000
+        server app3 app-server-3:8001 check weight 100 maxconn 1000
+        
+        option httpchk GET /health
+        http-check expect status 200
+        http-check expect string "healthy"
+        
+        option http-server-close
+        option forwardfor
+        option http-pretend-keepalive
+        
+        timeout connect 5s
+        timeout server 30s
+        timeout check 10s
+    
+    frontend api_frontend
+        bind *:8081
+        mode http
+        default_backend api_backend
+        
+        stick-table type ip size 100k expire 30s store http_req_rate(10s)
+        http-request track-sc0 src
+        http-request deny deny_status 429 if { sc_http_req_rate(0) gt 50 }
+    
+    backend api_backend
+        mode http
+        balance leastconn
+        option httpchk GET /api/health
+        http-check expect status 200
+        
+        server app1 app-server-1:8001 check weight 100 maxconn 500
+        server app2 app-server-2:8001 check weight 100 maxconn 500
+        server app3 app-server-3:8001 check weight 100 maxconn 500
+    
+    frontend db_frontend
+        bind *:5434
+        mode tcp
+        default_backend db_backend
+    
+    backend db_backend
+        mode tcp
+        balance roundrobin
+        option tcp-check
+        
+        server db-primary db-primary:5432 check weight 200 maxconn 100
+        server db-replica db-replica:5432 check weight 100 maxconn 100 backup
+    
+    frontend redis_frontend
+        bind *:6380
+        mode tcp
+        default_backend redis_backend
+    
+    backend redis_backend
+        mode tcp
+        balance roundrobin
+        option tcp-check
+        
+        server redis redis:6379 check weight 100 maxconn 1000
+    
+    frontend monitoring_frontend
+        bind *:8082
+        mode http
+        default_backend monitoring_backend
+    
+    backend monitoring_backend
+        mode http
+        balance roundrobin
+        
+        server prometheus prometheus:9090 check
+        server grafana grafana:3000 check
+        server kibana kibana:5601 check
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: doganai-monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    rule_files:
+      - "rules/*.yml"
+    
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+              - alertmanager:9093
+    
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+      
+      - job_name: 'app-servers'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/metrics'
+        scrape_interval: 10s
+      
+      - job_name: 'postgres-primary'
+        static_configs:
+          - targets: ['db-primary:5432']
+        metrics_path: '/metrics'
+        scrape_interval: 30s
+      
+      - job_name: 'postgres-replica'
+        static_configs:
+          - targets: ['db-replica:5432']
+        metrics_path: '/metrics'
+        scrape_interval: 30s
+      
+      - job_name: 'redis'
+        static_configs:
+          - targets: ['redis:6379']
+        metrics_path: '/metrics'
+        scrape_interval: 15s
+      
+      - job_name: 'weaviate'
+        static_configs:
+          - targets: ['weaviate:8080']
+        metrics_path: '/v1/metrics'
+        scrape_interval: 30s
+      
+      - job_name: 'elasticsearch'
+        static_configs:
+          - targets: ['elasticsearch:9200']
+        metrics_path: '/_prometheus/metrics'
+        scrape_interval: 30s
+      
+      - job_name: 'logstash'
+        static_configs:
+          - targets: ['logstash:9600']
+        metrics_path: '/metrics'
+        scrape_interval: 30s
+      
+      - job_name: 'kibana'
+        static_configs:
+          - targets: ['kibana:5601']
+        metrics_path: '/api/status'
+        scrape_interval: 30s
+      
+      - job_name: 'haproxy'
+        static_configs:
+          - targets: ['haproxy:8404']
+        metrics_path: '/metrics'
+        scrape_interval: 15s
+      
+      - job_name: 'nginx'
+        static_configs:
+          - targets: ['nginx-proxy:80']
+        metrics_path: '/nginx_status'
+        scrape_interval: 15s
+      
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets: ['app-server-1:9100', 'app-server-2:9100', 'app-server-3:9100']
+        scrape_interval: 15s
+      
+      - job_name: 'compliance-metrics'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/api/metrics/compliance'
+        scrape_interval: 60s
+      
+      - job_name: 'ai-engine'
+        static_configs:
+          - targets: ['ai-engine-1:8000', 'ai-engine-2:8000']
+        metrics_path: '/metrics'
+        scrape_interval: 30s
+      
+      - job_name: 'db-connections'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/api/metrics/db-connections'
+        scrape_interval: 30s
+      
+      - job_name: 'cache-metrics'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/api/metrics/cache'
+        scrape_interval: 30s
+      
+      - job_name: 'api-performance'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/api/metrics/performance'
+        scrape_interval: 15s
+      
+      - job_name: 'security-metrics'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/api/metrics/security'
+        scrape_interval: 60s
+      
+      - job_name: 'business-metrics'
+        static_configs:
+          - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+        metrics_path: '/api/metrics/business'
+        scrape_interval: 300s

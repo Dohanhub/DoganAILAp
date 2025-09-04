@@ -1,0 +1,96 @@
+regulator: "SDAIA"
+version: "2.1"
+title: "Saudi Data & AI Authority Regulations 2024"
+authority: "SDAIA-DAI-2024"
+arabic_name: "الهيئة السعودية للبيانات والذكاء الاصطناعي"
+jurisdiction: "Data Governance & Artificial Intelligence"
+description: "Saudi Data & AI Authority regulations for data governance, AI ethics, and digital transformation compliance"
+effective_date: "2024-01-15"
+compliance_deadline: "2024-08-31"
+
+api_config:
+  base_url: "https://api.sdaia.gov.sa"
+  auth_type: "api_key"
+  header: "X-SDAIA-API-Key"
+  rate_limit: "1000/hour"
+
+controls:
+  - id: "SDAIA-001"
+    title: "AI Ethics & Responsible AI"
+    arabic_title: "أخلاقيات الذكاء الاصطناعي والذكاء الاصطناعي المسؤول"
+    category: "AI Ethics"
+    risk_level: "critical"
+    requirements:
+      - "Implement AI bias detection and mitigation"
+      - "Ensure AI explainability and transparency"
+      - "Conduct regular AI fairness assessments"
+      - "Maintain human oversight mechanisms"
+    compliance_check: "ai_ethics_validation"
+    
+  - id: "SDAIA-002"
+    title: "Data Governance Framework"
+    arabic_title: "إطار حوكمة البيانات"
+    category: "Data Governance"
+    risk_level: "critical"
+    requirements:
+      - "Establish data governance committee"
+      - "Implement data quality management"
+      - "Maintain data lineage documentation"
+      - "Conduct regular data audits"
+    compliance_check: "data_governance_assessment"
+    
+  - id: "SDAIA-003"
+    title: "AI System Registration & Approval"
+    arabic_title: "تسجيل وموافقة أنظمة الذكاء الاصطناعي"
+    category: "AI Registration"
+    risk_level: "critical"
+    requirements:
+      - "Register all AI systems with SDAIA"
+      - "Obtain approval for critical AI applications"
+      - "Provide AI system documentation"
+      - "Implement AI performance monitoring"
+    compliance_check: "ai_system_registration"
+    
+  - id: "SDAIA-004"
+    title: "Data Sharing & Interoperability"
+    arabic_title: "مشاركة البيانات والقابلية للتشغيل البيني"
+    category: "Data Sharing"
+    risk_level: "high"
+    requirements:
+      - "Follow national data sharing standards"
+      - "Implement secure data exchange protocols"
+      - "Maintain data sharing agreements"
+      - "Ensure cross-platform interoperability"
+    compliance_check: "data_sharing_compliance"
+    
+  - id: "SDAIA-005"
+    title: "Digital Transformation Alignment"
+    arabic_title: "توافق التحول الرقمي"
+    category: "Digital Transformation"
+    risk_level: "medium"
+    requirements:
+      - "Align with Vision 2030 digital goals"
+      - "Implement national digital standards"
+      - "Participate in digital ecosystem initiatives"
+      - "Report digital transformation metrics"
+    compliance_check: "digital_transformation_alignment"
+
+reporting:
+  frequency: "monthly"
+  submission_deadline: "15 days after month end"
+  required_reports:
+    - "AI System Performance Report"
+    - "Data Governance Compliance Report"
+    - "Digital Transformation Progress Report"
+    - "AI Ethics Assessment Report"
+
+penalties:
+  minor_violation: "Compliance guidance and timeline"
+  major_violation: "Fine up to 2,000,000 SAR"
+  critical_violation: "AI system suspension and mandatory remediation"
+
+integration:
+  priority: "critical"
+  sync_frequency: "daily"
+  monitoring_required: true
+  audit_trail: true

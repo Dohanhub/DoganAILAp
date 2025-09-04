@@ -1,0 +1,194 @@
+# ========================================
+# SERVICE ACCOUNTS
+# ========================================
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-server-sa
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: db-sa
+  namespace: doganai-compliance
+  labels:
+    app: postgres
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: monitoring-sa
+  namespace: doganai-monitoring
+  labels:
+    app: monitoring
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: logging-sa
+  namespace: doganai-logging
+  labels:
+    app: logging
+---
+# ========================================
+# ROLES
+# ========================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: app-server-role
+  namespace: doganai-compliance
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: db-role
+  namespace: doganai-compliance
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: monitoring-role
+  namespace: doganai-monitoring
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: logging-role
+  namespace: doganai-logging
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+---
+# ========================================
+# ROLE BINDINGS
+# ========================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: app-server-rolebinding
+  namespace: doganai-compliance
+subjects:
+  - kind: ServiceAccount
+    name: app-server-sa
+    namespace: doganai-compliance
+roleRef:
+  kind: Role
+  name: app-server-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: db-rolebinding
+  namespace: doganai-compliance
+subjects:
+  - kind: ServiceAccount
+    name: db-sa
+    namespace: doganai-compliance
+roleRef:
+  kind: Role
+  name: db-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: monitoring-rolebinding
+  namespace: doganai-monitoring
+subjects:
+  - kind: ServiceAccount
+    name: monitoring-sa
+    namespace: doganai-monitoring
+roleRef:
+  kind: Role
+  name: monitoring-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: logging-rolebinding
+  namespace: doganai-logging
+subjects:
+  - kind: ServiceAccount
+    name: logging-sa
+    namespace: doganai-logging
+roleRef:
+  kind: Role
+  name: logging-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# ========================================
+# CLUSTER ROLES (for cross-namespace access)
+# ========================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: doganai-compliance-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: doganai-compliance-reader-binding
+subjects:
+  - kind: ServiceAccount
+    name: monitoring-sa
+    namespace: doganai-monitoring
+  - kind: ServiceAccount
+    name: logging-sa
+    namespace: doganai-logging
+roleRef:
+  kind: ClusterRole
+  name: doganai-compliance-reader
+  apiGroup: rbac.authorization.k8s.io

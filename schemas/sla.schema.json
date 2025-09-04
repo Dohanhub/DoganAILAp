@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": ["sector", "channel", "targets"],
+  "properties": {
+    "sector": {"type": "string"},
+    "channel": {"type": "string"},
+    "targets": {
+      "type": "object",
+      "properties": {
+        "response_minutes": {"type": "integer"},
+        "resolve_hours": {"type": "integer"}
+      }
+    },
+    "escalation": {"type": "array", "items": {"type": "integer"}}
+  }
+}

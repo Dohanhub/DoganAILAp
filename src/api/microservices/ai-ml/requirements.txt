@@ -1,0 +1,14 @@
+fastapi
+pydantic
+uvicorn
+pyyaml
+structlog
+prometheus-client
+numpy
+pandas
+scikit-learn
+redis
+pyjwt
+cryptography
+psutil
+# Add local LLM libraries (e.g., transformers, llama-cpp-python) as needed

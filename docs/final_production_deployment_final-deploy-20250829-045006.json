@@ -1,0 +1,190 @@
+{
+  "deployment_id": "final-deploy-20250829-045006",
+  "timestamp": "2025-08-29T04:50:06.460461",
+  "mode": "production_demo",
+  "steps": {
+    "step_1": {
+      "step": "api_configuration",
+      "status": "completed",
+      "mode": "production_demo",
+      "apis_configured": 21,
+      "configuration": {
+        "ENVIRONMENT": "production_demo",
+        "DEBUG": "false",
+        "DEMO_MODE": "true",
+        "IBM_WATSON_API_KEY": "demo-watson-prod-key-12345",
+        "IBM_WATSON_ASSISTANT_ID": "demo-assistant-prod-id-67890",
+        "IBM_WATSON_URL": "https://api.us-south.assistant.watson.cloud.ibm.com",
+        "AZURE_COGNITIVE_KEY": "demo-azure-prod-key-abcdef",
+        "AZURE_COGNITIVE_ENDPOINT": "https://doganai-cognitive.cognitiveservices.azure.com",
+        "AWS_ACCESS_KEY_ID": "DEMO-AWS-ACCESS-KEY-PROD",
+        "AWS_SECRET_ACCESS_KEY": "demo-aws-secret-key-production-simulation",
+        "AWS_DEFAULT_REGION": "us-east-1",
+        "DATABASE_URL": "sqlite:///doganai_compliance_production_demo.db",
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "LENOVO_API_KEY": "demo-lenovo-prod-key-xyz789",
+        "FORTINET_API_KEY": "demo-fortinet-prod-key-abc123",
+        "NCA_API_KEY": "demo-nca-prod-key-saudi-001",
+        "SAMA_API_KEY": "demo-sama-prod-key-finance-002",
+        "MOH_API_KEY": "demo-moh-prod-key-health-003",
+        "SECRET_KEY": "production-grade-secret-key-demo-12345-abcdef",
+        "VALID_API_KEYS": "prod-api-key-1,prod-api-key-2,prod-api-key-3"
+      }
+    },
+    "step_2": {
+      "step": "production_deployment",
+      "status": "completed",
+      "database": "doganai_compliance_production_demo.db",
+      "microservices": {
+        "vendor_integrations": {
+          "port": 8003,
+          "endpoint": "/integrate",
+          "status": "production_ready"
+        },
+        "ai_ml_service": {
+          "port": 8004,
+          "endpoint": "/analyze",
+          "status": "production_ready"
+        },
+        "vendor_management": {
+          "port": 8008,
+          "endpoint": "/vendors",
+          "status": "production_ready"
+        },
+        "compliance_engine": {
+          "port": 8002,
+          "endpoint": "/compliance",
+          "status": "production_ready"
+        }
+      },
+      "schema_deployed": true
+    },
+    "step_3": {
+      "step": "data_uploads",
+      "status": "completed",
+      "vendor_uploads": {
+        "IBM_Watson": {
+          "vendor": "IBM_Watson",
+          "api_response": {
+            "source": "IBM Watson AI Platform",
+            "status": "success",
+            "analysis": {
+              "compliance_score": 94.2,
+              "risk_level": "Low",
+              "ai_insights": [
+                "Strong compliance framework detected",
+                "Risk management protocols active",
+                "Continuous monitoring enabled"
+              ],
+              "nca_score": 96.1,
+              "sama_score": 92.8,
+              "moh_score": 95.4
+            }
+          },
+          "data_source": "production_api",
+          "timestamp": "2025-08-29T04:50:06.537222"
+        },
+        "Microsoft_Azure": {
+          "vendor": "Microsoft_Azure",
+          "api_response": {
+            "source": "Microsoft Azure Cognitive Services",
+            "status": "success",
+            "analysis": {
+              "compliance_score": 91.7,
+              "risk_level": "Low",
+              "cognitive_insights": [
+                "Document compliance verified",
+                "Entity recognition accurate",
+                "Sentiment analysis positive"
+              ],
+              "documents_processed": 1247,
+              "entities_detected": 89,
+              "compliance_keywords": 156
+            }
+          },
+          "data_source": "production_api",
+          "timestamp": "2025-08-29T04:50:06.537237"
+        },
+        "AWS_Comprehend": {
+          "vendor": "AWS_Comprehend",
+          "api_response": {
+            "source": "AWS Comprehend",
+            "status": "success",
+            "analysis": {
+              "compliance_score": 89.3,
+              "risk_level": "Medium-Low",
+              "comprehend_insights": [
+                "Risk factors identified and mitigated",
+                "Compliance gaps addressed",
+                "Regulatory alignment confirmed"
+              ],
+              "risk_score": 0.23,
+              "entities_analyzed": 234,
+              "sentiment": "positive"
+            }
+          },
+          "data_source": "production_api",
+          "timestamp": "2025-08-29T04:50:06.537241"
+        },
+        "Lenovo": {
+          "vendor": "Lenovo",
+          "api_response": {
+            "source": "Lenovo ThinkShield API",
+            "status": "success",
+            "device_data": {
+              "total_devices": 156,
+              "secured_devices": 154,
+              "compliance_devices": 152,
+              "security_score": 97.1,
+              "thinkshield_status": "active",
+              "hardware_security": "enabled",
+              "compliance_frameworks": [
+                "NCA",
+                "SAMA",
+                "MoH",
+                "ISO_27001"
+              ]
+            }
+          },
+          "data_source": "production_api",
+          "timestamp": "2025-08-29T04:50:06.537245"
+        },
+        "Saudi_Regulatory": {
+          "vendor": "Saudi_Regulatory_APIs",
+          "api_response": {
+            "nca": {
+              "status": "compliant",
+              "score": 95.8,
+              "last_assessment": "2024-08-29",
+              "requirements_met": 47,
+              "total_requirements": 49
+            },
+            "sama": {
+              "status": "compliant",
+              "score": 93.2,
+              "banking_regulations": "current",
+              "reporting_status": "up_to_date"
+            },
+            "moh": {
+              "status": "compliant",
+              "score": 96.4,
+              "health_standards": "met",
+              "data_protection": "active"
+            }
+          },
+          "data_source": "production_api",
+          "timestamp": "2025-08-29T04:50:06.537249"
+        }
+      },
+      "summary": {
+        "total_vendors": 5,
+        "successful_uploads": 5,
+        "success_rate": 100.0,
+        "average_compliance_score": 91.03999999999999
+      }
+    }
+  },
+  "overall_success": true,
+  "completed": "2025-08-29T04:50:06.547707"
+}

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: doganai
+description: DoganAI Compliance Kit - API, Web, and optional dependencies
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+

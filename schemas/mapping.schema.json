@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["mapping", "policy_ref", "vendors"],
+  "properties": {
+    "mapping": {"type": "string"},
+    "policy_ref": {"type": "string"},
+    "vendors": {"type": "array", "items": {"type": "string"}}
+  }
+}

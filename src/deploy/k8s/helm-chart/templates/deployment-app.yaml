@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-app
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas | default 3 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: app
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: app
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "doganai.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "doganai.fullname" . }}-sa
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: 8001
+              name: http
+            - containerPort: 9100
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.global.environment | quote }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.database.secretName | default "db-secret" | quote }}
+                  key: {{ .Values.secrets.database.secretKey | default "postgres-url" | quote }}
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: redis-url
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.app.secretName | default "app-secret" | quote }}
+                  key: {{ .Values.secrets.app.secretKey | default "secret-key" | quote }}
+            - name: VECTOR_DB_URL
+              value: {{ .Values.app.vectorDbUrl | default "http://weaviate:8080" | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5

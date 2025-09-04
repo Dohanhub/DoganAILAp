@@ -1,0 +1,134 @@
+version: "3.9"
+
+name: doganai
+
+services:
+  db:
+    image: postgres:15-alpine
+    profiles: [db, core]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-doganai}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    profiles: [core]
+    environment:
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+      ENGINE_PORT: ${ENGINE_PORT:-8000}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - compliance-engine
+
+  compliance-engine:
+    build:
+      context: ./microservices/compliance-engine
+      dockerfile: Dockerfile
+    profiles: [core]
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/doganai
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+  ai-agent:
+    build:
+      context: ./microservices/ai-agent
+      dockerfile: Dockerfile
+    profiles: [extras]
+    environment:
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+    ports:
+      - "8005:8005"
+
+  ai-ml:
+    build:
+      context: ./microservices/ai-ml
+      dockerfile: Dockerfile
+    profiles: [extras]
+    environment:
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+    ports:
+      - "8006:8006"
+
+  auth:
+    build:
+      context: ./microservices/auth
+    profiles: [extras]
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/doganai
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+    depends_on:
+      - db
+    ports:
+      - "8002:8002"
+
+  customer-mapping:
+    build:
+      context: ./microservices/customer-mapping
+      dockerfile: Dockerfile
+    profiles: [extras]
+    environment:
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+      SERVICE_AUDIENCE: customer-mapping
+    ports:
+      - "8009:8009"
+
+  regulatory-management:
+    build:
+      context: ./microservices/regulatory-management
+      dockerfile: Dockerfile
+    profiles: [extras]
+    environment:
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+      SERVICE_AUDIENCE: regulatory-management
+    ports:
+      - "8007:8007"
+
+  ministry:
+    build:
+      context: ./microservices/ministry
+      dockerfile: Dockerfile
+    profiles: [extras]
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/doganai
+      INTERNAL_JWT_SECRET: ${INTERNAL_JWT_SECRET:-change-me}
+      SERVICE_AUDIENCE: ministry
+    depends_on:
+      - db
+    ports:
+      - "8008:8008"
+
+  vendor-management:
+    build:
+      context: ./microservices/vendor-management
+      dockerfile: Dockerfile
+    profiles: [extras]
+    ports:
+      - "8010:8010"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    profiles: [frontend]
+    ports:
+      - "3001:80"
+
+volumes:
+  pgdata:

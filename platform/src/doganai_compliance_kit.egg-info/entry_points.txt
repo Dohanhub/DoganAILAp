@@ -1,0 +1,8 @@
+[console_scripts]
+dai-cli = core.cli:main
+dai-health = api.health:main
+dai-observability = services.observability:main
+dai-run = run:main
+dai-scrape = ingest.regulatory_web_scraper:main
+dai-seed = migrate.comprehensive_data_seeder:main
+dai-server = main:main

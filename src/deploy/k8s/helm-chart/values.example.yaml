@@ -1,0 +1,67 @@
+global:
+  environment: production
+
+app:
+  replicas: 3
+  image:
+    repository: doganai/compliance-ui
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  ingress:
+    enabled: true
+    className: nginx
+    hosts:
+      - host: compliance.dogan-ai.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: ssl-certificates
+        hosts: [compliance.dogan-ai.com]
+
+# Required secrets for application environment
+secrets:
+  database:
+    secretName: db-secret        # contains key 'postgres-url'
+    secretKey: postgres-url
+  app:
+    secretName: app-secret       # contains key 'secret-key'
+    secretKey: secret-key
+
+database:
+  postgres:
+    image:
+      repository: postgres
+      tag: 15-alpine
+  primary:
+    storage:
+      size: 50Gi
+  replica:
+    storage:
+      size: 50Gi
+  seed:
+    enabled: false
+    sql: |
+      -- Example seed (optional)
+      -- CREATE TABLE IF NOT EXISTS demo_table(id serial primary key, note text);
+      -- INSERT INTO demo_table(note) VALUES ('hello');
+
+security:
+  networkPolicies:
+    enabled: true
+    defaultDenyEgress: true
+    ingressControllerNamespace: ingress-nginx
+    dnsNamespace: kube-system
+
+podSecurity:
+  manageNamespace: true
+  level: restricted
+  audit: baseline
+  warn: baseline

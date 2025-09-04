@@ -1,0 +1,6 @@
+sector: "Government"
+channel: "Web"
+targets:
+  response_minutes: 15
+  resolve_hours: 8
+escalation: [60, 180, 360]

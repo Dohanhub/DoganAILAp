@@ -1,0 +1,60 @@
+{
+  "app": {
+    "name": "DoganAI Compliance Kit",
+    "version": "2.0.0",
+    "description": "Saudi Arabia Regulatory Compliance Platform - Portable Edition",
+    "publisher": "DoganAI Lab",
+    "icon": "assets/doganai-icon.ico"
+  },
+  "extractor": {
+    "output_name": "DoganAI-Compliance-Kit-Portable.exe",
+    "compression": "lzma",
+    "temp_dir": "%TEMP%\\DoganAI-Compliance-Kit",
+    "cleanup_on_exit": true,
+    "auto_launch": true
+  },
+  "runtime": {
+    "python": {
+      "version": "3.11.9",
+      "embedded": true,
+      "path": "runtime/python"
+    },
+    "node": {
+      "version": "20.11.0",
+      "embedded": true,
+      "path": "runtime/node"
+    },
+    "database": {
+      "type": "sqlite",
+      "embedded": true,
+      "path": "data/compliance.db"
+    }
+  },
+  "components": {
+    "backend": {
+      "entry_point": "backend/main.py",
+      "port": 8000,
+      "dependencies": "requirements-api.txt"
+    },
+    "frontend": {
+      "build_dir": "frontend/dist",
+      "port": 3000,
+      "static_files": true
+    },
+    "database": {
+      "init_scripts": ["db/init_timescale.sql", "db/seed.sql"],
+      "migrations": "alembic/versions"
+    }
+  },
+  "security": {
+    "generate_secrets": true,
+    "default_admin": {
+      "username": "admin",
+      "password_prompt": true
+    },
+    "ssl": {
+      "self_signed": true,
+      "cert_path": "certs"
+    }
+  }
+}

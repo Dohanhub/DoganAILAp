@@ -1,0 +1,28 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@9 --activate
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml turbo.json tsconfig.base.json ./
+COPY apps/web/package.json apps/web/package.json
+COPY packages/tokens/package.json packages/tokens/package.json
+COPY packages/sdk/package.json packages/sdk/package.json
+RUN pnpm -w install --frozen-lockfile || pnpm -w install
+
+FROM deps AS build
+WORKDIR /app
+COPY . .
+# Build design tokens and Web app without invoking workspace-wide builds
+RUN pnpm --filter @doganai/tokens exec style-dictionary build --config config.js \
+    && pnpm --filter @apps/web run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN corepack enable && corepack prepare pnpm@9 --activate
+COPY --from=build /app/apps/web/.next ./.next
+# No public assets directory in this project; create empty dir
+RUN mkdir -p ./public
+COPY --from=build /app/apps/web/package.json ./package.json
+USER node
+EXPOSE 3001
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD wget -qO- http://localhost:3001/ > /dev/null || exit 1
+CMD ["pnpm","next","start","-p","3001"]

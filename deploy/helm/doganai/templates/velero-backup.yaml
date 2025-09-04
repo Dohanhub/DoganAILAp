@@ -1,0 +1,16 @@
+{{- if .Values.velero.enabled }}
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: {{ .Values.velero.backupName }}
+  namespace: velero
+spec:
+  schedule: {{ .Values.velero.schedule | quote }}
+  template:
+    includedNamespaces:
+{{- range .Values.velero.includedNamespaces }}
+      - {{ . | quote }}
+{{- end }}
+    ttl: {{ .Values.velero.ttl | default "168h" }}
+{{- end }}
+

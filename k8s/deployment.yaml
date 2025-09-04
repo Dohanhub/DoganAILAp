@@ -1,0 +1,41 @@
+# NOTE: LEGACY EXAMPLE MANIFEST
+# This file is not aligned with the current Helm chart and service ports.
+# Prefer deploy/helm/doganai for all environments.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doganai-compliance-kit
+  namespace: doganai-compliance
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: doganai-compliance-kit
+  template:
+    metadata:
+      labels:
+        app: doganai-compliance-kit
+    spec:
+      containers:
+        - name: api
+          image: {{IMAGE}}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef: { name: app-secrets, key: DATABASE_URL }
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef: { name: app-secrets, key: REDIS_URL }
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef: { name: app-secrets, key: JWT_SECRET }
+          readinessProbe:
+            httpGet: { path: /health, port: 3000 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 3000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10

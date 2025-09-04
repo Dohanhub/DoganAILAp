@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile.api
+    image: doganai/ksa-compliance-api:dev
+    working_dir: /app
+    env_file: [../.env, ../.env.example]
+    volumes: [".:/app"]
+    ports: ["8000:8000"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python - <<'PY'\nimport sys,urllib.request\ntry:\n    urllib.request.urlopen('http://localhost:8000/health', timeout=2)\n    sys.exit(0)\nexcept Exception:\n    sys.exit(1)\nPY"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  ui:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ui
+    image: doganai/ksa-compliance-ui:dev
+    working_dir: /app
+    env_file: [../.env, ../.env.example]
+    volumes: [".:/app"]
+    ports: ["8501:8501"]
+    depends_on: [api]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python - <<'PY'\nimport sys,urllib.request\ntry:\n    urllib.request.urlopen('http://localhost:8501', timeout=2)\n    sys.exit(0)\nexcept Exception:\n    sys.exit(1)\nPY"]
+      interval: 15s
+    
+  db:
+    image: postgres:15
+    env_file: [../.env, ../.env.example]
+    volumes:
+      - pg:/var/lib/postgresql/data
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+    restart: unless-stopped
+volumes:
+  pg: {}

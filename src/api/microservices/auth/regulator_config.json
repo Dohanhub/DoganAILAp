@@ -1,0 +1,41 @@
+{
+  "service_name": "auth",
+  "regulator_integrations": {
+    "CMA": {
+      "enabled": true,
+      "priority": "critical",
+      "api_url": "https://api.cma.org.sa",
+      "health_check_enabled": true,
+      "monitoring_enabled": true
+    },
+    "SDAIA": {
+      "enabled": true,
+      "priority": "critical",
+      "api_url": "https://api.sdaia.gov.sa",
+      "health_check_enabled": true,
+      "monitoring_enabled": true
+    },
+    "NDMO": {
+      "enabled": true,
+      "priority": "critical",
+      "api_url": "https://api.ndmo.gov.sa",
+      "health_check_enabled": true,
+      "monitoring_enabled": true
+    },
+    "MHRSD": {
+      "enabled": true,
+      "priority": "high",
+      "api_url": "https://api.hrsd.gov.sa",
+      "health_check_enabled": true,
+      "monitoring_enabled": true
+    },
+    "MOI": {
+      "enabled": true,
+      "priority": "critical",
+      "api_url": "https://api.moi.gov.sa",
+      "health_check_enabled": true,
+      "monitoring_enabled": true
+    }
+  },
+  "last_updated": "2025-08-29T04:36:24.581356"
+}

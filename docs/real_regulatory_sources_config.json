@@ -1,0 +1,218 @@
+{
+  "regulatory_authorities": {
+    "saudi_arabia": {
+      "NCA": {
+        "name": "National Commercial Authority",
+        "full_name": "الهيئة العامة للتجارة",
+        "base_url": "https://api.nca.gov.sa",
+        "endpoints": {
+          "companies": "/api/v1/companies",
+          "compliance": "/api/v1/compliance",
+          "registrations": "/api/v1/registrations",
+          "violations": "/api/v1/violations",
+          "reports": "/api/v1/reports"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-NCA-API-Key"
+        },
+        "priority": "critical",
+        "sync_frequency": "daily"
+      },
+      "SAMA": {
+        "name": "Saudi Arabian Monetary Authority",
+        "full_name": "مؤسسة النقد العربي السعودي",
+        "base_url": "https://api.sama.gov.sa",
+        "endpoints": {
+          "indicators": "/api/v1/indicators",
+          "banking": "/api/v1/banking",
+          "compliance": "/api/v1/compliance",
+          "regulations": "/api/v1/regulations",
+          "sanctions": "/api/v1/sanctions"
+        },
+        "authentication": {
+          "type": "oauth2",
+          "token_endpoint": "https://auth.sama.gov.sa/oauth/token"
+        },
+        "priority": "critical",
+        "sync_frequency": "real_time"
+      },
+      "MOH": {
+        "name": "Ministry of Health",
+        "full_name": "وزارة الصحة",
+        "base_url": "https://api.moh.gov.sa",
+        "endpoints": {
+          "compliance": "/api/v1/compliance",
+          "facilities": "/api/v1/facilities",
+          "standards": "/api/v1/standards",
+          "violations": "/api/v1/violations",
+          "certifications": "/api/v1/certifications"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-MOH-API-Key"
+        },
+        "priority": "high",
+        "sync_frequency": "daily"
+      },
+      "CITC": {
+        "name": "Communications and Information Technology Commission",
+        "full_name": "هيئة الاتصالات وتقنية المعلومات",
+        "base_url": "https://api.citc.gov.sa",
+        "endpoints": {
+          "telecom": "/api/v1/telecom",
+          "compliance": "/api/v1/compliance",
+          "licenses": "/api/v1/licenses",
+          "violations": "/api/v1/violations",
+          "standards": "/api/v1/standards"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-CITC-API-Key"
+        },
+        "priority": "high",
+        "sync_frequency": "weekly"
+      },
+      "CMA": {
+        "name": "Capital Market Authority",
+        "full_name": "هيئة السوق المالية",
+        "base_url": "https://api.cma.org.sa",
+        "endpoints": {
+          "securities": "/api/v1/securities",
+          "compliance": "/api/v1/compliance",
+          "violations": "/api/v1/violations",
+          "regulations": "/api/v1/regulations",
+          "disclosures": "/api/v1/disclosures"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-CMA-API-Key"
+        },
+        "priority": "high",
+        "sync_frequency": "daily"
+      }
+    },
+    "gcc_region": {
+      "UAE_CENTRAL_BANK": {
+        "name": "Central Bank of UAE",
+        "base_url": "https://api.centralbank.ae",
+        "endpoints": {
+          "compliance": "/api/v1/compliance",
+          "regulations": "/api/v1/regulations",
+          "banking": "/api/v1/banking"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-CBUAE-API-Key"
+        },
+        "priority": "medium",
+        "sync_frequency": "weekly"
+      },
+      "QATAR_CENTRAL_BANK": {
+        "name": "Qatar Central Bank",
+        "base_url": "https://api.qcb.gov.qa",
+        "endpoints": {
+          "compliance": "/api/v1/compliance",
+          "regulations": "/api/v1/regulations",
+          "banking": "/api/v1/banking"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-QCB-API-Key"
+        },
+        "priority": "medium",
+        "sync_frequency": "weekly"
+      },
+      "BAHRAIN_CENTRAL_BANK": {
+        "name": "Central Bank of Bahrain",
+        "base_url": "https://api.cbb.gov.bh",
+        "endpoints": {
+          "compliance": "/api/v1/compliance",
+          "regulations": "/api/v1/regulations",
+          "banking": "/api/v1/banking"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-CBB-API-Key"
+        },
+        "priority": "medium",
+        "sync_frequency": "weekly"
+      },
+      "KUWAIT_CENTRAL_BANK": {
+        "name": "Central Bank of Kuwait",
+        "base_url": "https://api.cbk.gov.kw",
+        "endpoints": {
+          "compliance": "/api/v1/compliance",
+          "regulations": "/api/v1/regulations",
+          "banking": "/api/v1/banking"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-CBK-API-Key"
+        },
+        "priority": "medium",
+        "sync_frequency": "weekly"
+      },
+      "OMAN_CENTRAL_BANK": {
+        "name": "Central Bank of Oman",
+        "base_url": "https://api.cbo.gov.om",
+        "endpoints": {
+          "compliance": "/api/v1/compliance",
+          "regulations": "/api/v1/regulations",
+          "banking": "/api/v1/banking"
+        },
+        "authentication": {
+          "type": "api_key",
+          "header": "X-CBO-API-Key"
+        },
+        "priority": "medium",
+        "sync_frequency": "weekly"
+      }
+    }
+  },
+  "data_collection_settings": {
+    "retry_attempts": 3,
+    "timeout_seconds": 30,
+    "rate_limit_per_minute": 60,
+    "batch_size": 100,
+    "error_threshold": 0.1,
+    "health_check_interval": 300,
+    "sync_schedule": {
+      "critical_sources": "every_hour",
+      "high_priority": "every_4_hours", 
+      "medium_priority": "daily",
+      "low_priority": "weekly"
+    }
+  },
+  "compliance_mapping": {
+    "frameworks": [
+      "ISO_27001",
+      "SAMA_Framework",
+      "NCA_Guidelines", 
+      "CITC_Standards",
+      "MOH_Standards",
+      "CMA_Regulations"
+    ],
+    "data_classification": {
+      "public": "accessible_to_all",
+      "internal": "organization_only",
+      "confidential": "authorized_personnel",
+      "restricted": "specific_clearance_required"
+    }
+  },
+  "alert_configuration": {
+    "critical_violations": {
+      "notification_channels": ["email", "sms", "slack"],
+      "escalation_time": 15,
+      "auto_response": true
+    },
+    "compliance_updates": {
+      "notification_channels": ["email", "dashboard"],
+      "digest_frequency": "daily"
+    },
+    "system_health": {
+      "notification_channels": ["email", "monitoring"],
+      "check_frequency": 300
+    }
+  }
+}

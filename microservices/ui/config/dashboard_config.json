@@ -1,0 +1,147 @@
+{
+  "dashboard": {
+    "title": {
+      "en": "DoganAI Compliance Kit - Enterprise Platform",
+      "ar": "طقم الامتثال DoganAI - منصة المؤسسات"
+    },
+    "metrics": {
+      "total_tests": {
+        "en": "Total Tests",
+        "ar": "إجمالي الاختبارات",
+        "icon": "fas fa-clipboard-check",
+        "color": "primary"
+      },
+      "compliance_rate": {
+        "en": "Compliance Rate",
+        "ar": "معدل الامتثال",
+        "icon": "fas fa-percentage",
+        "color": "success"
+      },
+      "active_policies": {
+        "en": "Active Policies",
+        "ar": "السياسات النشطة",
+        "icon": "fas fa-shield-alt",
+        "color": "warning"
+      },
+      "ai_insights": {
+        "en": "AI Insights",
+        "ar": "رؤى الذكاء الاصطناعي",
+        "icon": "fas fa-brain",
+        "color": "info"
+      }
+    },
+    "sections": {
+      "overview": {
+        "en": "Dashboard Overview",
+        "ar": "نظرة عامة على لوحة التحكم"
+      },
+      "recent_activity": {
+        "en": "Recent Activity",
+        "ar": "النشاط الأخير"
+      },
+      "quick_actions": {
+        "en": "Quick Actions",
+        "ar": "إجراءات سريعة"
+      }
+    },
+    "navigation": {
+      "dashboard": {
+        "en": "Dashboard",
+        "ar": "لوحة التحكم"
+      },
+      "compliance_test": {
+        "en": "Compliance Test",
+        "ar": "اختبار الامتثال"
+      },
+      "reports": {
+        "en": "Reports",
+        "ar": "التقارير"
+      },
+      "ai_analysis": {
+        "en": "AI Analysis",
+        "ar": "تحليل الذكاء الاصطناعي"
+      }
+    },
+    "actions": [
+      {
+        "id": "run_compliance_test",
+        "en": "Run Compliance Test",
+        "ar": "تشغيل اختبار الامتثال",
+        "icon": "fas fa-play",
+        "endpoint": "/api/compliance/test"
+      },
+      {
+        "id": "data_input",
+        "en": "Data Input",
+        "ar": "إدخال البيانات",
+        "icon": "fas fa-database",
+        "endpoint": "/api/data/input"
+      },
+      {
+        "id": "vendor_integrations",
+        "en": "Vendor Integrations",
+        "ar": "تكامل البائعين",
+        "icon": "fas fa-handshake",
+        "endpoint": "/api/vendors"
+      },
+      {
+        "id": "ai_ml_analysis",
+        "en": "AI/ML Analysis",
+        "ar": "تحليل الذكاء الاصطناعي/التعلم الآلي",
+        "icon": "fas fa-brain",
+        "endpoint": "/api/ai/analysis"
+      },
+      {
+        "id": "generate_reports",
+        "en": "Generate Reports",
+        "ar": "إنشاء التقارير",
+        "icon": "fas fa-chart-bar",
+        "endpoint": "/api/reports/generate"
+      },
+      {
+        "id": "system_monitoring",
+        "en": "System Monitoring",
+        "ar": "مراقبة النظام",
+        "icon": "fas fa-desktop",
+        "endpoint": "/api/monitoring"
+      },
+      {
+        "id": "ai_guidance",
+        "en": "AI Guidance",
+        "ar": "إرشاد الذكاء الاصطناعي",
+        "icon": "fas fa-lightbulb",
+        "endpoint": "/api/ai/guidance"
+      },
+      {
+        "id": "autonomous_testing",
+        "en": "Autonomous Testing",
+        "ar": "الاختبار الذاتي",
+        "icon": "fas fa-cogs",
+        "endpoint": "/api/testing/autonomous"
+      },
+      {
+        "id": "urgent_notes",
+        "en": "Urgent Notes",
+        "ar": "ملاحظات عاجلة",
+        "icon": "fas fa-exclamation-triangle",
+        "endpoint": "/api/notes/urgent"
+      }
+    ]
+  },
+  "languages": ["en", "ar"],
+  "default_language": "en",
+  "rtl_languages": ["ar"],
+  "theme": {
+    "primary_color": "#1e3a8a",
+    "secondary_color": "#3b82f6",
+    "accent_color": "#f59e0b",
+    "success_color": "#10b981",
+    "warning_color": "#f59e0b",
+    "danger_color": "#ef4444",
+    "dark_bg": "#0f172a",
+    "card_bg": "#1e293b",
+    "text_primary": "#f8fafc",
+    "text_secondary": "#cbd5e1",
+    "border_color": "#334155"
+  }
+}

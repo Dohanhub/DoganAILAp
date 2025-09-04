@@ -1,0 +1,11 @@
+fastapi
+pydantic
+uvicorn
+pyyaml
+structlog
+prometheus-client
+redis
+pyjwt
+cryptography
+aiohttp
+requests

@@ -1,0 +1,10 @@
+FROM flyway/flyway:10
+
+# Set working directory
+WORKDIR /flyway
+
+# Copy custom Flyway configuration
+COPY flyway.conf /flyway/conf/flyway.conf
+
+# Set default command
+CMD ["migrate"]

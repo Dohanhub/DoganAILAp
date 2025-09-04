@@ -1,0 +1,59 @@
+regulator: "MoH"
+version: "1.0.0"
+title: "Ministry of Health Data Protection Framework"
+description: "Saudi Arabia's Ministry of Health compliance framework for healthcare data protection and patient privacy"
+authority: "Ministry of Health"
+jurisdiction: "Saudi Arabia"
+effective_date: "2024-01-01"
+last_updated: "2024-08-29"
+controls:
+  - id: "PHI-01"
+    title_ar: "حماية بيانات المرضى"
+    title_en: "PHI Protection"
+    requirement_ar: "حماية بيانات PHI من التسريب."
+    requirement_en: "Protect PHI against leakage."
+    category: "Data Protection"
+    severity: "High"
+
+api_config:
+  base_url: "https://api.moh.gov.sa/v1"
+  endpoints:
+    compliance_check: "/compliance/healthcare"
+    phi_audit: "/audit/phi"
+    breach_reporting: "/incidents/phi-breach"
+    privacy_assessment: "/privacy/assessment"
+  rate_limit: 300
+  timeout: 45
+
+authentication:
+  type: "mutual_tls"
+  certificate_authority: "MOH-CA"
+  client_cert_required: true
+  encryption: "AES-256-GCM"
+
+reporting:
+  frequency: "monthly"
+  format: ["json", "hl7-fhir", "encrypted"]
+  endpoints:
+    submit: "/reports/healthcare/submit"
+    status: "/reports/healthcare/status"
+  required_fields:
+    - "phi_protection_status"
+    - "data_breach_incidents"
+    - "privacy_compliance_metrics"
+    - "patient_consent_tracking"
+    - "healthcare_security_assessments"
+
+penalties:
+  - violation: "PHI data breach"
+    fine_range: "5,000,000 - 50,000,000 SAR"
+    enforcement: "Healthcare license suspension possible"
+  - violation: "Inadequate patient privacy protection"
+    fine_range: "1,000,000 - 10,000,000 SAR"
+    enforcement: "Privacy enhancement plan required"
+
+contact:
+  name: "Ministry of Health"
+  website: "https://www.moh.gov.sa"
+  email: "compliance@moh.gov.sa"
+  phone: "+966-11-4012222"

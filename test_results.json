@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-09-03T13:10:58.129209",
+  "api_results": {
+    "/": 200,
+    "/health": 200,
+    "/health/ready": 200,
+    "/health/live": 200,
+    "/api/v1/compliance": 404,
+    "/api/v1/risk": 404,
+    "/api/v1/audit": 404,
+    "/api/v1/reports": 404
+  },
+  "database_status": true,
+  "regulatory_endpoints": [],
+  "summary": {
+    "main_api_healthy": true,
+    "database_connected": true,
+    "regulatory_ready": false
+  }
+}

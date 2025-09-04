@@ -1,0 +1,96 @@
+regulator: "MHRSD"
+version: "2.4"
+title: "Ministry of Human Resources & Social Development Regulations 2024"
+authority: "MHRSD-HR-2024"
+arabic_name: "وزارة الموارد البشرية والتنمية الاجتماعية"
+jurisdiction: "Labor Compliance & Social Security"
+description: "Ministry of Human Resources regulations for labor law compliance, workplace safety, and social development programs"
+effective_date: "2024-01-01"
+compliance_deadline: "2024-07-31"
+
+api_config:
+  base_url: "https://api.hrsd.gov.sa"
+  auth_type: "oauth2"
+  token_endpoint: "https://auth.hrsd.gov.sa/oauth/token"
+  scopes: ["labor", "compliance", "social_security"]
+
+controls:
+  - id: "MHRSD-001"
+    title: "Labor Law Compliance"
+    arabic_title: "الامتثال لقانون العمل"
+    category: "Labor Law"
+    risk_level: "critical"
+    requirements:
+      - "Comply with working hours regulations"
+      - "Implement proper employment contracts"
+      - "Ensure fair wage payment systems"
+      - "Maintain employee records and documentation"
+    compliance_check: "labor_law_compliance"
+    
+  - id: "MHRSD-002"
+    title: "Saudization & Nationalization"
+    arabic_title: "السعودة والتوطين"
+    category: "Saudization"
+    risk_level: "critical"
+    requirements:
+      - "Meet Saudization quotas for sector"
+      - "Participate in Nitaqat program"
+      - "Provide Saudi employee development programs"
+      - "Report employment statistics regularly"
+    compliance_check: "saudization_compliance"
+    
+  - id: "MHRSD-003"
+    title: "Workplace Safety & Health"
+    arabic_title: "السلامة والصحة المهنية"
+    category: "Workplace Safety"
+    risk_level: "high"
+    requirements:
+      - "Implement occupational safety standards"
+      - "Conduct regular safety training"
+      - "Maintain workplace safety equipment"
+      - "Report workplace incidents promptly"
+    compliance_check: "workplace_safety_audit"
+    
+  - id: "MHRSD-004"
+    title: "Social Security & Benefits"
+    arabic_title: "الضمان الاجتماعي والمزايا"
+    category: "Social Security"
+    risk_level: "high"
+    requirements:
+      - "Register employees in GOSI system"
+      - "Contribute to social security funds"
+      - "Provide mandatory employee benefits"
+      - "Maintain benefit records and reporting"
+    compliance_check: "social_security_compliance"
+    
+  - id: "MHRSD-005"
+    title: "Employment Equity & Discrimination"
+    arabic_title: "المساواة في التوظيف ومنع التمييز"
+    category: "Employment Equity"
+    risk_level: "medium"
+    requirements:
+      - "Implement non-discrimination policies"
+      - "Provide equal employment opportunities"
+      - "Maintain harassment prevention programs"
+      - "Support diversity and inclusion initiatives"
+    compliance_check: "employment_equity_assessment"
+
+reporting:
+  frequency: "quarterly"
+  submission_deadline: "20 days after quarter end"
+  required_reports:
+    - "Employment Statistics Report"
+    - "Saudization Progress Report"
+    - "Workplace Safety Incident Report"
+    - "Social Security Compliance Report"
+
+penalties:
+  minor_violation: "Warning and compliance plan"
+  major_violation: "Fine up to 5,000,000 SAR"
+  critical_violation: "Work permit suspension and mandatory remediation"
+
+integration:
+  priority: "high"
+  sync_frequency: "weekly"
+  monitoring_required: true
+  audit_trail: true

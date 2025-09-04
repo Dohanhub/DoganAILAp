@@ -1,0 +1,55 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="128" cy="128" r="120" fill="url(#gradient1)" stroke="#1e40af" stroke-width="4"/>
+  
+  <!-- AI Brain Symbol -->
+  <g transform="translate(128,90)">
+    <!-- Central Core -->
+    <circle cx="0" cy="0" r="12" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Neural Network Lines -->
+    <g stroke="#ffffff" stroke-width="2" opacity="0.7">
+      <line x1="-30" y1="-20" x2="-12" y2="-6" />
+      <line x1="-20" y1="-30" x2="-6" y2="-12" />
+      <line x1="20" y1="-30" x2="6" y2="-12" />
+      <line x1="30" y1="-20" x2="12" y2="-6" />
+      <line x1="30" y1="20" x2="12" y2="6" />
+      <line x1="20" y1="30" x2="6" y2="12" />
+      <line x1="-20" y1="30" x2="-6" y2="12" />
+      <line x1="-30" y1="20" x2="-12" y2="6" />
+    </g>
+    
+    <!-- Neural Nodes -->
+    <circle cx="-30" cy="-20" r="4" fill="#fbbf24"/>
+    <circle cx="-20" cy="-30" r="4" fill="#fbbf24"/>
+    <circle cx="20" cy="-30" r="4" fill="#fbbf24"/>
+    <circle cx="30" cy="-20" r="4" fill="#fbbf24"/>
+    <circle cx="30" cy="20" r="4" fill="#fbbf24"/>
+    <circle cx="20" cy="30" r="4" fill="#fbbf24"/>
+    <circle cx="-20" cy="30" r="4" fill="#fbbf24"/>
+    <circle cx="-30" cy="20" r="4" fill="#fbbf24"/>
+  </g>
+  
+  <!-- Compliance Shield -->
+  <g transform="translate(128,160)">
+    <path d="M-15 -10 L15 -10 L18 -5 L18 8 C18 13 13 18 0 20 C-13 18 -18 13 -18 8 L-18 -5 Z" 
+          fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+    <path d="M-8 -2 L-3 3 L8 -8" stroke="#ffffff" stroke-width="2" 
+          stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+  
+  <!-- Company Text -->
+  <text x="128" y="210" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" font-weight="bold" fill="#1e40af">DoganAI</text>
+  <text x="128" y="225" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="9" fill="#64748b">Compliance Kit</text>
+  
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1d4ed8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

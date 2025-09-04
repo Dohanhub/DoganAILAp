@@ -1,0 +1,50 @@
+[project]
+name = "doganai-compliance-kit"
+version = "1.0.0"
+description = "DoganAI Compliance Kit - Enterprise compliance and operations platform"
+requires-python = ">=3.11"
+authors = [
+    {name = "DoganAI Platform Team", email = "platform@dogan.ai"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["compliance", "regulatory", "monitoring", "enterprise"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "fastapi>=0.116.1",
+    "prometheus-client>=0.22.1",
+    "psutil>=7.0.0",
+    "psycopg2-binary>=2.9.10",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "pytz>=2025.2",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.43",
+    "uvicorn>=0.35.0",
+]
+
+[project.scripts]
+dai-cli = "core.cli:main"
+dai-health = "api.health:main"
+dai-seed = "migrate.comprehensive_data_seeder:main"
+dai-scrape = "ingest.regulatory_web_scraper:main"
+dai-server = "main:main"
+dai-observability = "services.observability:main"
+dai-run = "run:main"
+
+[project.urls]
+Homepage = "https://github.com/dogan-ai/compliance-kit"
+Documentation = "https://docs.dogan.ai/compliance-kit"
+Repository = "https://github.com/dogan-ai/compliance-kit.git"
+"Bug Tracker" = "https://github.com/dogan-ai/compliance-kit/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-db-replica
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+spec:
+  selector:
+    app.kubernetes.io/component: db-replica
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

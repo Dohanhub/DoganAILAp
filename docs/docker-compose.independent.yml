@@ -1,0 +1,511 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database - Independent and robust
+  postgres:
+    image: postgres:15-alpine
+    container_name: doganai-postgres-independent
+    environment:
+      POSTGRES_DB: doganai_compliance
+      POSTGRES_USER: doganai_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-DoganAI2024!Secure}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U doganai_user -d doganai_compliance"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis Cache - Independent and persistent
+  redis:
+    image: redis:7-alpine
+    container_name: doganai-redis-independent
+    command: redis-server --requirepass ${REDIS_PASSWORD:-DoganAIRedis2024} --appendonly yes --save 900 1 --save 300 10
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis-config:/usr/local/etc/redis:ro
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "${REDIS_PASSWORD:-DoganAIRedis2024}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # MinIO Object Storage - Independent file storage
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: doganai-minio-independent
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER:-doganai}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-DoganAI2024Storage}
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:9001
+    ports: 
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # DoganAI Compliance Engine - Independent core service
+  compliance-engine:
+    build:
+      context: ./microservices/compliance-engine
+      dockerfile: Dockerfile
+    container_name: doganai-compliance-engine-independent
+    environment:
+      - DATABASE_URL=postgresql://doganai_user:${POSTGRES_PASSWORD:-DoganAI2024!Secure}@postgres:5432/doganai_compliance
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/0
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_USER:-doganai}
+      - MINIO_SECRET_KEY=${MINIO_PASSWORD:-DoganAI2024Storage}
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+      - CORS_ORIGINS=http://localhost:8501,http://localhost:3000,http://localhost:80
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config:ro
+
+  # DoganAI Benchmarks Service - Independent KSA compliance data
+  benchmarks:
+    build:
+      context: ./microservices/benchmarks
+      dockerfile: Dockerfile
+    container_name: doganai-benchmarks-independent
+    environment:
+      - DATABASE_URL=postgresql://doganai_user:${POSTGRES_PASSWORD:-DoganAI2024!Secure}@postgres:5432/doganai_compliance
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/1
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - ./benchmarks-data:/app/data:ro
+
+  # DoganAI AI/ML Service - Independent AI processing
+  ai-ml:
+    build:
+      context: ./microservices/ai-ml
+      dockerfile: Dockerfile
+    container_name: doganai-ai-ml-independent
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/2
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_USER:-doganai}
+      - MINIO_SECRET_KEY=${MINIO_PASSWORD:-DoganAI2024Storage}
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+      - MODEL_PATH=/app/models
+      - DEVICE=${AI_DEVICE:-cpu}
+    ports:
+      - "8002:8002"
+    depends_on:
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - ./ai-models:/app/models
+      - ai_cache:/app/cache
+    # Uncomment for GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # DoganAI Integrations Service - Independent external connectors
+  integrations:
+    build:
+      context: ./microservices/integrations
+      dockerfile: Dockerfile
+    container_name: doganai-integrations-independent
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/3
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+      - EXTERNAL_API_TIMEOUT=30
+      - MAX_RETRIES=3
+    ports:
+      - "8003:8003"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - ./integration-configs:/app/configs:ro
+
+  # DoganAI Authentication Service - Independent security layer
+  auth:
+    build:
+      context: ./microservices/auth
+      dockerfile: Dockerfile
+    container_name: doganai-auth-independent
+    environment:
+      - DATABASE_URL=postgresql://doganai_user:${POSTGRES_PASSWORD:-DoganAI2024!Secure}@postgres:5432/doganai_compliance
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/4
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - REFRESH_TOKEN_EXPIRE_DAYS=${REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      - PASSWORD_MIN_LENGTH=8
+      - ENABLE_2FA=${ENABLE_2FA:-true}
+    ports:
+      - "8004:8004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # DoganAI AI Agent - Independent intelligent automation
+  ai-agent:
+    build:
+      context: ./microservices/ai-agent
+      dockerfile: Dockerfile
+    container_name: doganai-ai-agent-independent
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/5
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+      - COMPLIANCE_ENGINE_URL=http://compliance-engine:8000
+      - BENCHMARKS_URL=http://benchmarks:8001
+      - AI_ML_URL=http://ai-ml:8002
+      - INTEGRATIONS_URL=http://integrations:8003
+      - AUTH_URL=http://auth:8004
+      - AGENT_TIMEOUT=60
+      - MAX_CONCURRENT_TASKS=10
+    ports:
+      - "8005:8005"
+    depends_on:
+      redis:
+        condition: service_healthy
+      compliance-engine:
+        condition: service_healthy
+      benchmarks:
+        condition: service_healthy
+      ai-ml:
+        condition: service_healthy
+      integrations:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+  # DoganAI Autonomous Testing - Independent test automation
+  autonomous-testing:
+    build:
+      context: ./microservices/autonomous-testing
+      dockerfile: Dockerfile
+    container_name: doganai-autonomous-testing-independent
+    environment:
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-DoganAIRedis2024}@redis:6379/6
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY:-DoganAI-Super-Secret-Key-Change-In-Production-2024}
+      - TARGET_SERVICES=compliance-engine:8000,benchmarks:8001,ai-ml:8002,integrations:8003,auth:8004,ai-agent:8005
+      - TEST_INTERVAL=300
+      - PARALLEL_TESTS=5
+    ports:
+      - "8006:8006"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # DoganAI UI Service - Independent user interface
+  ui:
+    build:
+      context: ./microservices/ui
+      dockerfile: Dockerfile
+    container_name: doganai-ui-independent
+    environment:
+      - APP_ENV=production
+      - DEBUG=${DEBUG:-false}
+      - COMPLIANCE_ENGINE_URL=http://compliance-engine:8000
+      - BENCHMARKS_URL=http://benchmarks:8001
+      - AI_ML_URL=http://ai-ml:8002
+      - INTEGRATIONS_URL=http://integrations:8003
+      - AUTH_URL=http://auth:8004
+      - AI_AGENT_URL=http://ai-agent:8005
+      - AUTONOMOUS_TESTING_URL=http://autonomous-testing:8006
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      compliance-engine:
+        condition: service_healthy
+      benchmarks:
+        condition: service_healthy
+      ai-ml:
+        condition: service_healthy
+      integrations:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      ai-agent:
+        condition: service_healthy
+      autonomous-testing:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  # Nginx Reverse Proxy - Independent load balancer
+  nginx:
+    image: nginx:alpine
+    container_name: doganai-nginx-independent
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      ui:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus Monitoring - Independent metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: doganai-prometheus-independent
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Grafana Dashboard - Independent visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: doganai-grafana-independent
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-DoganAIGrafana2024}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Elasticsearch - Independent search and logging
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: doganai-elasticsearch-independent
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Kibana - Independent log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: doganai-kibana-independent
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - doganai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  ai_cache:
+    driver: local
+
+networks:
+  doganai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+
+# Health check for the entire stack
+x-healthcheck-config: &healthcheck-config
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 60s

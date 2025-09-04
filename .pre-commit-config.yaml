@@ -1,0 +1,166 @@
+# Pre-commit hooks configuration
+# Install with: pre-commit install
+# Run on all files: pre-commit run --all-files
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^tests/.*\.py$
+      - id: end-of-file-fixer
+        exclude: ^tests/.*\.py$
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-symlinks
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-docstring-first
+      - id: debug-statements
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Python code formatting
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        language_version: python3
+        args: [--line-length=88]
+
+  # Python import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=88]
+
+  # Python linting with Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # Python type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML, types-redis]
+        exclude: ^(migrations/|tests/|scripts/)
+
+  # Security scanning
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-r, ., -f, json, -o, bandit-report.json]
+        exclude: ^tests/
+
+  # Dependency vulnerability checking
+  - repo: https://github.com/pyupio/safety
+    rev: 2.3.5
+    hooks:
+      - id: safety
+        args: [--json, --output, safety-report.json]
+
+  # Documentation checks
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        exclude: ^(tests/|migrations/|scripts/)
+        args: [--convention=google]
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types_or: [yaml, json, markdown]
+        exclude: ^(package-lock\.json|pnpm-lock\.yaml)$
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        args: [-e, SC1091]
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args: [--ignore, DL3008, --ignore, DL3009]
+
+  # Secrets detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: ^(\.secrets\.baseline|tests/.*\.py)$
+
+  # Git commit message formatting
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.13.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # Check for AWS credentials
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+
+  # Node.js/Frontend hooks (if applicable)
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        entry: bash -c 'if [ -f "package.json" ]; then pnpm run lint; fi'
+        language: system
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false
+
+      - id: typescript-check
+        name: typescript-check
+        entry: bash -c 'if [ -f "tsconfig.json" ]; then pnpm run type-check; fi'
+        language: system
+        files: \.(ts|tsx)$
+        pass_filenames: false
+
+  # Python test execution (optional - can be slow)
+  - repo: local
+    hooks:
+      - id: pytest-check
+        name: pytest-check
+        entry: python -m pytest tests/ -x -q
+        language: system
+        pass_filenames: false
+        stages: [push]  # Only run on push, not on every commit
+
+# Configuration for specific hooks
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [pytest-check]  # Skip slow tests in CI
+  submodules: false

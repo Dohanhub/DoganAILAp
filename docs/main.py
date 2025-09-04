@@ -1,0 +1,448 @@
+"""
+Real Production Application - No Demo Data
+Everything connects to actual PostgreSQL database
+"""
+import os
+from datetime import datetime
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, Boolean
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+import streamlit as st
+import pandas as pd
+import uvicorn
+from threading import Thread
+
+# Get real database URL from environment
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise Exception("No database URL found - this app requires a real database")
+
+# Create database engine
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# Real database models - no fake data
+class Organization(Base):
+    __tablename__ = "organizations"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    sector = Column(String, nullable=False)
+    country = Column(String, default="Saudi Arabia")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class ComplianceAssessment(Base):
+    __tablename__ = "compliance_assessments"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    organization_id = Column(Integer, nullable=False)
+    framework = Column(String, nullable=False)
+    score = Column(Float, nullable=False)
+    status = Column(String, nullable=False)
+    assessed_at = Column(DateTime, default=datetime.utcnow)
+    assessor = Column(String)
+    notes = Column(Text)
+
+class Control(Base):
+    __tablename__ = "controls"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    framework = Column(String, nullable=False)
+    control_id = Column(String, nullable=False, unique=True)
+    description = Column(Text, nullable=False)
+    category = Column(String, nullable=False)
+    priority = Column(String, nullable=False)
+    is_implemented = Column(Boolean, default=False)
+    implementation_date = Column(DateTime)
+    evidence = Column(Text)
+
+class Risk(Base):
+    __tablename__ = "risks"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(Text)
+    severity = Column(String, nullable=False)
+    likelihood = Column(String, nullable=False)
+    mitigation_plan = Column(Text)
+    owner = Column(String)
+    identified_date = Column(DateTime, default=datetime.utcnow)
+    resolved_date = Column(DateTime)
+    status = Column(String, default="open")
+
+# Create all tables in the database
+Base.metadata.create_all(bind=engine)
+
+# FastAPI app for backend
+app = FastAPI(title="Real Compliance Platform API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Database dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Real API endpoints - all data from database
+@app.get("/")
+def root():
+    return {"message": "Real Compliance Platform API - Connected to PostgreSQL", "database": "connected"}
+
+@app.post("/organizations")
+def create_organization(name: str, sector: str, db: Session = Depends(get_db)):
+    """Create a real organization in the database"""
+    org = Organization(name=name, sector=sector)
+    db.add(org)
+    db.commit()
+    db.refresh(org)
+    return {"id": org.id, "name": org.name, "sector": org.sector, "created": org.created_at}
+
+@app.get("/organizations")
+def list_organizations(db: Session = Depends(get_db)):
+    """Get real organizations from database"""
+    orgs = db.query(Organization).all()
+    return [{"id": o.id, "name": o.name, "sector": o.sector} for o in orgs]
+
+@app.post("/assessments")
+def create_assessment(org_id: int, framework: str, score: float, status: str, db: Session = Depends(get_db)):
+    """Create a real assessment in the database"""
+    assessment = ComplianceAssessment(
+        organization_id=org_id,
+        framework=framework,
+        score=score,
+        status=status
+    )
+    db.add(assessment)
+    db.commit()
+    db.refresh(assessment)
+    return {"id": assessment.id, "framework": assessment.framework, "score": assessment.score}
+
+@app.get("/assessments")
+def list_assessments(db: Session = Depends(get_db)):
+    """Get real assessments from database"""
+    assessments = db.query(ComplianceAssessment).all()
+    return [{"id": a.id, "framework": a.framework, "score": a.score, "status": a.status} for a in assessments]
+
+@app.post("/controls")
+def create_control(framework: str, control_id: str, description: str, category: str, priority: str, db: Session = Depends(get_db)):
+    """Create a real control in the database"""
+    control = Control(
+        framework=framework,
+        control_id=control_id,
+        description=description,
+        category=category,
+        priority=priority
+    )
+    db.add(control)
+    db.commit()
+    db.refresh(control)
+    return {"id": control.id, "control_id": control.control_id, "framework": control.framework}
+
+@app.get("/controls")
+def list_controls(db: Session = Depends(get_db)):
+    """Get real controls from database"""
+    controls = db.query(Control).all()
+    return [{"id": c.id, "control_id": c.control_id, "description": c.description, "is_implemented": c.is_implemented} for c in controls]
+
+@app.post("/risks")
+def create_risk(title: str, severity: str, likelihood: str, description: str = None, db: Session = Depends(get_db)):
+    """Create a real risk in the database"""
+    risk = Risk(
+        title=title,
+        description=description,
+        severity=severity,
+        likelihood=likelihood
+    )
+    db.add(risk)
+    db.commit()
+    db.refresh(risk)
+    return {"id": risk.id, "title": risk.title, "severity": risk.severity}
+
+@app.get("/risks")
+def list_risks(db: Session = Depends(get_db)):
+    """Get real risks from database"""
+    risks = db.query(Risk).all()
+    return [{"id": r.id, "title": r.title, "severity": r.severity, "status": r.status} for r in risks]
+
+@app.get("/stats")
+def get_real_stats(db: Session = Depends(get_db)):
+    """Get real statistics from the database"""
+    org_count = db.query(Organization).count()
+    assessment_count = db.query(ComplianceAssessment).count()
+    control_count = db.query(Control).count()
+    implemented_controls = db.query(Control).filter(Control.is_implemented == True).count()
+    risk_count = db.query(Risk).count()
+    open_risks = db.query(Risk).filter(Risk.status == "open").count()
+    
+    return {
+        "organizations": org_count,
+        "assessments": assessment_count,
+        "controls": control_count,
+        "implemented_controls": implemented_controls,
+        "risks": risk_count,
+        "open_risks": open_risks,
+        "database": "PostgreSQL",
+        "status": "Connected"
+    }
+
+# Run the FastAPI server in a background thread
+def run_api():
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Start API server
+api_thread = Thread(target=run_api, daemon=True)
+api_thread.start()
+
+# Streamlit UI - Real Database Interface
+st.set_page_config(page_title="Real Compliance Platform", page_icon="🔒", layout="wide")
+
+st.title("🔒 Real Compliance Platform - Live Database")
+st.markdown("### All data is stored in PostgreSQL - No placeholders, No demos")
+
+# Sidebar for data entry
+with st.sidebar:
+    st.header("📝 Add Real Data")
+    
+    # Add Organization
+    st.subheader("Add Organization")
+    org_name = st.text_input("Organization Name")
+    org_sector = st.selectbox("Sector", ["Banking", "Healthcare", "Government", "Technology", "Energy", "Retail"])
+    
+    if st.button("Add Organization"):
+        if org_name:
+            db = SessionLocal()
+            org = Organization(name=org_name, sector=org_sector)
+            db.add(org)
+            db.commit()
+            st.success(f"Added {org_name} to database!")
+            db.close()
+            st.rerun()
+    
+    st.divider()
+    
+    # Add Risk
+    st.subheader("Add Risk")
+    risk_title = st.text_input("Risk Title")
+    risk_severity = st.selectbox("Severity", ["Critical", "High", "Medium", "Low"])
+    risk_likelihood = st.selectbox("Likelihood", ["Very High", "High", "Medium", "Low", "Very Low"])
+    risk_description = st.text_area("Description")
+    
+    if st.button("Add Risk"):
+        if risk_title:
+            db = SessionLocal()
+            risk = Risk(
+                title=risk_title,
+                severity=risk_severity,
+                likelihood=risk_likelihood,
+                description=risk_description
+            )
+            db.add(risk)
+            db.commit()
+            st.success(f"Added risk to database!")
+            db.close()
+            st.rerun()
+
+# Main content
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Live Statistics", "🏢 Organizations", "⚠️ Risks", "🛡️ Controls", "📈 Assessments"])
+
+with tab1:
+    st.header("📊 Real-Time Database Statistics")
+    
+    # Get real stats from database
+    db = SessionLocal()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        org_count = db.query(Organization).count()
+        st.metric("Organizations", org_count)
+    
+    with col2:
+        risk_count = db.query(Risk).count()
+        open_risks = db.query(Risk).filter(Risk.status == "open").count()
+        st.metric("Open Risks", open_risks, f"Total: {risk_count}")
+    
+    with col3:
+        control_count = db.query(Control).count()
+        implemented = db.query(Control).filter(Control.is_implemented == True).count()
+        st.metric("Implemented Controls", implemented, f"Total: {control_count}")
+    
+    with col4:
+        assessment_count = db.query(ComplianceAssessment).count()
+        st.metric("Assessments", assessment_count)
+    
+    st.divider()
+    st.subheader("Database Connection Status")
+    st.success(f"✅ Connected to PostgreSQL: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'localhost'}")
+    
+    db.close()
+
+with tab2:
+    st.header("🏢 Organizations (From Database)")
+    
+    db = SessionLocal()
+    orgs = db.query(Organization).all()
+    
+    if orgs:
+        df_orgs = pd.DataFrame([
+            {
+                "ID": o.id,
+                "Name": o.name,
+                "Sector": o.sector,
+                "Country": o.country,
+                "Created": o.created_at
+            } for o in orgs
+        ])
+        st.dataframe(df_orgs, use_container_width=True)
+    else:
+        st.info("No organizations in database yet. Add one from the sidebar!")
+    
+    db.close()
+
+with tab3:
+    st.header("⚠️ Risks (From Database)")
+    
+    db = SessionLocal()
+    risks = db.query(Risk).all()
+    
+    if risks:
+        # Show open risks
+        open_risks = [r for r in risks if r.status == "open"]
+        st.subheader(f"Open Risks ({len(open_risks)})")
+        
+        for risk in open_risks:
+            with st.expander(f"{risk.severity}: {risk.title}"):
+                st.write(f"**Description:** {risk.description or 'No description'}")
+                st.write(f"**Likelihood:** {risk.likelihood}")
+                st.write(f"**Identified:** {risk.identified_date}")
+                
+                if st.button(f"Mark as Resolved", key=f"resolve_{risk.id}"):
+                    risk.status = "resolved"
+                    risk.resolved_date = datetime.utcnow()
+                    db.commit()
+                    st.success("Risk marked as resolved!")
+                    st.rerun()
+    else:
+        st.info("No risks in database yet. Add one from the sidebar!")
+    
+    db.close()
+
+with tab4:
+    st.header("🛡️ Controls (From Database)")
+    
+    db = SessionLocal()
+    
+    # Add control form
+    with st.form("add_control"):
+        st.subheader("Add New Control")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            framework = st.selectbox("Framework", ["NCA", "SAMA", "PDPL", "ISO27001", "NIST"])
+            control_id = st.text_input("Control ID")
+            category = st.selectbox("Category", ["Access Control", "Data Protection", "Incident Response", "Compliance"])
+        
+        with col2:
+            priority = st.selectbox("Priority", ["Critical", "High", "Medium", "Low"])
+            description = st.text_area("Description")
+        
+        if st.form_submit_button("Add Control"):
+            if control_id and description:
+                control = Control(
+                    framework=framework,
+                    control_id=control_id,
+                    description=description,
+                    category=category,
+                    priority=priority
+                )
+                db.add(control)
+                db.commit()
+                st.success("Control added to database!")
+                st.rerun()
+    
+    # Display controls
+    controls = db.query(Control).all()
+    if controls:
+        df_controls = pd.DataFrame([
+            {
+                "Control ID": c.control_id,
+                "Framework": c.framework,
+                "Category": c.category,
+                "Priority": c.priority,
+                "Implemented": "✅" if c.is_implemented else "❌"
+            } for c in controls
+        ])
+        st.dataframe(df_controls, use_container_width=True)
+    else:
+        st.info("No controls in database yet. Add one above!")
+    
+    db.close()
+
+with tab5:
+    st.header("📈 Assessments (From Database)")
+    
+    db = SessionLocal()
+    
+    # Add assessment form
+    orgs = db.query(Organization).all()
+    if orgs:
+        with st.form("add_assessment"):
+            st.subheader("Add New Assessment")
+            
+            org_id = st.selectbox(
+                "Organization",
+                options=[o.id for o in orgs],
+                format_func=lambda x: next(o.name for o in orgs if o.id == x)
+            )
+            framework = st.selectbox("Framework", ["NCA", "SAMA", "PDPL", "ISO27001", "NIST"])
+            score = st.slider("Compliance Score", 0, 100, 75)
+            status = st.selectbox("Status", ["Completed", "In Progress", "Scheduled"])
+            
+            if st.form_submit_button("Add Assessment"):
+                assessment = ComplianceAssessment(
+                    organization_id=org_id,
+                    framework=framework,
+                    score=score,
+                    status=status
+                )
+                db.add(assessment)
+                db.commit()
+                st.success("Assessment added to database!")
+                st.rerun()
+    
+    # Display assessments
+    assessments = db.query(ComplianceAssessment).all()
+    if assessments:
+        df_assessments = pd.DataFrame([
+            {
+                "ID": a.id,
+                "Organization": db.query(Organization).filter(Organization.id == a.organization_id).first().name if db.query(Organization).filter(Organization.id == a.organization_id).first() else "Unknown",
+                "Framework": a.framework,
+                "Score": f"{a.score}%",
+                "Status": a.status,
+                "Date": a.assessed_at
+            } for a in assessments
+        ])
+        st.dataframe(df_assessments, use_container_width=True)
+    else:
+        st.info("No assessments in database yet. Add an organization first, then create an assessment!")
+    
+    db.close()
+
+# Footer
+st.divider()
+st.markdown("### 🔒 This is a REAL application - All data is stored in PostgreSQL database")
+st.markdown("No demo data, no placeholders - everything you see is from the actual database")

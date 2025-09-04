@@ -1,0 +1,76 @@
+{
+  "deployment_id": "complete-deploy-20250829-044830",
+  "mode": "auto",
+  "timestamp": "2025-08-29T04:48:30.517514",
+  "phases": {
+    "phase_1_api_keys": {
+      "phase": "api_configuration",
+      "started": "2025-08-29T04:48:30.517880",
+      "success": true,
+      "mode": "demo",
+      "configuration": "demo_keys_configured",
+      "completed": "2025-08-29T04:48:30.518296"
+    },
+    "phase_2_deployment": {
+      "phase": "production_deployment",
+      "started": "2025-08-29T04:48:30.518417",
+      "success": true,
+      "microservices": {
+        "vendor_integrations": {
+          "port": 8003,
+          "status": "configured"
+        },
+        "ai_ml_service": {
+          "port": 8004,
+          "status": "configured"
+        },
+        "vendor_management": {
+          "port": 8008,
+          "status": "configured"
+        },
+        "compliance_engine": {
+          "port": 8002,
+          "status": "configured"
+        }
+      },
+      "database_setup": "completed",
+      "completed": "2025-08-29T04:48:49.913457"
+    },
+    "phase_3_data_uploads": {
+      "phase": "data_uploads",
+      "started": "2025-08-29T04:48:49.913601",
+      "success": false,
+      "upload_results": {
+        "IBM_Watson": {
+          "status": "failed",
+          "error": "cannot import name 'VendorIntegrationRequest' from 'vendor_integration_service' (D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\microservices/ai-ml\\vendor_integration_service.py)"
+        },
+        "Microsoft": {
+          "status": "failed",
+          "error": "cannot import name 'VendorIntegrationRequest' from 'vendor_integration_service' (D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\microservices/ai-ml\\vendor_integration_service.py)"
+        },
+        "AWS": {
+          "status": "failed",
+          "error": "cannot import name 'VendorIntegrationRequest' from 'vendor_integration_service' (D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\microservices/ai-ml\\vendor_integration_service.py)"
+        },
+        "Lenovo": {
+          "status": "failed",
+          "error": "cannot import name 'VendorIntegrationRequest' from 'vendor_integration_service' (D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\microservices/ai-ml\\vendor_integration_service.py)"
+        },
+        "Fortinet": {
+          "status": "failed",
+          "error": "cannot import name 'VendorIntegrationRequest' from 'vendor_integration_service' (D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\microservices/ai-ml\\vendor_integration_service.py)"
+        }
+      },
+      "summary": {
+        "total_vendors": 5,
+        "successful_uploads": 0,
+        "failed_uploads": 5,
+        "success_rate": 0.0
+      },
+      "completed": "2025-08-29T04:48:50.114818"
+    }
+  },
+  "success": false,
+  "completed": "2025-08-29T04:48:50.114873"
+}

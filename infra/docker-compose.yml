@@ -1,0 +1,103 @@
+version: "3.9"
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: doganai
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    ports: ["5432:5432"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d doganai"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - doganai-net
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - doganai-net
+
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio12345
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:9001
+    ports: 
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - doganai-net
+
+  migrate:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.migrate
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/doganai
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql
+      FLYWAY_BASELINE_ON_MIGRATE: true
+      FLYWAY_VALIDATE_ON_MIGRATE: true
+    volumes:
+      - ../migrations:/flyway/sql:ro
+    networks:
+      - doganai-net
+
+  db-admin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@dogan-ai.com
+      PGADMIN_DEFAULT_PASSWORD: Admin@123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports: ["5050:80"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - doganai-net
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  doganai-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

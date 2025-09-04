@@ -1,0 +1,49 @@
+{{- if and .Values.database.seed .Values.database.seed.enabled .Values.database.seed.sql }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "doganai.fullname" . }}-db-seed
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "doganai.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: psql
+          image: {{ .Values.database.postgres.image.repository | default "postgres" }}:{{ .Values.database.postgres.image.tag | default "15-alpine" }}
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-user
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: postgres-db
+          volumeMounts:
+            - name: seed
+              mountPath: /seed
+          command: ["/bin/sh","-c"]
+          args:
+            - |
+              echo "Applying DB seed..." && \
+              PGPASSWORD="$POSTGRES_PASSWORD" psql -h {{ include "doganai.fullname" . }}-db-primary -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /seed/seed.sql
+      volumes:
+        - name: seed
+          configMap:
+            name: {{ include "doganai.fullname" . }}-db-seed
+            items:
+              - key: seed.sql
+                path: seed.sql
+{{- end }}

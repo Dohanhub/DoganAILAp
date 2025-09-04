@@ -1,0 +1,58 @@
+{{- if .Values.flagger.enabled }}
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: {{ include "doganai.fullname" . }}-api
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  provider: {{ .Values.flagger.provider | default "nginx" }}
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "doganai.fullname" . }}-api
+  service:
+    port: {{ .Values.service.apiPort }}
+  analysis:
+    interval: {{ .Values.flagger.api.interval | default "1m" }}
+    threshold: {{ .Values.flagger.api.threshold | default 5 }}
+    stepWeight: {{ .Values.flagger.api.stepWeight | default 20 }}
+    maxWeight: {{ .Values.flagger.api.maxWeight | default 60 }}
+    metrics:
+      - name: request-success-rate
+        thresholdRange:
+          min: 99
+        interval: 1m
+      - name: request-duration
+        thresholdRange:
+          max: 500
+        interval: 1m
+---
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: {{ include "doganai.fullname" . }}-web
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  provider: {{ .Values.flagger.provider | default "nginx" }}
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "doganai.fullname" . }}-web
+  service:
+    port: {{ .Values.service.webPort }}
+  analysis:
+    interval: {{ .Values.flagger.web.interval | default "1m" }}
+    threshold: {{ .Values.flagger.web.threshold | default 5 }}
+    stepWeight: {{ .Values.flagger.web.stepWeight | default 20 }}
+    maxWeight: {{ .Values.flagger.web.maxWeight | default 60 }}
+    metrics:
+      - name: request-success-rate
+        thresholdRange:
+          min: 99
+        interval: 1m
+      - name: request-duration
+        thresholdRange:
+          max: 500
+        interval: 1m
+{{- end }}
+

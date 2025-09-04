@@ -1,0 +1,272 @@
+{
+  "timestamp": "2025-08-29T05:09:38.771407",
+  "summary": {
+    "total_tests": 42,
+    "passed": 21,
+    "failed": 21,
+    "success_rate": 50.0,
+    "status": "FAILED"
+  },
+  "detailed_results": {
+    "database": {
+      "passed": 7,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Database Connection",
+          "status": "PASSED",
+          "execution_time": 0.0005252361297607422
+        },
+        {
+          "name": "Table evaluation_results exists",
+          "status": "PASSED",
+          "execution_time": 4.601478576660156e-05
+        },
+        {
+          "name": "Table policies exists",
+          "status": "PASSED",
+          "execution_time": 2.3126602172851562e-05
+        },
+        {
+          "name": "Table vendors exists",
+          "status": "PASSED",
+          "execution_time": 2.7894973754882812e-05
+        },
+        {
+          "name": "Table compliance_reports exists",
+          "status": "PASSED",
+          "execution_time": 2.0265579223632812e-05
+        },
+        {
+          "name": "Evaluation results data integrity",
+          "status": "PASSED",
+          "execution_time": 8.463859558105469e-05
+        },
+        {
+          "name": "Database indexes working",
+          "status": "PASSED",
+          "execution_time": 4.482269287109375e-05
+        }
+      ]
+    },
+    "api_health": {
+      "passed": 2,
+      "failed": 14,
+      "tests": [
+        {
+          "name": "compliance-engine connectivity",
+          "status": "FAILED",
+          "execution_time": 0.010014057159423828,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "compliance-engine health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        },
+        {
+          "name": "benchmarks connectivity",
+          "status": "PASSED",
+          "execution_time": 2.0371553897857666
+        },
+        {
+          "name": "benchmarks health check",
+          "status": "PASSED",
+          "response_time": 2.036269
+        },
+        {
+          "name": "ai-ml connectivity",
+          "status": "FAILED",
+          "execution_time": 4.097249984741211,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "ai-ml health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        },
+        {
+          "name": "integrations connectivity",
+          "status": "FAILED",
+          "execution_time": 4.081299066543579,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "integrations health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        },
+        {
+          "name": "ui connectivity",
+          "status": "FAILED",
+          "execution_time": 4.068104267120361,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "ui health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        },
+        {
+          "name": "auth connectivity",
+          "status": "FAILED",
+          "execution_time": 4.071580648422241,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "auth health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        },
+        {
+          "name": "ai-agent connectivity",
+          "status": "FAILED",
+          "execution_time": 4.058863401412964,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "ai-agent health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        },
+        {
+          "name": "autonomous-testing connectivity",
+          "status": "FAILED",
+          "execution_time": 4.094926357269287,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "autonomous-testing health check",
+          "status": "FAILED",
+          "error": "No health endpoint available"
+        }
+      ]
+    },
+    "regulatory": {
+      "passed": 9,
+      "failed": 3,
+      "tests": [
+        {
+          "name": "NCA evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 3.0994415283203125e-06
+        },
+        {
+          "name": "SAMA evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 4.76837158203125e-07
+        },
+        {
+          "name": "MOH evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 2.384185791015625e-07
+        },
+        {
+          "name": "CITC evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 2.384185791015625e-07
+        },
+        {
+          "name": "CMA evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 2.384185791015625e-07
+        },
+        {
+          "name": "SDAIA evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 0.0
+        },
+        {
+          "name": "NDMO evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 2.384185791015625e-07
+        },
+        {
+          "name": "MHRSD evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 2.384185791015625e-07
+        },
+        {
+          "name": "MOI evaluation endpoint",
+          "status": "PASSED",
+          "execution_time": 2.384185791015625e-07
+        },
+        {
+          "name": "Compliance /evaluate",
+          "status": "FAILED",
+          "execution_time": 0.0063054561614990234,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "Compliance /metrics",
+          "status": "FAILED",
+          "execution_time": 0.0044896602630615234,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "Compliance /health/detailed",
+          "status": "FAILED",
+          "execution_time": 0.006947517395019531,
+          "error": "Test condition not met"
+        }
+      ]
+    },
+    "data_validation": {
+      "passed": 1,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "Policy files validation",
+          "status": "FAILED",
+          "execution_time": 0.012427330017089844,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "Database schema validation",
+          "status": "PASSED",
+          "execution_time": 0.001924276351928711
+        },
+        {
+          "name": "Data consistency check",
+          "status": "FAILED",
+          "execution_time": 0.0018782615661621094,
+          "error": "Test condition not met"
+        }
+      ]
+    },
+    "performance": {
+      "passed": 1,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "Database query performance",
+          "status": "PASSED",
+          "execution_time": 0.001214742660522461
+        },
+        {
+          "name": "API response time",
+          "status": "FAILED",
+          "execution_time": 0.0065860748291015625,
+          "error": "Test condition not met"
+        }
+      ]
+    },
+    "integration": {
+      "passed": 1,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "UI to API integration",
+          "status": "FAILED",
+          "execution_time": 4.062298059463501,
+          "error": "Test condition not met"
+        },
+        {
+          "name": "Microservice communication",
+          "status": "PASSED",
+          "execution_time": 2.1457672119140625e-06
+        }
+      ]
+    }
+  }
+}

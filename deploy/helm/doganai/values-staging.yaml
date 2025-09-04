@@ -1,0 +1,79 @@
+namespace: doganai-staging
+
+image:
+  api:
+    pullPolicy: IfNotPresent
+  web:
+    pullPolicy: IfNotPresent
+
+replicaCount:
+  api: 1
+  web: 1
+
+ingress:
+  enabled: true
+  className: nginx
+  certManager:
+    enabled: true
+    clusterIssuer: letsencrypt-staging
+  hosts:
+    - host: api.staging.doganai.example
+      path: /
+      service: api
+    - host: app.staging.doganai.example
+      path: /
+      service: web
+    - host: gw.staging.doganai.example
+      path: /
+      service: gateway
+  tls: []
+
+env:
+  api:
+    LOG_LEVEL: INFO
+    ALLOWED_ORIGINS: https://app.staging.doganai.example
+    SECRET_KEY: ""  # set via helm --set or values secret injection
+    API_KEY: ""     # set via helm --set or values secret injection
+    DATABASE_URL: ""  # managed service
+    REDIS_URL: ""     # optional
+    OTEL_ENABLED: "false"
+  web:
+    NEXT_PUBLIC_API_BASE: https://api.staging.doganai.example
+
+postgres:
+  enabled: false
+
+redis:
+  enabled: false
+
+otelCollector:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+resources:
+  api:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  web:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+networkPolicy:
+  enabled: true
+  ingress:
+    api:
+      fromNamespaces:
+        - ingress-nginx
+    web:
+      fromNamespaces:
+        - ingress-nginx

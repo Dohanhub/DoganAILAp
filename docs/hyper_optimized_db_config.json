@@ -1,0 +1,14 @@
+{
+  "database": {
+    "pool_size": 50,
+    "max_overflow": 100,
+    "pool_pre_ping": true,
+    "pool_recycle": 3600,
+    "echo": false
+  },
+  "performance": {
+    "query_timeout": 30,
+    "connection_timeout": 10,
+    "max_connections": 200
+  }
+}

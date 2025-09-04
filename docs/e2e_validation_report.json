@@ -1,0 +1,93 @@
+{
+  "validation_summary": {
+    "total_tests": 7,
+    "passed": 2,
+    "failed": 5,
+    "skipped": 0,
+    "success_rate": 28.57142857142857,
+    "total_duration": 18.465567588806152,
+    "timestamp": "2025-08-29T07:55:46.188168+00:00"
+  },
+  "test_results": [
+    {
+      "test_name": "Environment Setup",
+      "status": "FAIL",
+      "duration": 0.00032520294189453125,
+      "details": "Environment configuration validation failed",
+      "timestamp": "2025-08-29T07:55:27.734300+00:00",
+      "error_message": "Missing environment variables: ['REDIS_URL', 'ENABLE_CACHING', 'PROMETHEUS_ENABLED', 'PWA_ENABLED']",
+      "performance_metrics": null
+    },
+    {
+      "test_name": "Dependencies Check",
+      "status": "FAIL",
+      "duration": 1.0380656719207764,
+      "details": "Package dependency validation failed",
+      "timestamp": "2025-08-29T07:55:29.776412+00:00",
+      "error_message": "Missing packages: ['PyJWT']",
+      "performance_metrics": null
+    },
+    {
+      "test_name": "Redis Connectivity",
+      "status": "FAIL",
+      "duration": 4.0680108070373535,
+      "details": "Redis caching system validation failed",
+      "timestamp": "2025-08-29T07:55:34.850561+00:00",
+      "error_message": "Error 10061 connecting to localhost:6380. No connection could be made because the target machine actively refused it.",
+      "performance_metrics": null
+    },
+    {
+      "test_name": "File Structure",
+      "status": "PASS",
+      "duration": 0.0009047985076904297,
+      "details": "All critical paths present, 9 improvement files found",
+      "timestamp": "2025-08-29T07:55:35.873949+00:00",
+      "error_message": null,
+      "performance_metrics": null
+    },
+    {
+      "test_name": "API Server Startup",
+      "status": "FAIL",
+      "duration": 5.010007619857788,
+      "details": "API server startup validation failed",
+      "timestamp": "2025-08-29T07:55:42.097931+00:00",
+      "error_message": "API server failed to start: INFO:     Started server process [24848]\r\nINFO:     Waiting for application startup.\r\n{\"errors\": [\"SECRET_KEY should be at least 32 characters long\"], \"event\": \"Configuration validation errors\", \"logger\": \"engine.api\", \"level\": \"error\", \"timestamp\": \"2025-08-29T07:55:38.800008Z\"}\r\nERROR:    Traceback (most recent call last):\r\n  File \"C:\\Users\\AhmetDogan\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\starlette\\routing.py\", line 694, in lifespan\r\n    async with self.lifespan_context(app) as maybe_state:\r\n               ~~~~~~~~~~~~~~~~~~~~~^^^^^\r\n  File \"C:\\Users\\AhmetDogan\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\starlette\\routing.py\", line 571, in __aenter__\r\n    await self._router.startup()\r\n  File \"C:\\Users\\AhmetDogan\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\starlette\\routing.py\", line 671, in startup\r\n    await handler()\r\n  File \"D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\engine\\api.py\", line 638, in startup_event\r\n    raise ValueError(f\"Configuration validation failed in production: {errors}\")\r\nValueError: Configuration validation failed in production: ['SECRET_KEY should be at least 32 characters long']\r\n\r\nERROR:    Application startup failed. Exiting.\r\n",
+      "performance_metrics": null
+    },
+    {
+      "test_name": "API Endpoints",
+      "status": "FAIL",
+      "duration": 0.06172776222229004,
+      "details": "Only 0/2 endpoints responding correctly",
+      "timestamp": "2025-08-29T07:55:43.164020+00:00",
+      "error_message": null,
+      "performance_metrics": null
+    },
+    {
+      "test_name": "System Performance",
+      "status": "PASS",
+      "duration": 1.0090429782867432,
+      "details": "System performance optimal (CPU: 51.9%, Memory: 82.5%)",
+      "timestamp": "2025-08-29T07:55:45.177961+00:00",
+      "error_message": null,
+      "performance_metrics": {
+        "cpu_usage_percent": 51.9,
+        "memory_usage_percent": 82.5,
+        "memory_available_gb": 2.7740745544433594,
+        "disk_usage_percent": 26.5,
+        "disk_free_gb": 376.4930229187012
+      }
+    }
+  ],
+  "system_info": {
+    "python_version": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "win32",
+    "cpu_count": 8,
+    "memory_total_gb": 15.837886810302734
+  },
+  "recommendations": [
+    "Fix Redis connectivity issues - ensure Redis server is running on port 6380",
+    "Resolve API server issues - check for import errors and dependency conflicts",
+    "Install missing dependencies - run 'pip install -r requirements.txt'"
+  ]
+}

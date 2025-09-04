@@ -1,0 +1,45 @@
+{
+  "regulatory_health_checks": {
+    "CMA": {
+      "name": "Capital Market Authority",
+      "health_endpoint": "https://api.cma.org.sa/api/v1/health",
+      "priority": "critical",
+      "alert_on_failure": true,
+      "expected_response_time_ms": 5000
+    },
+    "SDAIA": {
+      "name": "Saudi Data & AI Authority",
+      "health_endpoint": "https://api.sdaia.gov.sa/api/v1/health",
+      "priority": "critical",
+      "alert_on_failure": true,
+      "expected_response_time_ms": 5000
+    },
+    "NDMO": {
+      "name": "National Data Management Office",
+      "health_endpoint": "https://api.ndmo.gov.sa/api/v1/health",
+      "priority": "critical",
+      "alert_on_failure": true,
+      "expected_response_time_ms": 5000
+    },
+    "MHRSD": {
+      "name": "Ministry of Human Resources & Social Development",
+      "health_endpoint": "https://api.hrsd.gov.sa/api/v1/health",
+      "priority": "high",
+      "alert_on_failure": true,
+      "expected_response_time_ms": 5000
+    },
+    "MOI": {
+      "name": "Ministry of Interior",
+      "health_endpoint": "https://api.moi.gov.sa/api/v1/health",
+      "priority": "critical",
+      "alert_on_failure": true,
+      "expected_response_time_ms": 5000
+    }
+  },
+  "monitoring_settings": {
+    "check_interval": "5m",
+    "timeout": "10s",
+    "retry_attempts": 3,
+    "alert_threshold": 2
+  }
+}

@@ -1,0 +1,184 @@
+# Doğan AI Platform - On-Premise Appliance Configuration
+# Compliant with Saudi Regulatory Requirements
+
+platform:
+  name: "Doğan AI Compliance Platform"
+  version: "1.0.0"
+  mode: "on-premise"  # Never changes for regulatory compliance
+  region: "saudi-arabia"
+  timezone: "Asia/Riyadh"
+
+# Data Residency Configuration
+data_residency:
+  enforce_local: true
+  allowed_regions:
+    - "saudi-arabia"
+  block_external_apis: true
+  audit_all_access: true
+
+# Database Configuration (Local Only)
+database:
+  type: "postgresql"
+  host: "localhost"  # Always local for compliance
+  port: 5432
+  name: "doganai_compliance"
+  ssl_mode: "require"
+  backup:
+    enabled: true
+    location: "/opt/doganai/backups"  # Local storage only
+    retention_days: 90  # SAMA requirement
+    encryption: "AES-256"
+
+# Cache Configuration (Local Only)
+cache:
+  type: "redis"
+  host: "localhost"  # Always local
+  port: 6379
+  persistence: true
+  encryption: true
+
+# Security Configuration
+security:
+  encryption:
+    algorithm: "AES-256-GCM"
+    key_management: "local_hsm"  # Hardware Security Module
+  authentication:
+    mfa_required: true  # NCA requirement
+    session_timeout: 900  # 15 minutes
+    password_policy:
+      min_length: 12
+      require_uppercase: true
+      require_lowercase: true
+      require_numbers: true
+      require_special: true
+      history: 5  # Cannot reuse last 5 passwords
+  audit:
+    enabled: true
+    retention_days: 2555  # 7 years per SAMA
+    immutable: true  # Cannot be modified
+
+# Compliance Frameworks
+frameworks:
+  nca:
+    enabled: true
+    version: "ECC-1:2018"
+    auto_update: false  # Manual updates only
+  sama:
+    enabled: true
+    framework: "Cyber Security Framework"
+    basel_iii: true
+  sdaia:
+    enabled: true
+    data_classification: true
+    ai_governance: true
+  pdpl:
+    enabled: true
+    consent_management: true
+    data_subject_rights: true
+
+# Service Configuration
+services:
+  compliance_engine:
+    workers: 4
+    max_connections: 100
+    timeout: 30
+  api_gateway:
+    rate_limit: 1000  # requests per minute
+    cors_enabled: false  # Disabled for security
+  monitoring:
+    metrics_retention: 30  # days
+    alerting:
+      enabled: true
+      channels:
+        - email
+        - sms
+
+# Cluster Configuration (for multi-node deployments)
+cluster:
+  enabled: false  # Set to true for cluster mode
+  nodes:
+    - name: "primary"
+      role: "master"
+      ip: "10.0.1.10"
+    - name: "secondary"
+      role: "worker"
+      ip: "10.0.1.11"
+  replication:
+    enabled: true
+    mode: "synchronous"
+  load_balancing:
+    algorithm: "round-robin"
+
+# Backup Configuration
+backup:
+  automated: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  destinations:
+    - type: "local"
+      path: "/opt/doganai/backups"
+    - type: "network"
+      path: "\\\\backup-server\\doganai"  # Internal network only
+  encryption:
+    enabled: true
+    algorithm: "AES-256"
+  verification:
+    enabled: true
+    schedule: "0 6 * * 0"  # Weekly on Sunday
+
+# Monitoring & Alerting
+monitoring:
+  health_checks:
+    enabled: true
+    interval: 60  # seconds
+  metrics:
+    enabled: true
+    exporters:
+      - prometheus
+  alerts:
+    cpu_threshold: 80
+    memory_threshold: 85
+    disk_threshold: 90
+    compliance_score_threshold: 70
+
+# Network Configuration
+network:
+  interfaces:
+    management: "eth0"
+    data: "eth1"
+  firewall:
+    enabled: true
+    allowed_ports:
+      - 443  # HTTPS only
+    allowed_ips:
+      - "10.0.0.0/8"  # Internal network only
+  vpn:
+    enabled: false  # Can be enabled for remote management
+
+# Regulatory Reporting
+reporting:
+  automated_reports:
+    nca:
+      enabled: true
+      frequency: "monthly"
+      format: "pdf"
+    sama:
+      enabled: true
+      frequency: "quarterly"
+      format: "excel"
+  manual_reports:
+    enabled: true
+    formats:
+      - pdf
+      - excel
+      - json
+
+# High Availability Configuration
+high_availability:
+  enabled: false  # Set to true for HA mode
+  vip: "10.0.1.100"  # Virtual IP
+  failover:
+    automatic: true
+    timeout: 30  # seconds
+  heartbeat:
+    interval: 5  # seconds
+    timeout: 15  # seconds

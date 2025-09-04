@@ -1,0 +1,117 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "doganai.fullname" . }}-api-allow
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-api
+  policyTypes: [ Ingress {{- if .Values.networkPolicy.egress.enabled }}, Egress{{- end }} ]
+  ingress:
+    - from:
+        - podSelector: {}
+        - namespaceSelector: {}
+        {{- range .Values.networkPolicy.ingress.api.fromNamespaces }}
+        - namespaceSelector:
+            matchLabels:
+              name: {{ . | quote }}
+        {{- end }}
+        {{- range .Values.networkPolicy.ingress.api.fromPodSelectors }}
+        - podSelector:
+            matchLabels:
+{{ toYaml . | indent 14 }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 8000
+  {{- if .Values.networkPolicy.egress.enabled }}
+  egress:
+    - to:
+        {{- if .Values.networkPolicy.egress.allowDNS }}
+        - namespaceSelector: {}
+        {{- end }}
+        - podSelector:
+            matchLabels:
+              app: {{ include "doganai.fullname" . }}-api
+        {{- range .Values.networkPolicy.egress.toCidrs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 8000
+  {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "doganai.fullname" . }}-web-allow
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-web
+  policyTypes: [ Ingress {{- if .Values.networkPolicy.egress.enabled }}, Egress{{- end }} ]
+  ingress:
+    - from:
+        - podSelector: {}
+        - namespaceSelector: {}
+        {{- range .Values.networkPolicy.ingress.web.fromNamespaces }}
+        - namespaceSelector:
+            matchLabels:
+              name: {{ . | quote }}
+        {{- end }}
+        {{- range .Values.networkPolicy.ingress.web.fromPodSelectors }}
+        - podSelector:
+            matchLabels:
+{{ toYaml . | indent 14 }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 3001
+  {{- if .Values.networkPolicy.egress.enabled }}
+  egress:
+    - to:
+        {{- if .Values.networkPolicy.egress.allowDNS }}
+        - namespaceSelector: {}
+        {{- end }}
+        {{- if and .Values.postgres.enabled .Values.networkPolicy.egress.allowDb }}
+        - podSelector:
+            matchLabels:
+              app: {{ include "doganai.fullname" . }}-postgres
+        {{- end }}
+        {{- if and .Values.redis.enabled .Values.networkPolicy.egress.allowRedis }}
+        - podSelector:
+            matchLabels:
+              app: {{ include "doganai.fullname" . }}-redis
+        {{- end }}
+        {{- if and .Values.otelCollector.enabled .Values.networkPolicy.egress.allowOtel }}
+        - podSelector:
+            matchLabels:
+              app: {{ include "doganai.fullname" . }}-otel-collector
+        {{- end }}
+        {{- range .Values.networkPolicy.egress.toCidrs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 4318
+        - protocol: TCP
+          port: 4317
+  {{- end }}
+{{- end }}

@@ -1,0 +1,37 @@
+{{- if and .Values.ingress.enabled .Values.argoRollouts.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "doganai.fullname" . }}-web
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.className | default "nginx" | quote }}
+    {{- if and .Values.ingress.certManager.enabled .Values.ingress.certManager.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.certManager.clusterIssuer | quote }}
+    {{- end }}
+    {{- if and .Values.ingress.certManager.enabled .Values.ingress.certManager.issuer }}
+    cert-manager.io/issuer: {{ .Values.ingress.certManager.issuer | quote }}
+    {{- end }}
+{{- with .Values.ingress.annotations }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+spec:
+  rules:
+  {{- range .Values.ingress.hosts }}
+    {{- if eq .service "web" }}
+    - host: {{ .host }}
+      http:
+        paths:
+          - path: {{ .path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "doganai.fullname" $ }}-web
+                port:
+                  number: {{ $.Values.service.webPort }}
+    {{- end }}
+  {{- end }}
+  tls:
+  {{- toYaml .Values.ingress.tls | nindent 4 }}
+{{- end }}
+

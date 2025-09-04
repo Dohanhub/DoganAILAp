@@ -1,0 +1,276 @@
+# DoganAI Compliance Kit - Enhanced Database Architecture
+# Production-ready container orchestration with PostgreSQL (TimescaleDB), Redis, and Elasticsearch
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # ENHANCED DATABASE SERVICES
+  # =============================================================================
+  
+  postgres-timescale:
+    image: timescale/timescaledb:latest-pg15
+    container_name: doganai-postgres-timescale
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: doganai_compliance
+      POSTGRES_USER: doganai
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-DoganAI2024!}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      TZ: Asia/Riyadh
+      TIMESCALEDB_TELEMETRY: "off"
+    volumes:
+      - postgres_timescale_data:/var/lib/postgresql/data
+      - ./db/init_timescale.sql:/docker-entrypoint-initdb.d/01-init-timescale.sql:ro
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - ./db/migrations:/docker-entrypoint-initdb.d/migrations:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - doganai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U doganai -d doganai_compliance"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-alpine
+    container_name: doganai-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --timeout 300
+      --tcp-keepalive 60
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+    environment:
+      TZ: Asia/Riyadh
+    volumes:
+      - redis_data:/data
+      - ./redis-config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      - "6379:6379"
+    networks:
+      - doganai-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: doganai-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=doganai-cluster
+      - node.name=doganai-node-1
+      - bootstrap.memory_lock=true
+      - TZ=Asia/Riyadh
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ./elasticsearch-config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - doganai-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # =============================================================================
+  # APPLICATION SERVICES
+  # =============================================================================
+  
+  doganai-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE:-$(date -u +'%Y-%m-%dT%H:%M:%SZ')}
+        VERSION: ${VERSION:-1.0.0}
+    container_name: doganai-api
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - PGHOST=postgres-timescale
+      - PGPORT=5432
+      - PGDATABASE=doganai_compliance
+      - PGUSER=doganai
+      - PGPASSWORD=${POSTGRES_PASSWORD:-DoganAI2024!}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - SECRET_KEY=${SECRET_KEY:-your-production-secret-key-here}
+      - TZ=Asia/Riyadh
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./config:/app/config:ro
+    ports:
+      - "8000:8000"
+    networks:
+      - doganai-network
+    depends_on:
+      postgres-timescale:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # =============================================================================
+  # MONITORING SERVICES
+  # =============================================================================
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: doganai-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - doganai-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: doganai-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - TZ=Asia/Riyadh
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    ports:
+      - "3000:3000"
+    networks:
+      - doganai-network
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+
+volumes:
+  postgres_timescale_data:
+    driver: local
+  redis_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+
+networks:
+  doganai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

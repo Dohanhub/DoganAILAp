@@ -1,0 +1,12 @@
+{
+  "activation_time": "2025-09-03T12:45:24.872263",
+  "system_health": "partial",
+  "api_endpoints": {
+    "http://localhost:8001/": "OK",
+    "http://localhost:8001/api/v1/integration/health": "HTTP_404",
+    "http://localhost:8001/api/v1/regulators": "HTTP_404",
+    "http://localhost:8001/api/v1/monitoring/status": "HTTP_404"
+  },
+  "database_initialized": true,
+  "monitoring_active": true
+}

@@ -1,0 +1,158 @@
+﻿/**
+ * DoganAI Compliance Kit - Main Application Entry Point
+ * Advanced React application with comprehensive features
+ */
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Toaster } from 'sonner'
+
+import App from './App'
+import { ThemeProvider } from './providers/ThemeProvider'
+import { I18nProvider } from './providers/I18nProvider'
+import { AuthProvider } from './providers/AuthProvider'
+
+import './styles/globals.css'
+import './lib/i18n'
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 30, // 30 minutes
+      retry: (failureCount, error: any) => {
+        if (error.status === 404 || error.status === 403) {
+          return false
+        }
+        return failureCount < 3
+      },
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+})
+
+// Error boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Application error:', error, errorInfo)
+    // Here you could send error to monitoring service
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
+            <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full">
+              <svg
+                className="w-6 h-6 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div className="mt-4 text-center">
+              <h3 className="text-lg font-medium text-gray-900">
+                Something went wrong
+              </h3>
+              <p className="mt-2 text-sm text-gray-500">
+                We're sorry, but something unexpected happened. Please refresh the page to try again.
+              </p>
+              <div className="mt-6">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                >
+                  Refresh Page
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
+// Performance monitoring
+if (typeof window !== 'undefined' && 'performance' in window) {
+  // Log performance metrics
+  window.addEventListener('load', () => {
+    const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+    console.log('Performance Metrics:', {
+      'DNS Lookup': perfData.domainLookupEnd - perfData.domainLookupStart,
+      'TCP Connect': perfData.connectEnd - perfData.connectStart,
+      'Request Time': perfData.responseStart - perfData.requestStart,
+      'Response Time': perfData.responseEnd - perfData.responseStart,
+      'DOM Content Loaded': perfData.domContentLoadedEventEnd - perfData.navigationStart,
+      'Page Load': perfData.loadEventEnd - perfData.navigationStart,
+    })
+  })
+}
+
+// Service Worker registration
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(
+      (registration) => {
+        console.log('SW registered: ', registration)
+      },
+      (registrationError) => {
+        console.log('SW registration failed: ', registrationError)
+      }
+    )
+  })
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="light" storageKey="doganai-ui-theme">
+            <I18nProvider>
+              <AuthProvider>
+                <App />
+                <Toaster 
+                  position="top-right"
+                  expand={true}
+                  richColors={true}
+                  closeButton={true}
+                />
+              </AuthProvider>
+            </I18nProvider>
+          </ThemeProvider>
+          {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+        </QueryClientProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
+  </React.StrictMode>
+)

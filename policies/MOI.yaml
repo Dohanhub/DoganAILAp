@@ -1,0 +1,96 @@
+regulator: "MOI"
+version: "3.0"
+title: "Ministry of Interior Security & Civil Affairs Regulations 2024"
+authority: "MOI-SC-2024"
+arabic_name: "وزارة الداخلية"
+jurisdiction: "Security & Civil Affairs"
+description: "Ministry of Interior regulations for security compliance, civil registration, and public safety requirements"
+effective_date: "2024-01-01"
+compliance_deadline: "2024-08-15"
+
+api_config:
+  base_url: "https://api.moi.gov.sa"
+  auth_type: "mutual_tls"
+  cert_required: true
+  security_level: "high"
+
+controls:
+  - id: "MOI-001"
+    title: "Security Clearance & Background Checks"
+    arabic_title: "التصريح الأمني وفحص الخلفيات"
+    category: "Security Clearance"
+    risk_level: "critical"
+    requirements:
+      - "Conduct employee background verification"
+      - "Implement security clearance procedures"
+      - "Maintain personnel security records"
+      - "Regular security status updates"
+    compliance_check: "security_clearance_validation"
+    
+  - id: "MOI-002"
+    title: "Civil Registration & Documentation"
+    arabic_title: "الأحوال المدنية والتوثيق"
+    category: "Civil Registration"
+    risk_level: "critical"
+    requirements:
+      - "Verify civil registration status"
+      - "Maintain accurate identity documentation"
+      - "Report civil status changes"
+      - "Comply with identification requirements"
+    compliance_check: "civil_registration_compliance"
+    
+  - id: "MOI-003"
+    title: "Public Safety & Emergency Response"
+    arabic_title: "السلامة العامة والاستجابة للطوارئ"
+    category: "Public Safety"
+    risk_level: "high"
+    requirements:
+      - "Implement emergency response plans"
+      - "Maintain public safety protocols"
+      - "Coordinate with security authorities"
+      - "Report safety incidents promptly"
+    compliance_check: "public_safety_assessment"
+    
+  - id: "MOI-004"
+    title: "Border & Immigration Compliance"
+    arabic_title: "الامتثال للحدود والهجرة"
+    category: "Immigration"
+    risk_level: "high"
+    requirements:
+      - "Verify immigration status of employees"
+      - "Maintain visa and permit records"
+      - "Report immigration violations"
+      - "Comply with foreign worker regulations"
+    compliance_check: "immigration_compliance"
+    
+  - id: "MOI-005"
+    title: "Counter-Terrorism & Security Threats"
+    arabic_title: "مكافحة الإرهاب والتهديدات الأمنية"
+    category: "Counter-Terrorism"
+    risk_level: "critical"
+    requirements:
+      - "Implement security threat monitoring"
+      - "Report suspicious activities"
+      - "Maintain anti-terrorism protocols"
+      - "Coordinate with security agencies"
+    compliance_check: "counter_terrorism_compliance"
+
+reporting:
+  frequency: "monthly"
+  submission_deadline: "10 days after month end"
+  required_reports:
+    - "Security Status Report"
+    - "Civil Registration Compliance Report"
+    - "Public Safety Incident Report"
+    - "Immigration Status Report"
+
+penalties:
+  minor_violation: "Security review and corrective action"
+  major_violation: "Fine up to 10,000,000 SAR"
+  critical_violation: "Operations suspension and security investigation"
+
+integration:
+  priority: "critical"
+  sync_frequency: "real_time"
+  monitoring_required: true
+  audit_trail: true

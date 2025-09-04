@@ -1,0 +1,15 @@
+:root {
+  color-scheme: light;
+}
+
+.theme-dark {
+  color-scheme: dark;
+}
+
+.theme-ksa {
+  /* example brand override */
+  --color-brand-primary: #006C35;
+}
+
+/* RTL helper */
+[dir="rtl"] .rtl\:text-right { text-align: right; }

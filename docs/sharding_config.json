@@ -1,0 +1,35 @@
+{
+  "sharding": {
+    "shard_count": 16,
+    "hash_function": "consistent_hash",
+    "replication_factor": 2,
+    "auto_rebalancing": true
+  },
+  "shards": {
+    "shard_0": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "doganai_shard_0"
+    },
+    "shard_1": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "doganai_shard_1"
+    },
+    "shard_2": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "doganai_shard_2"
+    },
+    "shard_3": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "doganai_shard_3"
+    }
+  },
+  "routing": {
+    "enable_consistent_hashing": true,
+    "enable_load_balancing": true,
+    "enable_failover": true
+  }
+}

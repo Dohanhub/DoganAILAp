@@ -1,0 +1,44 @@
+apiVersion: v2
+name: doganai-compliance-kit
+description: A Helm chart for DoganAI Compliance Kit - Enterprise-grade compliance management platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - compliance
+  - regulatory
+  - ai
+  - machine-learning
+  - enterprise
+  - saudi-arabia
+  - nca
+  - sama
+  - moh
+home: https://dogan-ai.com
+sources:
+  - https://github.com/dogan-ai/compliance-kit
+maintainers:
+  - name: DoganAI Team
+    email: team@dogan-ai.com
+    url: https://dogan-ai.com
+icon: https://dogan-ai.com/logo.png
+annotations:
+  category: Business Applications
+  licenses: Proprietary
+  vendor: DoganAI
+  support: DoganAI Support Team
+  maturity: Production Ready
+  archs:
+    - amd64
+    - arm64
+  platforms:
+    - linux
+    - windows
+  minKubeVersion: "1.24.0"
+  maxKubeVersion: "1.28.0"
+  testedKubeVersions:
+    - "1.24.0"
+    - "1.25.0"
+    - "1.26.0"
+    - "1.27.0"
+    - "1.28.0"

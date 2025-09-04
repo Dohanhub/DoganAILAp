@@ -1,0 +1,15 @@
+Third-Party Notices and Attribution
+
+This project depends on open-source components. Their licenses are included
+with the distributed artifacts or can be referenced via the Software Bill of Materials (SBOM).
+
+How to retrieve SBOM and licenses:
+- CI generates an SBOM (SPDX JSON) for published images (see .github/workflows/docker-ci.yml).
+- SBOM includes package names, versions, and license metadata.
+
+Major components (non-exhaustive):
+- Python: FastAPI, Uvicorn, SQLAlchemy, Pydantic, Requests, Prometheus Client
+- Node/Next.js for the web application
+
+You must comply with the license terms of each third-party component.
+For questions or to request a complete license report, contact the maintainers.

@@ -1,0 +1,52 @@
+name: Helm lint and lock validation
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'src/deploy/k8s/helm-chart/**'
+      - 'requirements-api.txt'
+      - '.github/workflows/ci-helm-and-lock.yml'
+  pull_request:
+    paths:
+      - 'src/deploy/k8s/helm-chart/**'
+      - 'requirements-api.txt'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+      - name: Lint Helm chart
+        run: |
+          helm lint src/deploy/k8s/helm-chart
+
+  lock-regen-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pip-tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-tools
+      - name: Regenerate lock
+        run: |
+          pip-compile --generate-hashes -o requirements.lock.txt requirements-api.txt
+      - name: Check diff
+        run: |
+          if ! git diff --exit-code -- requirements.lock.txt; then
+            echo 'requirements.lock.txt is out of date. Regenerate with pip-compile.' >&2
+            exit 1
+          fi

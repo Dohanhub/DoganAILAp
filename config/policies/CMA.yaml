@@ -1,0 +1,96 @@
+regulator: "CMA"
+version: "3.2"
+title: "Capital Market Authority Regulations 2024"
+authority: "CMA-SMR-2024"
+arabic_name: "هيئة السوق المالية"
+jurisdiction: "Securities & Capital Markets"
+description: "Saudi Capital Market Authority regulations for securities trading, investment services, and financial market operations"
+effective_date: "2024-01-01"
+compliance_deadline: "2024-06-30"
+
+api_config:
+  base_url: "https://api.cma.org.sa"
+  auth_type: "oauth2"
+  token_endpoint: "https://auth.cma.org.sa/oauth/token"
+  scopes: ["compliance", "securities", "reporting"]
+
+controls:
+  - id: "CMA-001"
+    title: "Securities Registration & Disclosure"
+    arabic_title: "تسجيل الأوراق المالية والإفصاح"
+    category: "Securities Registration"
+    risk_level: "critical"
+    requirements:
+      - "Register all securities offerings with CMA"
+      - "Provide complete financial disclosure documents"
+      - "Maintain investor protection mechanisms"
+      - "Implement market manipulation prevention"
+    compliance_check: "securities_registration_status"
+    
+  - id: "CMA-002"
+    title: "Investment Services Licensing"
+    arabic_title: "ترخيص الخدمات الاستثمارية"
+    category: "Licensing"
+    risk_level: "critical"
+    requirements:
+      - "Obtain proper investment services license"
+      - "Maintain minimum capital requirements"
+      - "Implement client asset segregation"
+      - "Provide investment advisory disclosures"
+    compliance_check: "investment_license_validation"
+    
+  - id: "CMA-003"
+    title: "Market Conduct & Fair Trading"
+    arabic_title: "سلوك السوق والتداول العادل"
+    category: "Market Conduct"
+    risk_level: "high"
+    requirements:
+      - "Implement best execution policies"
+      - "Prevent insider trading activities"
+      - "Maintain trade surveillance systems"
+      - "Report suspicious market activities"
+    compliance_check: "market_conduct_monitoring"
+    
+  - id: "CMA-004"
+    title: "Financial Reporting & Auditing"
+    arabic_title: "التقارير المالية والمراجعة"
+    category: "Financial Reporting"
+    risk_level: "high"
+    requirements:
+      - "Submit quarterly financial reports"
+      - "Undergo annual independent audits"
+      - "Maintain accounting standards compliance"
+      - "Provide real-time risk reporting"
+    compliance_check: "financial_reporting_compliance"
+    
+  - id: "CMA-005"
+    title: "Client Protection & Suitability"
+    arabic_title: "حماية العملاء والملاءمة"
+    category: "Client Protection"
+    risk_level: "high"
+    requirements:
+      - "Conduct client suitability assessments"
+      - "Implement investor education programs"
+      - "Maintain complaint handling procedures"
+      - "Provide clear fee disclosures"
+    compliance_check: "client_protection_measures"
+
+reporting:
+  frequency: "quarterly"
+  submission_deadline: "45 days after quarter end"
+  required_reports:
+    - "Securities Trading Report"
+    - "Client Asset Statement"
+    - "Risk Management Report"
+    - "Compliance Monitoring Report"
+
+penalties:
+  minor_violation: "Warning and corrective action plan"
+  major_violation: "Fine up to 10,000,000 SAR"
+  critical_violation: "License suspension or revocation"
+
+integration:
+  priority: "critical"
+  sync_frequency: "real_time"
+  monitoring_required: true
+  audit_trail: true

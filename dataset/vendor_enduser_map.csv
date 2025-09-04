@@ -1,0 +1,25 @@
+﻿vendor_id,end_user_id,use_case
+V-ZATCA,EU-GOV,Tax authority reporting integration
+V-ZATCA,EU-RETAIL,Merchants issuing e-invoices
+V-SFDA,EU-HEALTH,"Manufacturers, distributors, hospitals submitting registrations"
+V-NPHIES,EU-HEALTH,Providers & insurers exchanging eligibility/claims
+V-OPENBANK,EU-BANK,Banks/TPPs for AIS/PIS; fintech aggregators
+V-WATHQ-CR,EU-BANK,KYC business onboarding
+V-WATHQ-CR,EU-RETAIL,Marketplace seller verification
+V-WATHQ-GOSI,EU-BANK,Income/employment verification
+V-WATHQ-CHAM,EU-RETAIL,Vendor vetting
+V-WATHQ-ADDR,EU-RETAIL,Validate business address records
+V-SPL-ADDR,EU-LOGI,Address verification & geocoding for delivery
+V-FASAH,EU-LOGI,Customs clearance workflows
+V-GEOSA,EU-GEO,GIS basemaps & layers
+V-SGS,EU-IND,Exploration planning & mining analytics
+V-SAUDIEX,EU-BANK,Market data & reference data
+V-SPA,EU-NEWS,Official news ingestion & alerts
+V-UNIFONIC,EU-CPaaS,Transactional messaging & WhatsApp bots
+V-ARAMEX,EU-LOGI,"Shipping labels, tracking, rates"
+V-SMSA,EU-LOGI,Shipping & last-mile tracking
+V-HYPERPAY,EU-RETAIL,Checkout payments & webhooks
+V-MOYASAR,EU-RETAIL,Checkout payments & webhooks
+V-PAYTABS,EU-RETAIL,Checkout payments & webhooks
+V-TAP,EU-RETAIL,Checkout payments & webhooks
+V-GEIDEA,EU-RETAIL,Checkout payments & webhooks

@@ -1,0 +1,7 @@
+mapping: "MAP-GOV-SecurePortal-IBM-Lenovo"
+policy_ref: "NCA@1.0.0"
+vendors:
+  - "IBM.yaml"
+  - "Lenovo.yaml"
+  - "Fortinet.yaml"
+sector: "Government"

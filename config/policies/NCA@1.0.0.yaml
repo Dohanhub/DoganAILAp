@@ -1,0 +1,60 @@
+regulator: "NCA"
+version: "1.0.0"
+description: "National Cybersecurity Authority Controls"
+effective_date: "2024-01-01"
+metadata:
+  author: "NCA Compliance Team"
+  created_date: "2024-01-01"
+  last_updated: "2024-01-15"
+  region: "Saudi Arabia"
+
+controls:
+  - id: "NCA-001"
+    title: "Access Control Implementation"
+    description: "Implement robust access control mechanisms to protect system resources"
+    category: "Access Control"
+    severity: "HIGH"
+    requirements:
+      - "Multi-factor authentication for administrative access"
+      - "Role-based access control (RBAC)"
+      - "Regular access reviews and updates"
+    
+  - id: "NCA-002"
+    title: "Data Encryption"
+    description: "Ensure data is encrypted both in transit and at rest"
+    category: "Data Protection"
+    severity: "CRITICAL"
+    requirements:
+      - "AES-256 encryption for data at rest"
+      - "TLS 1.3 for data in transit"
+      - "Key management and rotation policies"
+    
+  - id: "NCA-003"
+    title: "Incident Response"
+    description: "Establish comprehensive incident response procedures"
+    category: "Incident Management"
+    severity: "HIGH"
+    requirements:
+      - "24/7 incident response team"
+      - "Documented incident response procedures"
+      - "Regular incident response drills"
+    
+  - id: "NCA-004"
+    title: "Vulnerability Management"
+    description: "Implement systematic vulnerability assessment and remediation"
+    category: "Vulnerability Management"
+    severity: "HIGH"
+    requirements:
+      - "Regular vulnerability scanning"
+      - "Timely patch management"
+      - "Vulnerability risk assessment"
+    
+  - id: "NCA-005"
+    title: "Security Monitoring"
+    description: "Continuous security monitoring and logging"
+    category: "Monitoring"
+    severity: "MEDIUM"
+    requirements:
+      - "Centralized logging system"
+      - "Real-time security alerts"
+      - "Log retention and analysis"

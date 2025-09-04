@@ -1,0 +1,44 @@
+{
+  "title": "DoganAI API Overview",
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Requests per second",
+      "targets": [
+        {"expr": "sum(rate(http_requests_total[1m]))", "legendFormat": "rps"}
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "type": "graph",
+      "title": "Latency (p50/p90/p99)",
+      "targets": [
+        {"expr": "histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p50"},
+        {"expr": "histogram_quantile(0.9, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p90"},
+        {"expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p99"}
+      ],
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "type": "graph",
+      "title": "Error Rate (4xx/5xx)",
+      "targets": [
+        {"expr": "sum(rate(http_requests_total{status=~\"4..\"}[5m]))", "legendFormat": "4xx"},
+        {"expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m]))", "legendFormat": "5xx"}
+      ],
+      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8}
+    },
+    {
+      "type": "table",
+      "title": "Top Paths by RPS",
+      "targets": [
+        {"expr": "topk(10, sum(rate(http_requests_total[5m])) by (path))", "format": "table"}
+      ],
+      "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8}
+    }
+  ],
+  "schemaVersion": 36,
+  "version": 1
+}
+

@@ -1,0 +1,58 @@
+{
+  "nav.home": "الرئيسية",
+  "nav.standards": "المعايير",
+  "nav.regulators": "الجهات المنظمة",
+  "nav.vendors": "الموردون",
+  "nav.connectors": "الموصلات",
+  "nav.assessments": "التقييمات",
+  "nav.evidence": "الأدلة",
+  "nav.reports": "التقارير",
+  "nav.admin": "الإدارة",
+  "nav.login": "تسجيل الدخول",
+  "nav.settings": "الإعدادات"
+  ,"evidence.title": "رفع الأدلة"
+  ,"evidence.recent": "أحدث الأدلة"
+  ,"reports.title": "التقارير"
+  ,"reports.standard.placeholder": "اسم المعيار (مثال: NCA)"
+  ,"btn.export.csv": "تصدير CSV"
+  ,"btn.export.json": "تصدير JSON"
+  ,"btn.export.pdf": "تصدير PDF"
+  ,"btn.create": "إنشاء"
+  ,"btn.rotate": "تدوير"
+  ,"btn.assign": "تعيين"
+  ,"standards.title": "المعايير"
+  ,"controls.title": "الضوابط"
+  ,"assessments.title": "التقييمات"
+  ,"assessments.standard.placeholder": "اسم المعيار"
+  ,"assessments.control.placeholder": "معرّف الضابط"
+  ,"btn.run": "تشغيل"
+  ,"btn.upload": "رفع"
+  ,"regulators.title": "الجهات المنظمة"
+  ,"vendors.title": "الموردون"
+  ,"connectors.title": "الموصلات"
+  ,"admin.title": "الإدارة"
+  ,"admin.tenants": "المستأجرون"
+  ,"admin.users": "المستخدمون والصلاحيات"
+  ,"tenants.name.placeholder": "اسم المستأجر"
+  ,"tenants.apiKey": "مفتاح API"
+  ,"users.email": "بريد المستخدم"
+  ,"users.role": "الدور"
+  ,"settings.title": "الإعدادات"
+  ,"settings.apiBase": "مسار الواجهة الخلفية"
+  ,"settings.apiKey": "مفتاح API"
+  ,"settings.tenantKey": "مفتاح المستأجر"
+  ,"settings.token": "رمز JWT"
+  ,"settings.language": "اللغة"
+  ,"lang.en": "الإنجليزية"
+  ,"lang.ar": "العربية"
+  ,"btn.save": "حفظ"
+  ,"home.title": "امتثال دوغان أي آي"
+  ,"home.subtitle": "مرحبًا. استخدم شريط التنقل للوصول إلى الوحدات."
+  ,"login.title": "تسجيل الدخول"
+  ,"login.email": "البريد الإلكتروني"
+  ,"login.password": "كلمة المرور"
+  ,"login.submit": "تسجيل الدخول"
+  ,"diagnostics.title": "التشخيص"
+  ,"diagnostics.connectivity": "الاتصال"
+  ,"diagnostics.db": "ملخص قاعدة البيانات"
+}

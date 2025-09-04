@@ -1,0 +1,142 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Application servers
+  - job_name: 'app-servers'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Database monitoring
+  - job_name: 'postgres-primary'
+    static_configs:
+      - targets: ['db-primary:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'postgres-replica'
+    static_configs:
+      - targets: ['db-replica:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Redis monitoring
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # Weaviate vector database
+  - job_name: 'weaviate'
+    static_configs:
+      - targets: ['weaviate:8080']
+    metrics_path: '/v1/metrics'
+    scrape_interval: 30s
+
+  # Elasticsearch
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch:9200']
+    metrics_path: '/_prometheus/metrics'
+    scrape_interval: 30s
+
+  # Logstash
+  - job_name: 'logstash'
+    static_configs:
+      - targets: ['logstash:9600']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Kibana
+  - job_name: 'kibana'
+    static_configs:
+      - targets: ['kibana:5601']
+    metrics_path: '/api/status'
+    scrape_interval: 30s
+
+  # HAProxy
+  - job_name: 'haproxy'
+    static_configs:
+      - targets: ['haproxy:8404']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # NGINX
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-proxy:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 15s
+
+  # Node Exporter (system metrics)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['app-server-1:9100', 'app-server-2:9100', 'app-server-3:9100']
+    scrape_interval: 15s
+
+  # Custom compliance metrics
+  - job_name: 'compliance-metrics'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/api/metrics/compliance'
+    scrape_interval: 60s
+
+  # AI Engine metrics
+  - job_name: 'ai-engine'
+    static_configs:
+      - targets: ['ai-engine-1:8000', 'ai-engine-2:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Database connection pool metrics
+  - job_name: 'db-connections'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/api/metrics/db-connections'
+    scrape_interval: 30s
+
+  # Cache performance metrics
+  - job_name: 'cache-metrics'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/api/metrics/cache'
+    scrape_interval: 30s
+
+  # API response time metrics
+  - job_name: 'api-performance'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/api/metrics/performance'
+    scrape_interval: 15s
+
+  # Security metrics
+  - job_name: 'security-metrics'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/api/metrics/security'
+    scrape_interval: 60s
+
+  # Business metrics
+  - job_name: 'business-metrics'
+    static_configs:
+      - targets: ['app-server-1:8001', 'app-server-2:8001', 'app-server-3:8001']
+    metrics_path: '/api/metrics/business'
+    scrape_interval: 300s

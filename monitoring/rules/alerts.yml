@@ -1,0 +1,19 @@
+groups:
+  - name: basic-alerts
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Instance {{ $labels.instance }} down
+          description: '{{ $labels.job }} on {{ $labels.instance }} has been down for more than 2 minutes.'
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, method, path)) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High 95th percentile latency
+          description: '95th percentile latency over 1s for 5m on {{ $labels.method }} {{ $labels.path }}.'

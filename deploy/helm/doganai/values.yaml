@@ -1,0 +1,209 @@
+namespace: doganai
+
+image:
+  registry: ""
+  api:
+    repository: doganai/api
+    tag: latest
+    pullPolicy: IfNotPresent
+  gateway:
+    repository: doganai/gateway
+    tag: latest
+    pullPolicy: IfNotPresent
+  apiPdf:
+    repository: doganai/api-pdf
+    tag: latest
+    pullPolicy: IfNotPresent
+  web:
+    repository: doganai/web
+    tag: latest
+    pullPolicy: IfNotPresent
+
+replicaCount:
+  api: 1
+  web: 1
+  gateway: 1
+
+service:
+  type: ClusterIP
+  apiPort: 8000
+  webPort: 3001
+  gatewayPort: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: api.local.doganai
+      path: /
+      service: api
+    - host: app.local.doganai
+      path: /
+      service: web
+  tls: []
+  certManager:
+    enabled: false
+    clusterIssuer: ""
+    issuer: ""
+
+env:
+  api:
+    LOG_LEVEL: INFO
+    ALLOWED_ORIGINS: http://localhost:3001
+    SECRET_KEY: ""
+    API_KEY: ""
+    INTERNAL_JWT_SECRET: ""
+    DATABASE_URL: ""
+    REDIS_URL: ""
+    OTEL_ENABLED: "false"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  web:
+    NEXT_PUBLIC_API_BASE: http://doganai-api:8000
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+postgres:
+  enabled: false
+  storage: 10Gi
+  user: doganai
+  password: doganai
+  database: doganai
+
+redis:
+  enabled: false
+
+otelCollector:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+usePdfApi: false
+
+resources:
+  api:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  web:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+featureFlags:
+  monitoring: true
+  sse: true
+  gateway: true
+
+networkPolicy:
+  enabled: false
+  ingress:
+    api:
+      fromNamespaces: []
+      fromPodSelectors: []
+    web:
+      fromNamespaces: []
+      fromPodSelectors: []
+  egress:
+    enabled: false
+    allowDNS: true
+    toCidrs: []
+    allowDb: true
+    allowRedis: true
+    allowOtel: true
+    webAllowApiOnly: true
+
+backup:
+  enabled: false
+  schedule: "0 2 * * *"
+  retentionDays: 7
+  image: postgres:15-alpine
+  env:
+    DATABASE_URL: ""
+  destination:
+    pvc:
+      create: false
+      claimName: backup-data
+      size: 10Gi
+      storageClassName: ""
+      subPath: db
+    s3:
+      enabled: false
+      bucket: ""
+      prefix: "backups"
+      region: ""
+      endpoint: ""
+      accessKeySecret: ""  # name of secret with AWS_ACCESS_KEY_ID
+      secretKeySecret: ""  # name of secret with AWS_SECRET_ACCESS_KEY
+
+velero:
+  enabled: false
+  backupName: doganai-daily
+  schedule: "0 3 * * *"
+  includedNamespaces:
+    - doganai
+  ttl: 168h
+
+flagger:
+  enabled: false
+  provider: nginx
+  api:
+    interval: 1m
+    stepWeight: 20
+    maxWeight: 60
+    threshold: 5
+  web:
+    interval: 1m
+    stepWeight: 20
+    maxWeight: 60
+    threshold: 5
+
+argoRollouts:
+  enabled: false
+  api:
+    replicas: 2
+    steps:
+      - setWeight: 20
+      - pause: {duration: 60}
+      - setWeight: 40
+      - pause: {duration: 60}
+      - setWeight: 60
+      - pause: {duration: 60}
+  web:
+    replicas: 2
+    steps:
+      - setWeight: 20
+      - pause: {duration: 60}
+      - setWeight: 40
+      - pause: {duration: 60}
+  metrics:
+    interval: 1m
+    successMin: 99
+    latencyP95Max: 0.5
+    prometheusAddress: "http://prometheus-server.prometheus.svc.cluster.local:80"
+
+externalSecrets:
+  enabled: false
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: ""
+  data:
+    - secretKey: SECRET_KEY
+      remoteRef:
+        key: doganai/secret-key
+    - secretKey: API_KEY
+      remoteRef:
+        key: doganai/api-key
+    - secretKey: DATABASE_URL
+      remoteRef:
+        key: doganai/database-url

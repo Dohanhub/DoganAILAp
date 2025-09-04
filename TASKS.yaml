@@ -1,0 +1,29 @@
+epics:
+  - id: E1
+    title: Rust+WASM policy engine
+    tasks:
+      - T1: Setup Rust crate, wasm32 target, serde_json ABI
+      - T2: Implement evaluate(json) + unit tests
+      - T3: GitHub Action to build .wasm artifact
+  - id: E2
+    title: Async Python 3.12 backend
+    tasks:
+      - T1: Migrate to Pydantic v2 + SQLAlchemy 2.0 async
+      - T2: Replace requests with httpx
+      - T3: Two-tier cache (LRU + Redis)
+  - id: E3
+    title: Crypto + Merkle
+    tasks:
+      - T1: Ed25519 keys + rotation doc
+      - T2: Merkle batcher (Rust) + verify endpoint
+  - id: E4
+    title: Performance & Reporting
+    tasks:
+      - T1: Polars + DuckDB report pipeline
+      - T2: Bench harness (10k evals)
+  - id: E5
+    title: Quality & CI
+    tasks:
+      - T1: uv + ruff + mypy + pytest
+      - T2: pre-commit hooks
+      - T3: CycloneDX SBOM

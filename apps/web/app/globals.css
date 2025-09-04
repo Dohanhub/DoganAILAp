@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Map tokens to CSS variables expected by Tailwind config */
+:root {
+  --color-brand-primary: var(--color-brand-primary);
+  --color-brand-secondary: var(--color-brand-secondary);
+  --color-bg-base: var(--color-bg-base);
+  --color-bg-inverted: var(--color-bg-inverted);
+  --color-fg-base: var(--color-fg-base);
+  --color-fg-muted: var(--color-fg-muted);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --space-sm: var(--space-sm);
+  --space-md: var(--space-md);
+  --space-lg: var(--space-lg);
+}
+

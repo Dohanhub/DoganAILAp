@@ -1,0 +1,355 @@
+# ========================================
+# APPLICATION SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-server-1
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+    instance: "1"
+spec:
+  selector:
+    app: app-server
+    instance: "1"
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+      protocol: TCP
+    - name: metrics
+      port: 9100
+      targetPort: 9100
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-server-2
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+    instance: "2"
+spec:
+  selector:
+    app: app-server
+    instance: "2"
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+      protocol: TCP
+    - name: metrics
+      port: 9100
+      targetPort: 9100
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-server-3
+  namespace: doganai-compliance
+  labels:
+    app: app-server
+    instance: "3"
+spec:
+  selector:
+    app: app-server
+    instance: "3"
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+      protocol: TCP
+    - name: metrics
+      port: 9100
+      targetPort: 9100
+      protocol: TCP
+  type: ClusterIP
+---
+# ========================================
+# DATABASE SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-primary
+  namespace: doganai-compliance
+  labels:
+    app: postgres
+    role: primary
+spec:
+  selector:
+    app: postgres
+    role: primary
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-replica
+  namespace: doganai-compliance
+  labels:
+    app: postgres
+    role: replica
+spec:
+  selector:
+    app: postgres
+    role: replica
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  type: ClusterIP
+---
+# ========================================
+# CACHE & VECTOR SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: doganai-compliance
+  labels:
+    app: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weaviate
+  namespace: doganai-compliance
+  labels:
+    app: weaviate
+spec:
+  selector:
+    app: weaviate
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
+---
+# ========================================
+# AI ENGINE SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-engine-1
+  namespace: doganai-compliance
+  labels:
+    app: ai-engine
+    instance: "1"
+spec:
+  selector:
+    app: ai-engine
+    instance: "1"
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+    - name: metrics
+      port: 9100
+      targetPort: 9100
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-engine-2
+  namespace: doganai-compliance
+  labels:
+    app: ai-engine
+    instance: "2"
+spec:
+  selector:
+    app: ai-engine
+    instance: "2"
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+    - name: metrics
+      port: 9100
+      targetPort: 9100
+      protocol: TCP
+  type: ClusterIP
+---
+# ========================================
+# LOAD BALANCER SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy
+  namespace: doganai-compliance
+  labels:
+    app: nginx-proxy
+spec:
+  selector:
+    app: nginx-proxy
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy
+  namespace: doganai-compliance
+  labels:
+    app: haproxy
+spec:
+  selector:
+    app: haproxy
+  ports:
+    - name: app
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    - name: api
+      port: 8081
+      targetPort: 8081
+      protocol: TCP
+    - name: db
+      port: 5434
+      targetPort: 5434
+      protocol: TCP
+    - name: redis
+      port: 6380
+      targetPort: 6380
+      protocol: TCP
+    - name: monitoring
+      port: 8082
+      targetPort: 8082
+      protocol: TCP
+    - name: stats
+      port: 8404
+      targetPort: 8404
+      protocol: TCP
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+---
+# ========================================
+# MONITORING SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: doganai-monitoring
+  labels:
+    app: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - name: http
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: doganai-monitoring
+  labels:
+    app: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+  type: LoadBalancer
+---
+# ========================================
+# LOGGING SERVICES
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: doganai-logging
+  labels:
+    app: elasticsearch
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+    - name: http
+      port: 9200
+      targetPort: 9200
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: doganai-logging
+  labels:
+    app: kibana
+spec:
+  selector:
+    app: kibana
+  ports:
+    - name: http
+      port: 5601
+      targetPort: 5601
+      protocol: TCP
+  type: LoadBalancer
+---
+# ========================================
+# DATABASE ADMIN SERVICE
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-admin
+  namespace: doganai-compliance
+  labels:
+    app: db-admin
+spec:
+  selector:
+    app: db-admin
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  type: LoadBalancer

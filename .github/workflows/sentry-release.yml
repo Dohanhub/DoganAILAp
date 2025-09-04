@@ -1,0 +1,39 @@
+name: Sentry Release
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*.*.*' ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.SENTRY_AUTH_TOKEN != '' && vars.SENTRY_ORG != '' && vars.SENTRY_PROJECT != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack
+        run: corepack enable && corepack prepare pnpm@9 --activate
+      - name: Install deps (workspace)
+        run: pnpm -w install
+      - name: Build tokens
+        run: pnpm -w run tokens:build
+      - name: Build web (upload sourcemaps)
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: pnpm --filter @apps/web build
+      - name: Finalize Sentry release
+        if: ${{ always() }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: npx @sentry/cli releases finalize $SENTRY_RELEASE || true
+

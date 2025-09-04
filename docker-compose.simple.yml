@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: doganai-api
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - LOG_LEVEL=INFO
+      - APP_TIMEZONE=UTC
+      - DISPLAY_TIMEZONE=Asia/Riyadh
+      - ALLOWED_ORIGINS=http://localhost:3001
+    volumes:
+      - ./app/uploads:/app/app/uploads
+      - ./app/scraped:/app/app/scraped
+    ports:
+      - "8010:8000"
+
+  web:
+    image: node:20-alpine
+    container_name: doganai-web
+    working_dir: /workspace
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://api:8000
+      - NODE_ENV=development
+    volumes:
+      - ./:/workspace
+    command: sh -lc "corepack enable && corepack prepare pnpm@9 --activate && pnpm -v && pnpm -w install && pnpm -w run tokens:build && pnpm --filter @apps/web dev -p 3001 --host 0.0.0.0"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api

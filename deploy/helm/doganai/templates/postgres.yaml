@@ -1,0 +1,60 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "doganai.fullname" . }}-pgdata
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-postgres
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-postgres
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15-alpine
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.database | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.user | quote }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.postgres.password | quote }}
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "doganai.fullname" . }}-pgdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-postgres
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  selector:
+    app: {{ include "doganai.fullname" . }}-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+{{- end }}
+

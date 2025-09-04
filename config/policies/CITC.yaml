@@ -1,0 +1,90 @@
+regulator: CITC
+version: "2024.1"
+title: "Communications and Information Technology Commission Regulatory Framework"
+description: "Saudi Arabia's Communications and Information Technology Commission compliance framework for telecommunications and ICT services"
+authority: "Communications and Information Technology Commission"
+jurisdiction: "Saudi Arabia"
+effective_date: "2024-01-01"
+last_updated: "2024-08-29"
+
+controls:
+  - id: "CITC-TC-001"
+    title: "Telecommunications Service Quality"
+    description: "Requirements for maintaining telecommunications service quality standards"
+    category: "Service Quality"
+    severity: "high"
+    requirement: "Maintain 99.5% service availability and quality metrics"
+    
+  - id: "CITC-TC-002"
+    title: "ICT Infrastructure Security"
+    description: "Security requirements for ICT infrastructure and services"
+    category: "Cybersecurity"
+    severity: "critical"
+    requirement: "Implement comprehensive cybersecurity measures for all ICT systems"
+    
+  - id: "CITC-TC-003"
+    title: "Consumer Protection in Telecommunications"
+    description: "Consumer rights and protection in telecommunications services"
+    category: "Consumer Protection"
+    severity: "high"
+    requirement: "Ensure transparent pricing and consumer complaint handling"
+    
+  - id: "CITC-TC-004"
+    title: "Spectrum Management Compliance"
+    description: "Compliance with radio frequency spectrum allocation and usage"
+    category: "Spectrum Management"
+    severity: "critical"
+    requirement: "Adhere to allocated spectrum usage and interference prevention"
+    
+  - id: "CITC-TC-005"
+    title: "Digital Content and Platform Regulation"
+    description: "Regulations for digital content providers and platforms"
+    category: "Digital Services"
+    severity: "medium"
+    requirement: "Comply with content standards and platform governance rules"
+
+api_config:
+  base_url: "https://api.citc.gov.sa/v1"
+  endpoints:
+    compliance_check: "/compliance/telecommunications"
+    service_quality: "/monitoring/quality"
+    spectrum_usage: "/spectrum/compliance"
+    consumer_complaints: "/consumer/complaints"
+  rate_limit: 1000
+  timeout: 30
+
+authentication:
+  type: "oauth2"
+  token_url: "https://auth.citc.gov.sa/oauth/token"
+  scopes: ["compliance:read", "monitoring:read", "reports:write"]
+  client_credentials: true
+
+reporting:
+  frequency: "monthly"
+  format: ["json", "xml", "pdf"]
+  endpoints:
+    submit: "/reports/compliance/submit"
+    status: "/reports/compliance/status"
+  required_fields:
+    - "service_availability_metrics"
+    - "security_incident_reports" 
+    - "consumer_complaint_resolutions"
+    - "spectrum_usage_reports"
+    - "quality_performance_indicators"
+
+penalties:
+  - violation: "Service quality below standards"
+    fine_range: "100,000 - 1,000,000 SAR"
+    enforcement: "Service suspension possible"
+  - violation: "Cybersecurity breach"
+    fine_range: "500,000 - 5,000,000 SAR" 
+    enforcement: "Immediate remediation required"
+  - violation: "Spectrum interference"
+    fine_range: "200,000 - 2,000,000 SAR"
+    enforcement: "Spectrum license revocation possible"
+
+contact:
+  name: "Communications and Information Technology Commission"
+  website: "https://www.citc.gov.sa"
+  email: "compliance@citc.gov.sa"
+  phone: "+966-11-4618888"

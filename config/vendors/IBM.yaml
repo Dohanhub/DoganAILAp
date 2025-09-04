@@ -1,0 +1,47 @@
+vendor: "IBM"
+solution: "IBM Security Solutions Portfolio"
+description: "Comprehensive security solutions from IBM"
+website: "https://www.ibm.com/security"
+contact: "security@ibm.com"
+
+capabilities:
+  - control_id: "NCA-001"
+    implementation: "FULL"
+    evidence: "IBM Security Verify provides comprehensive access control with MFA and RBAC"
+    scope: "Identity and Access Management"
+    notes: "Includes advanced threat detection and user behavior analytics"
+    certification: "ISO 27001, SOC 2"
+    
+  - control_id: "NCA-002"
+    implementation: "FULL"
+    evidence: "IBM Security Guardium provides encryption for data at rest and in transit"
+    scope: "Data Protection and Encryption"
+    notes: "Support for AES-256 and advanced key management"
+    certification: "FIPS 140-2"
+    
+  - control_id: "NCA-003"
+    implementation: "PARTIAL"
+    evidence: "IBM Security QRadar SIEM supports incident response workflows"
+    scope: "Incident Response Platform"
+    notes: "Requires integration with customer incident response procedures"
+    certification: "Common Criteria"
+    
+  - control_id: "NCA-004"
+    implementation: "FULL"
+    evidence: "IBM Security QRadar VMDR provides comprehensive vulnerability management"
+    scope: "Vulnerability Assessment and Management"
+    notes: "Continuous scanning and automated remediation capabilities"
+    certification: "ISO 27001"
+    
+  - control_id: "NCA-005"
+    implementation: "FULL"
+    evidence: "IBM Security QRadar SIEM provides 24/7 security monitoring"
+    scope: "Security Information and Event Management"
+    notes: "AI-powered threat detection with real-time alerting"
+    certification: "SOC 2, ISO 27001"
+
+metadata:
+  last_updated: "2024-01-15"
+  contact_person: "IBM Security Sales Team"
+  region_coverage: "Global including Saudi Arabia"
+  local_support: true

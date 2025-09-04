@@ -1,0 +1,113 @@
+{
+  "regulator_endpoints": {
+    "CMA": {
+      "base_url": "https://api.cma.org.sa",
+      "endpoints": {
+        "compliance": "https://api.cma.org.sa/api/v1/compliance",
+        "regulations": "https://api.cma.org.sa/api/v1/regulations",
+        "reporting": "https://api.cma.org.sa/api/v1/reports",
+        "health": "https://api.cma.org.sa/api/v1/health"
+      }
+    },
+    "SDAIA": {
+      "base_url": "https://api.sdaia.gov.sa",
+      "endpoints": {
+        "compliance": "https://api.sdaia.gov.sa/api/v1/compliance",
+        "regulations": "https://api.sdaia.gov.sa/api/v1/regulations",
+        "reporting": "https://api.sdaia.gov.sa/api/v1/reports",
+        "health": "https://api.sdaia.gov.sa/api/v1/health"
+      }
+    },
+    "NDMO": {
+      "base_url": "https://api.ndmo.gov.sa",
+      "endpoints": {
+        "compliance": "https://api.ndmo.gov.sa/api/v1/compliance",
+        "regulations": "https://api.ndmo.gov.sa/api/v1/regulations",
+        "reporting": "https://api.ndmo.gov.sa/api/v1/reports",
+        "health": "https://api.ndmo.gov.sa/api/v1/health"
+      }
+    },
+    "MHRSD": {
+      "base_url": "https://api.hrsd.gov.sa",
+      "endpoints": {
+        "compliance": "https://api.hrsd.gov.sa/api/v1/compliance",
+        "regulations": "https://api.hrsd.gov.sa/api/v1/regulations",
+        "reporting": "https://api.hrsd.gov.sa/api/v1/reports",
+        "health": "https://api.hrsd.gov.sa/api/v1/health"
+      }
+    },
+    "MOI": {
+      "base_url": "https://api.moi.gov.sa",
+      "endpoints": {
+        "compliance": "https://api.moi.gov.sa/api/v1/compliance",
+        "regulations": "https://api.moi.gov.sa/api/v1/regulations",
+        "reporting": "https://api.moi.gov.sa/api/v1/reports",
+        "health": "https://api.moi.gov.sa/api/v1/health"
+      }
+    }
+  },
+  "health_checks": {
+    "CMA": {
+      "endpoint": "https://api.cma.org.sa/api/v1/health",
+      "method": "GET",
+      "timeout": 10,
+      "expected_status": 200
+    },
+    "SDAIA": {
+      "endpoint": "https://api.sdaia.gov.sa/api/v1/health",
+      "method": "GET",
+      "timeout": 10,
+      "expected_status": 200
+    },
+    "NDMO": {
+      "endpoint": "https://api.ndmo.gov.sa/api/v1/health",
+      "method": "GET",
+      "timeout": 10,
+      "expected_status": 200
+    },
+    "MHRSD": {
+      "endpoint": "https://api.hrsd.gov.sa/api/v1/health",
+      "method": "GET",
+      "timeout": 10,
+      "expected_status": 200
+    },
+    "MOI": {
+      "endpoint": "https://api.moi.gov.sa/api/v1/health",
+      "method": "GET",
+      "timeout": 10,
+      "expected_status": 200
+    }
+  },
+  "compliance_checks": {
+    "CMA": {
+      "endpoint": "https://api.cma.org.sa/api/v1/compliance/validate",
+      "method": "POST",
+      "timeout": 30,
+      "retry_attempts": 2
+    },
+    "SDAIA": {
+      "endpoint": "https://api.sdaia.gov.sa/api/v1/compliance/validate",
+      "method": "POST",
+      "timeout": 30,
+      "retry_attempts": 2
+    },
+    "NDMO": {
+      "endpoint": "https://api.ndmo.gov.sa/api/v1/compliance/validate",
+      "method": "POST",
+      "timeout": 30,
+      "retry_attempts": 2
+    },
+    "MHRSD": {
+      "endpoint": "https://api.hrsd.gov.sa/api/v1/compliance/validate",
+      "method": "POST",
+      "timeout": 30,
+      "retry_attempts": 2
+    },
+    "MOI": {
+      "endpoint": "https://api.moi.gov.sa/api/v1/compliance/validate",
+      "method": "POST",
+      "timeout": 30,
+      "retry_attempts": 2
+    }
+  }
+}

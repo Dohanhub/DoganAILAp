@@ -1,0 +1,47 @@
+vendor: "Lenovo"
+solution: "ThinkSystem and ThinkEdge Security Features"
+description: "Hardware-based security solutions from Lenovo"
+website: "https://www.lenovo.com/security"
+contact: "security@lenovo.com"
+
+capabilities:
+  - control_id: "NCA-001"
+    implementation: "PARTIAL"
+    evidence: "ThinkShield hardware security with TPM 2.0 and UEFI SecureBoot"
+    scope: "Hardware-based Access Control"
+    notes: "Provides hardware root of trust, requires additional software for full RBAC"
+    certification: "Common Criteria, FIPS 140-2"
+    
+  - control_id: "NCA-002"
+    implementation: "FULL"
+    evidence: "Self-encrypting drives (SED) with hardware-based encryption"
+    scope: "Hardware Data Encryption"
+    notes: "AES-256 encryption built into storage devices"
+    certification: "FIPS 140-2"
+    
+  - control_id: "NCA-003"
+    implementation: "NOT_SUPPORTED"
+    evidence: "Hardware provides secure platform but incident response is software-dependent"
+    scope: "N/A"
+    notes: "Hardware foundation supports incident response tools but doesn't provide procedures"
+    
+  - control_id: "NCA-004"
+    implementation: "PARTIAL"
+    evidence: "ThinkShield provides firmware vulnerability protection and updates"
+    scope: "Firmware and Hardware Vulnerability Management"
+    notes: "Covers hardware/firmware vulnerabilities, requires software solutions for OS/application vulnerabilities"
+    certification: "Common Criteria"
+    
+  - control_id: "NCA-005"
+    implementation: "PARTIAL"
+    evidence: "Hardware security monitoring through TPM and secure logging"
+    scope: "Hardware Security Events"
+    notes: "Provides hardware-level security events, requires SIEM integration for comprehensive monitoring"
+    certification: "TPM 2.0, Common Criteria"
+
+metadata:
+  last_updated: "2024-01-15"
+  contact_person: "Lenovo Enterprise Security Team"
+  region_coverage: "Global including Middle East"
+  local_support: true
+  hardware_focus: true

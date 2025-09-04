@@ -1,0 +1,141 @@
+{
+  "timestamp": "2025-08-29T05:13:03.821480",
+  "overall_status": "CRITICAL",
+  "components": {
+    "system": {
+      "status": "HEALTHY",
+      "metrics": {
+        "cpu_usage": 42.2,
+        "memory_usage": 83.6,
+        "disk_usage": 26.5,
+        "available_memory_gb": 2.59,
+        "available_disk_gb": 376.49
+      },
+      "issues": []
+    },
+    "database": {
+      "status": "HEALTHY",
+      "metrics": {
+        "evaluation_records": 27,
+        "policy_records": 9,
+        "vendor_records": 3,
+        "query_response_time": 0.001,
+        "database_size_mb": 0.48
+      },
+      "issues": []
+    },
+    "services": {
+      "status": "CRITICAL",
+      "services": {
+        "compliance-engine": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8000",
+          "error": "HTTP Connection failed",
+          "critical": true
+        },
+        "benchmarks": {
+          "status": "HEALTHY",
+          "url": "http://localhost:8001",
+          "response_time": 2.069,
+          "critical": false
+        },
+        "ai-ml": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8002",
+          "error": "HTTP Connection failed",
+          "critical": false
+        },
+        "integrations": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8003",
+          "error": "HTTP Connection failed",
+          "critical": true
+        },
+        "ui": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8501",
+          "error": "HTTP Connection failed",
+          "critical": true
+        },
+        "auth": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8004",
+          "error": "HTTP Connection failed",
+          "critical": true
+        },
+        "ai-agent": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8005",
+          "error": "HTTP Connection failed",
+          "critical": false
+        },
+        "autonomous-testing": {
+          "status": "UNHEALTHY",
+          "url": "http://localhost:8006",
+          "error": "HTTP Connection failed",
+          "critical": false
+        }
+      },
+      "summary": {
+        "total": 8,
+        "healthy": 1,
+        "unhealthy": 7,
+        "critical_down": 4
+      }
+    },
+    "filesystem": {
+      "status": "HEALTHY",
+      "checks": {
+        "policies/": {
+          "exists": true,
+          "valid": true,
+          "required": true
+        },
+        "doganai_compliance.db": {
+          "exists": true,
+          "valid": true,
+          "required": true
+        },
+        "engine/": {
+          "exists": true,
+          "valid": true,
+          "required": true
+        },
+        "ui/": {
+          "exists": true,
+          "valid": true,
+          "required": true
+        },
+        "microservices/": {
+          "exists": true,
+          "valid": true,
+          "required": false
+        }
+      },
+      "issues": []
+    },
+    "configuration": {
+      "status": "HEALTHY",
+      "configs": {
+        "requirements.txt": {
+          "exists": true,
+          "size": 1054
+        },
+        "docker-compose.yml": {
+          "exists": true,
+          "size": 11129
+        },
+        "microservices/docker-compose.yml": {
+          "exists": true,
+          "size": 1719
+        },
+        "policy_files": {
+          "count": 11,
+          "expected": 9,
+          "complete": true
+        }
+      },
+      "issues": []
+    }
+  }
+}

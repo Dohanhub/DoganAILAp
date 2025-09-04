@@ -1,0 +1,23 @@
+vendor_id,vendor,solution,category,api,dev_portal
+V-ZATCA,ZATCA e-Invoicing (FATOORA),e-Invoicing (Reporting & Clearance),Tax/Compliance,Yes,https://zatca.gov.sa/en/E-Invoicing/SystemsDevelopers/Pages/default.aspx
+V-SFDA,SFDA Developer Portal,Regulatory APIs (Product/Establishment),Health RegTech,Yes,https://developer.sfda.gov.sa/
+V-NPHIES,NPHIES (CHI/NHIC),HL7 FHIR Exchange (Eligibility/Claims),Health Interop,Yes,https://portal.nphies.sa/ig/
+V-OPENBANK,Open Banking Saudi,AIS/PIS via Banks,Fintech,Yes,https://openbanking.sa/
+V-WATHQ-CR,WATHQ – Commercial Registration,CR / Company Contracts APIs,KYC/Business Registry,Yes,https://developer.wathq.sa/en/api/32
+V-WATHQ-GOSI,WATHQ – Employee Information (GOSI),Employment & Wages,KYC/Employment,Yes,https://developer.wathq.sa/en/api/18
+V-WATHQ-CHAM,WATHQ – Chamber Membership,Chamber Membership Verification,KYC/Business Registry,Yes,https://developer.wathq.sa/en/api/15
+V-WATHQ-ADDR,WATHQ – National Address,National Address (SPL) by CR,Address/Geocode,Yes,https://developer.wathq.sa/en/api/17
+V-SPL-ADDR,SPL – National Address APIs,Search/Verify/Geocode,Address/Geocode,Yes,https://api.address.gov.sa/
+V-FASAH,FASAH – Trade Single Window,Customs Single Window,Trade/Customs,Partner,https://www.fasah.sa/
+V-GEOSA,GEOSA – Geoportal,Geospatial APIs (WMS/WFS/ArcGIS),Geospatial,Yes,https://www.geoportal.sa/geoportal/
+V-SGS,SGS – National Geological Database,Geology maps & services,Geospatial/Mining,Yes/Portal,https://ngd.sgs.gov.sa/en
+V-SAUDIEX,Saudi Exchange (Tadawul),Market Data Feeds,Capital Markets,Commercial,https://www.saudiexchange.sa/
+V-SPA,Saudi Press Agency (SPA),News & Press,News/Media,Feeds/Scrape,https://www.spa.gov.sa/en
+V-HYPERPAY,HyperPay,Payment Gateway,Payments,Yes,https://www.hyperpay.com/integration-guide/
+V-MOYASAR,Moyasar,Payment Gateway,Payments,Yes,https://docs.moyasar.com/
+V-PAYTABS,PayTabs,Payment Gateway,Payments,Yes,https://docs.paytabs.com/
+V-TAP,Tap Payments,Payment Gateway,Payments,Yes,https://developers.tap.company/
+V-GEIDEA,Geidea,Payment Gateway,Payments,Yes,https://docs.geidea.net/
+V-UNIFONIC,Unifonic,SMS/WhatsApp/Voice,CPaaS,Yes,https://docs.unifonic.com/
+V-ARAMEX,Aramex,Shipping & Tracking,Logistics,Yes,https://www.aramex.com/developers-solution-center/aramex-apis
+V-SMSA,SMSA Express,Shipping & Tracking,Logistics,Yes,https://track.smsaexpress.com/SECOM/SMSAwebService.asmx

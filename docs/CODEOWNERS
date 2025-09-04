@@ -1,0 +1,12 @@
+# Code owners for DoganAI-Compliance-Kit
+# Default owners
+* @dogan-ai/maintainers
+
+# Engine and API
+/engine/ @dogan-ai/backend
+
+# UI
+/ui/ @dogan-ai/frontend
+
+# DevOps
+/compose/ @dogan-ai/devops

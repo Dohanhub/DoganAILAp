@@ -1,0 +1,193 @@
+{
+  "auto_update_settings": {
+    "update_frequency_seconds": 60,
+    "high_priority_frequency_seconds": 30,
+    "critical_frequency_seconds": 15,
+    "validation_timeout_seconds": 45,
+    "max_concurrent_updates": 10,
+    "retry_attempts": 3,
+    "error_threshold_percent": 5,
+    "health_check_interval_seconds": 120
+  },
+  "data_sources": {
+    "regulatory_authorities": {
+      "NCA": {
+        "enabled": true,
+        "priority": "critical",
+        "endpoints": [
+          "/api/v1/companies",
+          "/api/v1/compliance", 
+          "/api/v1/violations",
+          "/api/v1/reports"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["company_id", "status", "compliance_score"],
+          "timeout_seconds": 30
+        }
+      },
+      "SAMA": {
+        "enabled": true,
+        "priority": "critical",
+        "endpoints": [
+          "/api/v1/indicators",
+          "/api/v1/banking",
+          "/api/v1/compliance",
+          "/api/v1/sanctions"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["bank_id", "status", "risk_score"],
+          "timeout_seconds": 30
+        }
+      },
+      "MOH": {
+        "enabled": true,
+        "priority": "high",
+        "endpoints": [
+          "/api/v1/compliance",
+          "/api/v1/facilities",
+          "/api/v1/standards",
+          "/api/v1/certifications"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["facility_id", "compliance_status"],
+          "timeout_seconds": 30
+        }
+      },
+      "CITC": {
+        "enabled": true,
+        "priority": "high",
+        "endpoints": [
+          "/api/v1/telecom",
+          "/api/v1/compliance",
+          "/api/v1/licenses"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["license_id", "status"],
+          "timeout_seconds": 30
+        }
+      },
+      "CMA": {
+        "enabled": true,
+        "priority": "high",
+        "endpoints": [
+          "/api/v1/securities",
+          "/api/v1/compliance",
+          "/api/v1/violations"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["security_id", "compliance_score"],
+          "timeout_seconds": 30
+        }
+      }
+    },
+    "government_sources": {
+      "MOI": {
+        "enabled": true,
+        "priority": "critical",
+        "endpoints": [
+          "/api/v1/security",
+          "/api/v1/compliance",
+          "/api/v1/violations"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["security_id", "status"],
+          "timeout_seconds": 30
+        }
+      },
+      "SDAIA": {
+        "enabled": true,
+        "priority": "critical",
+        "endpoints": [
+          "/api/v1/data-compliance",
+          "/api/v1/ai-governance"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["compliance_id", "ai_governance_score"],
+          "timeout_seconds": 30
+        }
+      }
+    },
+    "vendor_sources": {
+      "IBM_WATSON": {
+        "enabled": true,
+        "priority": "high",
+        "endpoints": [
+          "/natural-language-understanding/api/v1/analyze",
+          "/assistant/api/v2/sessions"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["analysis", "confidence"],
+          "timeout_seconds": 45
+        }
+      },
+      "MICROSOFT_AZURE": {
+        "enabled": true,
+        "priority": "high",
+        "endpoints": [
+          "/text/analytics/v3.1/sentiment",
+          "/text/analytics/v3.1/entities"
+        ],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["documents", "sentiment"],
+          "timeout_seconds": 45
+        }
+      },
+      "AWS_COMPREHEND": {
+        "enabled": true,
+        "priority": "high",
+        "endpoints": ["/", "/comprehend/"],
+        "validation_rules": {
+          "min_records": 1,
+          "required_fields": ["sentiment", "confidence"],
+          "timeout_seconds": 45
+        }
+      }
+    }
+  },
+  "database_settings": {
+    "primary_db_path": "doganai_compliance.db",
+    "backup_db_paths": [
+      "doganai_compliance_backup.db"
+    ],
+    "connection_pool_size": 10,
+    "query_timeout_seconds": 30,
+    "auto_vacuum": true
+  },
+  "logging_settings": {
+    "log_level": "INFO",
+    "log_file": "auto_update_60s.log",
+    "max_log_size_mb": 100,
+    "log_rotation_count": 5,
+    "enable_performance_logging": true
+  },
+  "monitoring_settings": {
+    "enable_metrics": true,
+    "metrics_port": 9092,
+    "health_endpoint": "/health",
+    "status_endpoint": "/status",
+    "enable_prometheus": true
+  },
+  "security_settings": {
+    "enable_ssl_verification": true,
+    "request_timeout_seconds": 45,
+    "max_retries": 3,
+    "rate_limit_per_minute": 100,
+    "enable_request_signing": false
+  },
+  "performance_settings": {
+    "max_concurrent_connections": 200,
+    "connection_pool_per_host": 50,
+    "dns_cache_ttl_seconds": 300,
+    "keep_alive_timeout_seconds": 30,
+    "enable_compression": true
+  }
+}

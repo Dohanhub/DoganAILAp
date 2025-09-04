@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dogan AI Compliance MVP</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Dogan AI Compliance MVP</h1>
+            <p class="text-gray-600">Validate compliance with KSA regulations</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Compliance Check Form -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Check Compliance</h2>
+                <form id="complianceForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Standard</label>
+                        <select id="standard" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" aria-label="Select compliance standard">
+                            <option value="NCA">NCA</option>
+                            <option value="SAMA">SAMA</option>
+                            <option value="ISO27001">ISO 27001</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Control ID</label>
+                        <input type="text" id="controlId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter control ID (e.g., NCA-1.1.1)" aria-required="true">
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        Check Compliance
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Results</h2>
+                <div id="results" class="space-y-4">
+                    <p class="text-gray-500">Your compliance check results will appear here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('complianceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const standard = document.getElementById('standard').value;
+            const controlId = document.getElementById('controlId').value;
+
+            const response = await fetch(`/api/compliance/check/${standard}?control_id=${controlId}`);
+            const result = await response.json();
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="p-4 bg-green-50 rounded-md">
+                    <h3 class="font-medium text-green-800">${standard} - ${controlId}</h3>
+                    <p class="text-green-700">Status: <span class="font-semibold">${result.status}</span></p>
+                    <p class="text-sm text-green-600">Checked at: ${new Date().toLocaleString()}</p>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

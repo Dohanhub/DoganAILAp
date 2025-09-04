@@ -1,0 +1,11 @@
+fastapi
+pydantic[email]
+uvicorn
+pyyaml
+structlog
+prometheus-client
+redis
+pyjwt
+cryptography
+bcrypt
+python-multipart

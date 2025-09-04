@@ -1,0 +1,24 @@
+{
+  "dashboards": {
+    "compliance_overview": {
+      "title": "Compliance Overview",
+      "refresh_interval": 30,
+      "widgets": [
+        "total_evaluations",
+        "average_compliance",
+        "compliance_trends",
+        "vendor_performance"
+      ]
+    },
+    "performance_monitoring": {
+      "title": "Performance Monitoring",
+      "refresh_interval": 10,
+      "widgets": [
+        "query_performance",
+        "cache_hit_rates",
+        "system_health",
+        "shard_status"
+      ]
+    }
+  }
+}

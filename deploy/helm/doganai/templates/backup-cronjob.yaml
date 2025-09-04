@@ -1,0 +1,82 @@
+{{- if .Values.backup.enabled }}
+{{- if and .Values.backup.destination.pvc.create .Values.backup.destination.pvc.claimName }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.backup.destination.pvc.claimName }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.backup.destination.pvc.size | default "10Gi" }}
+  {{- if .Values.backup.destination.pvc.storageClassName }}
+  storageClassName: {{ .Values.backup.destination.pvc.storageClassName | quote }}
+  {{- end }}
+---
+{{- end }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "doganai.fullname" . }}-db-backup
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: pgdump
+              image: {{ .Values.backup.image }}
+              env:
+                - name: DATABASE_URL
+                  value: {{ .Values.backup.env.DATABASE_URL | quote }}
+                {{- if .Values.backup.destination.s3.enabled }}
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.destination.s3.accessKeySecret }}
+                      key: AWS_ACCESS_KEY_ID
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.destination.s3.secretKeySecret }}
+                      key: AWS_SECRET_ACCESS_KEY
+                - name: AWS_DEFAULT_REGION
+                  value: {{ .Values.backup.destination.s3.region | default "us-east-1" | quote }}
+                {{- if .Values.backup.destination.s3.endpoint }}
+                - name: AWS_ENDPOINT_URL
+                  value: {{ .Values.backup.destination.s3.endpoint | quote }}
+                {{- end }}
+                {{- end }}
+              command: ["/bin/sh","-lc"]
+              args:
+                - |
+                  set -euo pipefail
+                  ts=$(date +%F-%H%M%S)
+                  dump="/backups/backup-$ts.dump"
+                  # Ensure pg_dump exists, then create dump
+                  command -v pg_dump >/dev/null 2>&1
+                  pg_dump -Fc -f "$dump" "$DATABASE_URL"
+                  {{- if .Values.backup.destination.s3.enabled }}
+                  # Install awscli if missing (Debian-based images)
+                  if ! command -v aws >/dev/null 2>&1; then
+                    (apt-get update && apt-get install -y --no-install-recommends awscli) || echo "awscli install skipped"
+                  fi
+                  # Upload to S3 (bucket/prefix)
+                  aws s3 cp "$dump" s3://{{ .Values.backup.destination.s3.bucket }}/{{ .Values.backup.destination.s3.prefix }}/
+                  {{- end }}
+                  # Retention cleanup (local)
+                  find /backups -type f -name '*.dump' -mtime +{{ .Values.backup.retentionDays }} -delete
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: {{ .Values.backup.destination.pvc.claimName }}
+{{- end }}

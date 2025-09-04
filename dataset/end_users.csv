@@ -1,0 +1,12 @@
+﻿end_user_id,segment,example_orgs
+EU-GOV,Government entity,"Ministries, authorities, municipalities"
+EU-BANK,Bank / Fintech / PSP,"Banks, licensed PSPs, fintech startups"
+EU-HEALTH,Healthcare provider / Payer,"Hospitals, clinics, insurers"
+EU-RETAIL,Retail / eCommerce / Marketplace,"Merchants, online stores, platforms"
+EU-LOGI,Logistics / Courier,"Carriers, 3PLs, warehouse ops"
+EU-MEDIA,Media / Streaming / Gaming,"Broadcasters, OTT, gaming studios"
+EU-IND,Industrial / Manufacturing,"Factories, utilities, mining"
+EU-REAL,Real Estate / Construction,"Developers, contractors"
+EU-CPaaS,Telecom / CPaaS,"Messaging providers, telcos"
+EU-GEO,Geospatial / Mapping,"GIS teams, surveyors"
+EU-NEWS,News / PR,"Newsrooms, PR offices"

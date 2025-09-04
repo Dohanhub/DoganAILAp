@@ -1,0 +1,64 @@
+{{- if not .Values.argoRollouts.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-api
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount.api }}
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-api
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-api
+    spec:
+      containers:
+        - name: api
+          image: {{ if .Values.usePdfApi }}{{ .Values.image.apiPdf.repository }}:{{ .Values.image.apiPdf.tag }}{{ else }}{{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}{{ end }}
+          imagePullPolicy: {{ .Values.image.api.pullPolicy }}
+          env:
+            - name: LOG_LEVEL
+              value: {{ .Values.env.api.LOG_LEVEL | quote }}
+            - name: ALLOWED_ORIGINS
+              value: {{ .Values.env.api.ALLOWED_ORIGINS | quote }}
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "doganai.fullname" . }}-secrets
+                  key: SECRET_KEY
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "doganai.fullname" . }}-secrets
+                  key: API_KEY
+            - name: INTERNAL_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "doganai.fullname" . }}-secrets
+                  key: INTERNAL_JWT_SECRET
+            - name: DATABASE_URL
+              value: {{ .Values.env.api.DATABASE_URL | quote }}
+            - name: REDIS_URL
+              value: {{ .Values.env.api.REDIS_URL | quote }}
+            - name: OTEL_ENABLED
+              value: {{ .Values.env.api.OTEL_ENABLED | quote }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.env.api.OTEL_EXPORTER_OTLP_ENDPOINT | quote }}
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources: {{ toYaml .Values.resources.api | nindent 12 }}
+{{- end }}

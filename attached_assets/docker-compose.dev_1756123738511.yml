@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Development overrides for the main services
+  api:
+    environment:
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - POSTGRES_HOST=postgres
+    volumes:
+      - ./:/app
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # debugpy port
+    command: >
+      sh -c "pip install debugpy &&
+             python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m uvicorn engine.api:app --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ui:
+    environment:
+      - STREAMLIT_SERVER_ENABLE_STATIC_SERVING=true
+      - STREAMLIT_LOGGER_LEVEL=DEBUG
+    volumes:
+      - ./:/app
+    ports:
+      - "8501:8501"
+    command: streamlit run ui/app.py --server.address 0.0.0.0 --server.port 8501 --server.enableCORS false
+
+  # PostgreSQL for development
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ksa}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@compliance.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_dev_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  pgadmin_dev_data:

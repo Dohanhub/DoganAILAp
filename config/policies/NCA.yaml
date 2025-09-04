@@ -1,0 +1,76 @@
+regulator: "NCA"
+version: "1.0.0"
+title: "National Cybersecurity Authority Framework"
+description: "Saudi Arabia's National Cybersecurity Authority compliance framework for cybersecurity controls and data protection"
+authority: "National Cybersecurity Authority"
+jurisdiction: "Saudi Arabia"
+effective_date: "2024-01-01"
+last_updated: "2024-08-29"
+controls:
+  - id: "NCA-02"
+    title_ar: "تقسيم الشبكات"
+    title_en: "Network Segmentation"
+    requirement_ar: "تطبيق تقسيم الشبكات وفصل البيئات."
+    requirement_en: "Implement network segmentation and environment separation."
+    category: "Network Security"
+    severity: "High"
+    residency_required: false
+  - id: "NCA-03"
+    title_ar: "تشفير أثناء النقل"
+    title_en: "Encryption In Transit"
+    requirement_ar: "TLS 1.2+ وmTLS للأنظمة الداخلية."
+    requirement_en: "TLS 1.2+ and mTLS for internal systems."
+    category: "Cryptography"
+    severity: "High"
+    residency_required: false
+  - id: "NCA-10"
+    title_ar: "إقامة البيانات داخل المملكة"
+    title_en: "Data Residency in KSA"
+    requirement_ar: "تخزين ومعالجة البيانات داخل المملكة العربية السعودية."
+    requirement_en: "Store and process data within KSA."
+    category: "Compliance"
+    severity: "High"
+    residency_required: true
+
+api_config:
+  base_url: "https://api.nca.gov.sa/v1"
+  endpoints:
+    compliance_check: "/compliance/cybersecurity"
+    incident_reporting: "/incidents/report"
+    risk_assessment: "/risk/assessment"
+    data_residency: "/compliance/residency"
+  rate_limit: 500
+  timeout: 45
+
+authentication:
+  type: "api_key"
+  header: "X-NCA-API-Key"
+  encryption: "AES-256"
+  token_refresh: 3600
+
+reporting:
+  frequency: "quarterly"
+  format: ["json", "xml", "encrypted"]
+  endpoints:
+    submit: "/reports/cybersecurity/submit"
+    status: "/reports/cybersecurity/status"
+  required_fields:
+    - "network_security_status"
+    - "encryption_compliance"
+    - "data_residency_confirmation"
+    - "incident_response_metrics"
+    - "risk_assessment_results"
+
+penalties:
+  - violation: "Data residency non-compliance"
+    fine_range: "1,000,000 - 10,000,000 SAR"
+    enforcement: "Immediate data repatriation required"
+  - violation: "Inadequate cybersecurity controls"
+    fine_range: "500,000 - 5,000,000 SAR"
+    enforcement: "Security audit and remediation plan required"
+
+contact:
+  name: "National Cybersecurity Authority"
+  website: "https://www.nca.gov.sa"
+  email: "compliance@nca.gov.sa"
+  phone: "+966-11-2059999"

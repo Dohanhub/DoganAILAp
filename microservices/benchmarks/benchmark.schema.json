@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Regulatory Benchmark Schema",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "description": "Unique benchmark identifier" },
+    "name": { "type": "string", "description": "Benchmark name" },
+    "regulator": { "type": "string", "description": "Issuing regulator (e.g., NCA, SAMA, MoH)" },
+    "sector": { "type": "string", "description": "Applicable sector (e.g., banking, health, government)" },
+    "version": { "type": "string", "description": "Benchmark version" },
+    "effective_date": { "type": "string", "format": "date", "description": "Date benchmark becomes effective" },
+    "description": { "type": "string", "description": "Benchmark description" },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Requirement/control ID" },
+          "title": { "type": "string", "description": "Requirement title" },
+          "description": { "type": "string", "description": "Requirement description" },
+          "control_type": { "type": "string", "description": "Type (e.g., technical, organizational, physical)" },
+          "mappings": {
+            "type": "array",
+            "items": { "type": "string", "description": "Mapping to other standards or controls" }
+          },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string", "description": "Required evidence or artifacts" }
+          }
+        },
+        "required": ["id", "title", "description", "control_type"]
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "description": "Reference URLs or document citations" }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata (e.g., tags, update history, language)",
+      "additionalProperties": true
+    }
+  },
+  "required": ["id", "name", "regulator", "sector", "version", "effective_date", "requirements"]
+}

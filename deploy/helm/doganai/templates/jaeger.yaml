@@ -1,0 +1,40 @@
+{{- if .Values.jaeger.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-jaeger
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-jaeger
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-jaeger
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:1.52
+          ports:
+            - containerPort: 16686
+            - containerPort: 14250
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-jaeger
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  selector:
+    app: {{ include "doganai.fullname" . }}-jaeger
+  ports:
+    - name: ui
+      port: 16686
+      targetPort: 16686
+    - name: grpc
+      port: 14250
+      targetPort: 14250
+{{- end }}
+

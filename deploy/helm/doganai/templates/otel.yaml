@@ -1,0 +1,76 @@
+{{- if .Values.otelCollector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "doganai.fullname" . }}-otel-config
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          http: {endpoint: 0.0.0.0:4318}
+          grpc: {endpoint: 0.0.0.0:4317}
+    exporters:
+      jaeger:
+        endpoint: {{ include "doganai.fullname" . }}-jaeger:14250
+        tls:
+          insecure: true
+      logging:
+        loglevel: info
+    processors:
+      batch: {}
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [jaeger, logging]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-otel-collector
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-otel-collector
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-otel-collector
+    spec:
+      containers:
+        - name: collector
+          image: otel/opentelemetry-collector:0.95.0
+          args: ["--config=/etc/otel/config.yaml"]
+          ports:
+            - containerPort: 4318
+            - containerPort: 4317
+          volumeMounts:
+            - name: cfg
+              mountPath: /etc/otel
+      volumes:
+        - name: cfg
+          configMap:
+            name: {{ include "doganai.fullname" . }}-otel-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-otel-collector
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  selector:
+    app: {{ include "doganai.fullname" . }}-otel-collector
+  ports:
+    - name: http
+      port: 4318
+      targetPort: 4318
+    - name: grpc
+      port: 4317
+      targetPort: 4317
+{{- end }}
+

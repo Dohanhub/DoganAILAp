@@ -1,0 +1,83 @@
+{
+  "regulatory_authorities": {
+    "CMA": {
+      "name": "Capital Market Authority",
+      "arabic_name": "هيئة السوق المالية",
+      "api_base_url": "https://api.cma.org.sa",
+      "priority": "critical",
+      "enabled": true,
+      "monitoring_enabled": true,
+      "health_check_interval": "5m"
+    },
+    "SDAIA": {
+      "name": "Saudi Data & AI Authority",
+      "arabic_name": "الهيئة السعودية للبيانات والذكاء الاصطناعي",
+      "api_base_url": "https://api.sdaia.gov.sa",
+      "priority": "critical",
+      "enabled": true,
+      "monitoring_enabled": true,
+      "health_check_interval": "5m"
+    },
+    "NDMO": {
+      "name": "National Data Management Office",
+      "arabic_name": "مكتب إدارة البيانات الوطنية",
+      "api_base_url": "https://api.ndmo.gov.sa",
+      "priority": "critical",
+      "enabled": true,
+      "monitoring_enabled": true,
+      "health_check_interval": "5m"
+    },
+    "MHRSD": {
+      "name": "Ministry of Human Resources & Social Development",
+      "arabic_name": "وزارة الموارد البشرية والتنمية الاجتماعية",
+      "api_base_url": "https://api.hrsd.gov.sa",
+      "priority": "high",
+      "enabled": true,
+      "monitoring_enabled": true,
+      "health_check_interval": "5m"
+    },
+    "MOI": {
+      "name": "Ministry of Interior",
+      "arabic_name": "وزارة الداخلية",
+      "api_base_url": "https://api.moi.gov.sa",
+      "priority": "critical",
+      "enabled": true,
+      "monitoring_enabled": true,
+      "health_check_interval": "5m"
+    }
+  },
+  "integration_settings": {
+    "sync_frequency": "real_time",
+    "retry_attempts": 3,
+    "timeout_seconds": 30,
+    "enable_caching": true,
+    "cache_ttl_minutes": 15
+  },
+  "authentication": {
+    "CMA": {
+      "type": "oauth2",
+      "refresh_interval": "1h",
+      "retry_on_failure": true
+    },
+    "SDAIA": {
+      "type": "api_key",
+      "refresh_interval": "1h",
+      "retry_on_failure": true
+    },
+    "NDMO": {
+      "type": "client_certificate",
+      "refresh_interval": "1h",
+      "retry_on_failure": true
+    },
+    "MHRSD": {
+      "type": "oauth2",
+      "refresh_interval": "1h",
+      "retry_on_failure": true
+    },
+    "MOI": {
+      "type": "mutual_tls",
+      "refresh_interval": "1h",
+      "retry_on_failure": true
+    }
+  }
+}

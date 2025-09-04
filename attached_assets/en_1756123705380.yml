@@ -1,0 +1,11 @@
+ui:
+  title: "Compliance & Ops Platform - Kingdom of Saudi Arabia"
+  sector: "Sector"
+  mapping: "Proposal / Vendor"
+  status: "Status"
+  compliant: "COMPLIANT"
+  gaps: "GAPS"
+  required: "Required"
+  provided: "Provided"
+  missing: "Missing"
+  export: "Export"

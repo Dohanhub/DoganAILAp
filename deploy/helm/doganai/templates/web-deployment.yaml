@@ -1,0 +1,38 @@
+{{- if not .Values.argoRollouts.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-web
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount.web }}
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-web
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-web
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.image.web.repository }}:{{ .Values.image.web.tag }}
+          imagePullPolicy: {{ .Values.image.web.pullPolicy }}
+          env:
+            - name: NEXT_PUBLIC_API_BASE
+              value: {{ .Values.env.web.NEXT_PUBLIC_API_BASE | quote }}
+          ports:
+            - containerPort: 3001
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 20
+            periodSeconds: 15
+{{- end }}

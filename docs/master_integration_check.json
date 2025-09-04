@@ -1,0 +1,173 @@
+{
+  "timestamp": "2025-08-28T14:15:19.464002",
+  "base_directory": "D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit",
+  "component_check": {
+    "components": {
+      "core_engine": {
+        "type": "python_module",
+        "file_path": "engine/api.py",
+        "status": "import_error",
+        "error": "No module named 'prometheus_client'",
+        "importable": false
+      },
+      "performance": {
+        "type": "python_module",
+        "file_path": "improvements/performance.py",
+        "status": "import_error",
+        "error": "No module named 'asyncpg'",
+        "importable": false
+      },
+      "security": {
+        "type": "python_module",
+        "file_path": "improvements/security.py",
+        "status": "import_error",
+        "error": "No module named 'jwt'",
+        "importable": false
+      },
+      "enhanced_api": {
+        "type": "python_module",
+        "file_path": "improvements/enhanced_api.py",
+        "status": "import_error",
+        "error": "No module named 'asyncpg'",
+        "importable": false
+      },
+      "mobile_ui": {
+        "type": "python_module",
+        "file_path": "improvements/mobile_ui.py",
+        "status": "import_error",
+        "error": "No module named 'streamlit'",
+        "importable": false
+      },
+      "monitoring": {
+        "type": "python_module",
+        "file_path": "improvements/monitoring.py",
+        "status": "import_error",
+        "error": "No module named 'psutil'",
+        "importable": false
+      },
+      "error_handling": {
+        "type": "python_module",
+        "file_path": "improvements/error_handling.py",
+        "status": "success",
+        "error": null,
+        "importable": true,
+        "module_info": {
+          "name": "error_handling",
+          "doc": "\nEnhanced Error Handling and Resilience Improvements\n",
+          "file": "D:\\Dogan-Ai\\ShahinKit\\DoganAI-Compliance-Kit\\improvements/error_handling.py"
+        }
+      },
+      "doganai_integration": {
+        "type": "python_module",
+        "file_path": "improvements/doganai_integration.py",
+        "status": "import_error",
+        "error": "attempted relative import with no known parent package",
+        "importable": false
+      },
+      "proposal_integration": {
+        "type": "python_module",
+        "file_path": "improvements/proposal_integration.py",
+        "status": "import_error",
+        "error": "'utf-8' codec can't decode byte 0x95 in position 0: invalid start byte",
+        "importable": false
+      },
+      "deployment": {
+        "type": "python_module",
+        "file_path": "improvements/deploy.py",
+        "status": "import_error",
+        "error": "No module named 'yaml'",
+        "importable": false
+      },
+      "quick_demo": {
+        "type": "python_module",
+        "file_path": "quick_demo.py",
+        "status": "import_error",
+        "error": "'utf-8' codec can't decode byte 0x95 in position 3: invalid start byte",
+        "importable": false
+      },
+      "performance_tests": {
+        "type": "python_module",
+        "file_path": "test_performance.py",
+        "status": "import_error",
+        "error": "No module named 'matplotlib'",
+        "importable": false
+      },
+      "master_launcher": {
+        "type": "batch_file",
+        "file_path": "DoganAI_Master_Launcher.bat",
+        "status": "success",
+        "exists": true
+      },
+      "standard_launcher": {
+        "type": "batch_file",
+        "file_path": "DoganAI_Launcher.bat",
+        "status": "success",
+        "exists": true
+      },
+      "shortcut_creator": {
+        "type": "batch_file",
+        "file_path": "Create_Shortcut.bat",
+        "status": "success",
+        "exists": true
+      }
+    },
+    "total_components": 15,
+    "working_components": 4,
+    "integration_score": 26.7,
+    "status": "needs_attention"
+  },
+  "dependency_check": {
+    "dependencies": {
+      "fastapi": {
+        "status": "installed",
+        "version": "unknown"
+      },
+      "uvicorn": {
+        "status": "installed",
+        "version": "unknown"
+      },
+      "psutil": {
+        "status": "missing",
+        "version": null
+      },
+      "aioredis": {
+        "status": "missing",
+        "version": null
+      },
+      "asyncpg": {
+        "status": "missing",
+        "version": null
+      },
+      "prometheus_client": {
+        "status": "missing",
+        "version": null
+      },
+      "structlog": {
+        "status": "missing",
+        "version": null
+      },
+      "cryptography": {
+        "status": "missing",
+        "version": null
+      },
+      "passlib": {
+        "status": "missing",
+        "version": null
+      },
+      "python_jose": {
+        "status": "missing",
+        "version": null
+      }
+    },
+    "total_required": 10,
+    "installed_count": 2,
+    "dependency_score": 20.0
+  },
+  "overall_score": 24.7,
+  "recommendations": [
+    "Install/fix missing components: core_engine, performance, security, enhanced_api, mobile_ui, monitoring, doganai_integration, proposal_integration, deployment, quick_demo, performance_tests",
+    "Install missing dependencies: pip install psutil aioredis asyncpg prometheus_client structlog cryptography passlib python_jose",
+    "Integration score below 75% - consider reinstalling components"
+  ],
+  "status": "needs_attention"
+}

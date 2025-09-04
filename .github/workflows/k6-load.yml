@@ -1,0 +1,31 @@
+name: k6 Load Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL (e.g., http://localhost:8080)"
+        required: true
+        default: "http://localhost:8080"
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run steady test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: tests/load/k6_steady.js
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url }}
+
+      - name: Run spike test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: tests/load/k6_spike.js
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url }}
+

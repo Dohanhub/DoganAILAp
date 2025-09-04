@@ -1,0 +1,93 @@
+version: '3.9'
+
+services:
+  compliance-engine:
+    build: ./compliance-engine
+    ports:
+      - "8000:8000"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+    # Add volumes, secrets, and hardware constraints as needed
+
+  benchmarks:
+    build: ./benchmarks
+    ports:
+      - "8001:8001"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+
+  ai-ml:
+    build: ./ai-ml
+    ports:
+      - "8002:8002"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+    # For local LLMs, mount models as needed
+
+  integrations:
+    build: ./integrations
+    ports:
+      - "8003:8003"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+
+  ui:
+    build: ./ui
+    ports:
+      - "8501:8501"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=development
+      - DEBUG=true
+    volumes:
+      - ./ui:/app
+    # Hot-reload enabled for development
+
+  auth:
+    build: ./auth
+    ports:
+      - "8004:8004"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+
+  ai-agent:
+    build: ./ai-agent
+    ports:
+      - "8005:8005"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+
+  autonomous-testing:
+    build: ./autonomous-testing
+    ports:
+      - "8006:8006"
+    networks:
+      - doganai-net
+    environment:
+      - ENV=production
+      - DEBUG=true
+
+networks:
+  doganai-net:
+    driver: bridge
+
+# Future: Add volumes, secrets, hardware constraints, and monitoring sidecars

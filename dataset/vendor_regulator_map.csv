@@ -1,0 +1,51 @@
+﻿vendor_id,reg_id,trigger
+V-ZATCA,REG-ZATCA,VAT e-invoices reporting/clearance
+V-ZATCA,REG-SDAIA,Personal data in invoices (PDPL)
+V-ZATCA,REG-NCA,Security controls for processing & keys
+V-ZATCA,REG-MC,CR validity for integration
+V-SFDA,REG-SFDA,Health products & establishments
+V-SFDA,REG-SDAIA,Personal data in submissions
+V-SFDA,REG-NCA,Security controls for APIs
+V-NPHIES,REG-CHI,NPHIES integration & certification
+V-NPHIES,REG-SFDA,Health device/drug context (as applicable)
+V-NPHIES,REG-SDAIA,PDPL on health data
+V-NPHIES,REG-NCA,ECC for health data systems
+V-OPENBANK,REG-SAMA,Open Banking AIS/PIS
+V-OPENBANK,REG-SDAIA,PDPL on bank data
+V-OPENBANK,REG-NCA,Security controls
+V-SAUDIEX,REG-CMA,Market data licensing & use
+V-WATHQ-CR,REG-MC,CR/Contracts API provider
+V-WATHQ-CR,REG-SDAIA,PDPL if personal data present
+V-WATHQ-GOSI,REG-HRSD,Employment data policies
+V-WATHQ-GOSI,REG-SDAIA,PDPL on employee data
+V-WATHQ-CHAM,REG-MC,Chambers federation governance
+V-WATHQ-ADDR,REG-MC,Business address via CR
+V-SPL-ADDR,REG-CST,Telecom/postal platform oversight
+V-SPL-ADDR,REG-SDAIA,PDPL for address lookup
+V-FASAH,REG-ZATCA,Customs single window
+V-FASAH,REG-NCA,Security for trade systems
+V-GEOSA,REG-GEOSA,Geospatial standards & access
+V-SGS,REG-GEOSA,Geospatial interoperability
+V-SPA,REG-GAMR,Media content oversight
+V-SPA,REG-GAMR-MOM,Ministry-level media policy
+V-UNIFONIC,REG-CST,CPaaS telecom compliance
+V-UNIFONIC,REG-SDAIA,PDPL for messaging data
+V-UNIFONIC,REG-NCA,Security for messaging APIs
+V-ARAMEX,REG-TGA,Transport/logistics licensing
+V-ARAMEX,REG-NCA,Security controls on tracking data
+V-SMSA,REG-TGA,Courier licensing & ops
+V-SMSA,REG-NCA,Security for shipping APIs
+V-HYPERPAY,REG-SAMA,PSP licensing & operational rules
+V-MOYASAR,REG-SAMA,PSP licensing & operational rules
+V-PAYTABS,REG-SAMA,PSP licensing & operational rules
+V-TAP,REG-SAMA,PSP licensing & operational rules
+V-GEIDEA,REG-SAMA,PSP licensing & operational rules
+V-HYPERPAY,REG-PCI,Card data handling (PCI DSS)
+V-MOYASAR,REG-PCI,Card data handling (PCI DSS)
+V-PAYTABS,REG-PCI,Card data handling (PCI DSS)
+V-TAP,REG-PCI,Card data handling (PCI DSS)
+V-GEIDEA,REG-PCI,Card data handling (PCI DSS)
+V-ZATCA,REG-ISO27001,Enterprise security baseline (customer requirement)
+V-SFDA,REG-ISO27001,Enterprise security baseline
+V-NPHIES,REG-ISO27001,Enterprise security baseline
+V-OPENBANK,REG-ISO27001,Enterprise security baseline

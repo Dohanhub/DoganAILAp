@@ -1,0 +1,49 @@
+# Security and Development Tools Requirements
+# Install with: pip install -r requirements-dev.txt
+
+# Code Quality and Linting
+black>=23.0.0                    # Code formatter
+isort>=5.12.0                    # Import sorter
+flake8>=6.0.0                    # Style guide enforcement
+mypy>=1.0.0                      # Static type checker
+ruff>=0.1.0                      # Fast Python linter
+pylint>=3.0.0                    # Additional linting
+
+# Security Tools
+bandit>=1.7.0                    # Security vulnerability scanner
+safety>=2.0.0                    # Check for known security vulnerabilities
+pip-audit>=2.6.0                 # Audit Python packages for known vulnerabilities
+semgrep>=1.45.0                  # Static analysis for security
+
+# Testing Framework
+pytest>=7.0.0                    # Testing framework
+pytest-asyncio>=0.21.0           # Async testing support
+pytest-cov>=4.0.0                # Coverage reporting
+pytest-mock>=3.12.0              # Mocking utilities
+pytest-xdist>=3.0.0              # Parallel test execution
+pytest-benchmark>=4.0.0          # Performance benchmarking
+httpx>=0.27.2                    # HTTP client for testing
+faker>=20.0.0                    # Test data generation
+
+# Development Tools
+pre-commit>=3.0.0                # Git hooks framework
+ipython>=8.0.0                   # Enhanced Python shell
+jupyter>=1.0.0                   # Notebook environment
+rich>=13.0.0                     # Rich text and beautiful formatting
+
+# Documentation
+mkdocs>=1.5.0                    # Documentation generator
+mkdocs-material>=9.0.0           # Material theme for MkDocs
+mkdocstrings[python]>=0.23.0     # Python docstring integration
+
+# Performance and Profiling
+py-spy>=0.3.14                   # Sampling profiler
+memory-profiler>=0.61.0          # Memory usage profiler
+
+# Database Tools
+alembic>=1.13.2                  # Database migrations
+pgcli>=3.5.0                     # PostgreSQL CLI (optional)
+
+# Monitoring and Debugging
+debugpy>=1.8.0                   # Debug adapter
+pdbpp>=0.10.3                    # Enhanced debugger

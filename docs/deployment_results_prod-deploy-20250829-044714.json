@@ -1,0 +1,31 @@
+{
+  "deployment_id": "prod-deploy-20250829-044714",
+  "timestamp": "2025-08-29T04:47:14.175393",
+  "steps": {
+    "environment_check": {
+      "required_configured": 0,
+      "required_missing": [
+        "IBM_WATSON_API_KEY",
+        "IBM_WATSON_ASSISTANT_ID",
+        "AZURE_COGNITIVE_KEY",
+        "AZURE_COGNITIVE_ENDPOINT",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "DATABASE_URL",
+        "REDIS_HOST"
+      ],
+      "optional_configured": 0,
+      "optional_missing": [
+        "LENOVO_API_KEY",
+        "FORTINET_API_KEY",
+        "CISCO_API_KEY",
+        "PALO_ALTO_API_KEY",
+        "NCA_API_KEY",
+        "SAMA_API_KEY",
+        "MOH_API_KEY"
+      ],
+      "ready_for_production": false
+    }
+  },
+  "success": false
+}

@@ -1,0 +1,77 @@
+namespace: doganai
+
+replicaCount:
+  api: 3
+  web: 3
+
+ingress:
+  enabled: true
+  className: nginx
+  certManager:
+    enabled: true
+    clusterIssuer: letsencrypt-prod
+  hosts:
+    - host: api.doganai.example
+      path: /
+      service: api
+    - host: app.doganai.example
+      path: /
+      service: web
+    - host: gw.doganai.example
+      path: /
+      service: gateway
+  tls:
+    - secretName: doganai-tls
+      hosts:
+        - api.doganai.example
+        - app.doganai.example
+
+env:
+  api:
+    LOG_LEVEL: INFO
+    ALLOWED_ORIGINS: https://app.doganai.example
+    SECRET_KEY: ""  # required via --set or external secret
+    API_KEY: ""     # required via --set or external secret
+    DATABASE_URL: ""  # required
+    REDIS_URL: ""     # optional
+    OTEL_ENABLED: "true"
+  web:
+    NEXT_PUBLIC_API_BASE: https://api.doganai.example
+
+postgres:
+  enabled: false
+
+redis:
+  enabled: false
+
+otelCollector:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+resources:
+  api:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  web:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+networkPolicy:
+  enabled: true
+  ingress:
+    api:
+      fromNamespaces:
+        - ingress-nginx
+    web:
+      fromNamespaces:
+        - ingress-nginx

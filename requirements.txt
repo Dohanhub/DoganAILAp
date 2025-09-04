@@ -1,0 +1,2 @@
+# Delegate to API requirements to avoid drift
+-r requirements-api.txt

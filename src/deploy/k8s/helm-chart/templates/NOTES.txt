@@ -1,0 +1,14 @@
+Thank you for installing {{ .Chart.Name }}.
+
+To get the app URL:
+  1. Ensure the Ingress controller is installed.
+  2. Add DNS for the configured hosts:
+     {{- range .Values.app.ingress.hosts }}
+       - {{ .host }}
+     {{- end }}
+
+App Service:
+  kubectl get svc {{ include "doganai.fullname" . }}-app -n {{ .Release.Namespace }}
+
+Database Service:
+  kubectl get svc {{ include "doganai.fullname" . }}-db-primary -n {{ .Release.Namespace }}

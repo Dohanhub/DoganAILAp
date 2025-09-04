@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "doganai.fullname" . }}-gateway
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount.gateway | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ include "doganai.fullname" . }}-gateway
+  template:
+    metadata:
+      labels:
+        app: {{ include "doganai.fullname" . }}-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: {{ .Values.image.gateway.repository }}:{{ .Values.image.gateway.tag }}
+          imagePullPolicy: {{ .Values.image.gateway.pullPolicy }}
+          env:
+            - name: FEATURE_GATEWAY_AUTH
+              value: {{ if .Values.featureFlags.gateway }}"true"{{ else }}"false"{{ end }}
+            - name: INTERNAL_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "doganai.fullname" . }}-secrets
+                  key: INTERNAL_JWT_SECRET
+          ports:
+            - containerPort: {{ .Values.service.gatewayPort }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.gatewayPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.gatewayPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 15

@@ -1,0 +1,58 @@
+{
+  "nav.home": "Home",
+  "nav.standards": "Standards",
+  "nav.regulators": "Regulators",
+  "nav.vendors": "Vendors",
+  "nav.connectors": "Connectors",
+  "nav.assessments": "Assessments",
+  "nav.evidence": "Evidence",
+  "nav.reports": "Reports",
+  "nav.admin": "Admin",
+  "nav.login": "Login",
+  "nav.settings": "Settings"
+  ,"evidence.title": "Evidence Upload"
+  ,"evidence.recent": "Recent Evidence"
+  ,"reports.title": "Reports"
+  ,"reports.standard.placeholder": "Standard name (e.g., NCA)"
+  ,"btn.export.csv": "Export CSV"
+  ,"btn.export.json": "Export JSON"
+  ,"btn.export.pdf": "Export PDF"
+  ,"btn.create": "Create"
+  ,"btn.rotate": "Rotate"
+  ,"btn.assign": "Assign"
+  ,"standards.title": "Standards"
+  ,"controls.title": "Controls"
+  ,"assessments.title": "Assessments"
+  ,"assessments.standard.placeholder": "Standard name"
+  ,"assessments.control.placeholder": "Control ID"
+  ,"btn.run": "Run"
+  ,"btn.upload": "Upload"
+  ,"regulators.title": "Regulators"
+  ,"vendors.title": "Vendors"
+  ,"connectors.title": "Connectors"
+  ,"admin.title": "Admin"
+  ,"admin.tenants": "Tenants"
+  ,"admin.users": "Users & Roles"
+  ,"tenants.name.placeholder": "Tenant name"
+  ,"tenants.apiKey": "API Key"
+  ,"users.email": "User email"
+  ,"users.role": "Role"
+  ,"settings.title": "Settings"
+  ,"settings.apiBase": "API Base"
+  ,"settings.apiKey": "X-API-Key"
+  ,"settings.tenantKey": "X-Tenant-Key"
+  ,"settings.token": "JWT Token"
+  ,"settings.language": "Language"
+  ,"lang.en": "English"
+  ,"lang.ar": "Arabic"
+  ,"btn.save": "Save"
+  ,"home.title": "DoganAI Compliance"
+  ,"home.subtitle": "Welcome. Use the navigation to access modules."
+  ,"login.title": "Login"
+  ,"login.email": "Email"
+  ,"login.password": "Password"
+  ,"login.submit": "Sign in"
+  ,"diagnostics.title": "Diagnostics"
+  ,"diagnostics.connectivity": "Connectivity"
+  ,"diagnostics.db": "Database Summary"
+}

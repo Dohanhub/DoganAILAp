@@ -1,0 +1,15 @@
+# NOTE: LEGACY EXAMPLE MANIFEST
+# This file is not aligned with the current Helm chart and service ports.
+# Prefer deploy/helm/doganai for all environments.
+apiVersion: v1
+kind: Service
+metadata:
+  name: doganai-compliance-kit
+  namespace: doganai-compliance
+spec:
+  type: ClusterIP
+  selector:
+    app: doganai-compliance-kit
+  ports:
+    - port: 80
+      targetPort: 3000

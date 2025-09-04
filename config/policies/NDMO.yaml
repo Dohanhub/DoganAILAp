@@ -1,0 +1,96 @@
+regulator: "NDMO"
+version: "1.8"
+title: "National Data Management Office Guidelines 2024"
+authority: "NDMO-DM-2024"
+arabic_name: "مكتب إدارة البيانات الوطنية"
+jurisdiction: "National Data Management & Classification"
+description: "National Data Management Office guidelines for data classification, retention, and national data strategy compliance"
+effective_date: "2024-02-01"
+compliance_deadline: "2024-09-30"
+
+api_config:
+  base_url: "https://api.ndmo.gov.sa"
+  auth_type: "client_certificate"
+  cert_endpoint: "https://auth.ndmo.gov.sa/cert"
+  validation_required: true
+
+controls:
+  - id: "NDMO-001"
+    title: "Data Classification Standards"
+    arabic_title: "معايير تصنيف البيانات"
+    category: "Data Classification"
+    risk_level: "critical"
+    requirements:
+      - "Classify all data according to national taxonomy"
+      - "Implement data sensitivity labeling"
+      - "Maintain classification documentation"
+      - "Regular classification reviews and updates"
+    compliance_check: "data_classification_audit"
+    
+  - id: "NDMO-002"
+    title: "Data Residency & Sovereignty"
+    arabic_title: "إقامة البيانات والسيادة"
+    category: "Data Residency"
+    risk_level: "critical"
+    requirements:
+      - "Store sensitive data within Saudi Arabia"
+      - "Obtain approval for data export requests"
+      - "Implement geo-location controls"
+      - "Maintain data location audit trails"
+    compliance_check: "data_residency_validation"
+    
+  - id: "NDMO-003"
+    title: "Data Retention & Lifecycle Management"
+    arabic_title: "الاحتفاظ بالبيانات وإدارة دورة الحياة"
+    category: "Data Retention"
+    risk_level: "high"
+    requirements:
+      - "Implement data retention schedules"
+      - "Secure data disposal procedures"
+      - "Automated lifecycle management"
+      - "Retention compliance reporting"
+    compliance_check: "data_retention_compliance"
+    
+  - id: "NDMO-004"
+    title: "National Data Repository Integration"
+    arabic_title: "تكامل مستودع البيانات الوطني"
+    category: "Data Repository"
+    risk_level: "high"
+    requirements:
+      - "Connect to national data repositories"
+      - "Contribute to national data assets"
+      - "Follow data contribution standards"
+      - "Participate in data sharing initiatives"
+    compliance_check: "national_repository_integration"
+    
+  - id: "NDMO-005"
+    title: "Data Quality & Standardization"
+    arabic_title: "جودة البيانات والتوحيد القياسي"
+    category: "Data Quality"
+    risk_level: "medium"
+    requirements:
+      - "Implement data quality frameworks"
+      - "Follow national data standards"
+      - "Conduct data quality assessments"
+      - "Maintain data accuracy metrics"
+    compliance_check: "data_quality_assessment"
+
+reporting:
+  frequency: "quarterly"
+  submission_deadline: "30 days after quarter end"
+  required_reports:
+    - "Data Classification Status Report"
+    - "Data Residency Compliance Report"
+    - "Data Retention Audit Report"
+    - "National Repository Contribution Report"
+
+penalties:
+  minor_violation: "Data remediation plan requirement"
+  major_violation: "Fine up to 1,500,000 SAR"
+  critical_violation: "Data processing restrictions and mandatory compliance program"
+
+integration:
+  priority: "critical"
+  sync_frequency: "daily"
+  monitoring_required: true
+  audit_trail: true

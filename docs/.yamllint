@@ -1,0 +1,104 @@
+extends: default
+
+rules:
+  # Line length
+  line-length:
+    max: 120
+    level: warning
+  
+  # Indentation
+  indentation:
+    spaces: 2
+    indent-sequences: true
+  
+  # Trailing spaces
+  trailing-spaces: enable
+  
+  # Empty lines
+  empty-lines:
+    max: 1
+    max-end: 1
+  
+  # Comments
+  comments:
+    min-spaces-from-content: 1
+  
+  # Document start
+  document-start: disable
+  
+  # Document end
+  document-end: disable
+  
+  # Key ordering
+  key-ordering: disable
+  
+  # Quoted strings
+  quoted-strings:
+    quote-type: single
+    required: false
+  
+  # Hyphens
+  hyphens:
+    max-spaces-before: 1
+    max-spaces-after: 1
+  
+  # Commas
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+  
+  # Colons
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+  
+  # Braces
+  braces:
+    max-spaces-inside: 1
+    min-spaces-inside: 0
+  
+  # Brackets
+  brackets:
+    max-spaces-inside: 1
+    min-spaces-inside: 0
+  
+  # Truthy
+  truthy:
+    check-keys: false
+  
+  # Comments-indentation
+  comments-indentation:
+    spaces: 2
+  
+  # Key-duplicates
+  key-duplicates: enable
+  
+  # Empty values
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: false
+  
+  # Flow sequence
+  flow-sequence:
+    max-spaces-inside: 1
+    min-spaces-inside: 0
+  
+  # Flow mapping
+  flow-mapping:
+    max-spaces-inside: 1
+    min-spaces-inside: 0
+  
+  # Hash
+  hash:
+    max-spaces-inside: 1
+    min-spaces-inside: 0
+  
+  # Block mapping
+  block-mapping:
+    max-spaces-inside: 1
+    min-spaces-inside: 0
+  
+  # Block sequence
+  block-sequence:
+    max-spaces-inside: 1
+    min-spaces-inside: 0

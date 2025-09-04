@@ -1,0 +1,36 @@
+{{- if .Values.argoRollouts.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ include "doganai.fullname" . }}-api-success-rate
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  metrics:
+    - name: success-rate
+      interval: {{ .Values.argoRollouts.metrics.interval | default "1m" }}
+      successCondition: result[0] >= {{ .Values.argoRollouts.metrics.successMin | default 99 }}
+      failureLimit: 1
+      provider:
+        prometheus:
+          address: {{ .Values.argoRollouts.metrics.prometheusAddress | default "http://prometheus-server.prometheus.svc.cluster.local:80" | quote }}
+          query: |
+            (1 - (sum(rate(http_requests_total{status=~"5.."}[1m])) / sum(rate(http_requests_total[1m])))) * 100
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ include "doganai.fullname" . }}-api-latency-p95
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  metrics:
+    - name: latency-p95
+      interval: {{ .Values.argoRollouts.metrics.interval | default "1m" }}
+      successCondition: result[0] <= {{ .Values.argoRollouts.metrics.latencyP95Max | default 0.5 }}
+      failureLimit: 1
+      provider:
+        prometheus:
+          address: {{ .Values.argoRollouts.metrics.prometheusAddress | default "http://prometheus-server.prometheus.svc.cluster.local:80" | quote }}
+          query: |
+            histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))
+{{- end }}
+

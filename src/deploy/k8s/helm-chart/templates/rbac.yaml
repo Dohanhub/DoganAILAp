@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "doganai.fullname" . }}-sa
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "doganai.fullname" . }}-role
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "doganai.fullname" . }}-rb
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "doganai.fullname" . }}-sa
+roleRef:
+  kind: Role
+  name: {{ include "doganai.fullname" . }}-role
+  apiGroup: rbac.authorization.k8s.io

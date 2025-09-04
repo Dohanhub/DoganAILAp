@@ -1,0 +1,131 @@
+# =============================================================================
+# Elasticsearch Configuration for DoganAI Compliance Kit
+# Production-optimized settings for search and analytics
+# =============================================================================
+
+# Cluster Configuration
+cluster.name: doganai-cluster
+node.name: doganai-node-1
+node.roles: [ master, data, ingest ]
+
+# Network Configuration
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+# Discovery Configuration
+discovery.type: single-node
+discovery.seed_hosts: []
+
+# Security Configuration (disabled for development)
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.http.ssl.enabled: true
+
+# Memory Configuration
+bootstrap.memory_lock: true
+
+# Path Configuration
+path.data: /usr/share/elasticsearch/data
+path.logs: /usr/share/elasticsearch/logs
+
+# Index Configuration
+index.number_of_shards: 1
+index.number_of_replicas: 0
+index.refresh_interval: 1s
+
+# Search Configuration
+search.default_search_timeout: 30s
+search.max_buckets: 100000
+
+# Thread Pool Configuration
+thread_pool.write.size: 16
+thread_pool.write.queue_size: 200
+thread_pool.search.size: 16
+thread_pool.search.queue_size: 1000
+thread_pool.get.size: 16
+thread_pool.get.queue_size: 1000
+
+# Circuit Breaker Configuration
+indices.breaker.total.limit: 70%
+indices.breaker.fielddata.limit: 40%
+indices.breaker.request.limit: 60%
+
+# Field Data Configuration
+indices.fielddata.cache.size: 20%
+indices.queries.cache.size: 10%
+
+# Recovery Configuration
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 93%
+cluster.routing.allocation.disk.watermark.high: 95%
+cluster.routing.allocation.disk.watermark.flood_stage: 97%
+
+# Snapshot Configuration
+path.repo: ["/usr/share/elasticsearch/snapshots"]
+
+# Monitoring Configuration
+xpack.monitoring.enabled: true
+xpack.monitoring.collection.enabled: true
+
+# Watcher Configuration
+xpack.watcher.enabled: false
+
+# Machine Learning Configuration
+xpack.ml.enabled: false
+
+# Graph Configuration
+xpack.graph.enabled: false
+
+# Reporting Configuration
+xpack.reporting.enabled: false
+
+# Logging Configuration
+logger.level: INFO
+logger.org.elasticsearch: INFO
+logger.org.elasticsearch.cluster.service: INFO
+logger.org.elasticsearch.discovery: INFO
+logger.org.elasticsearch.gateway: INFO
+logger.org.elasticsearch.http: INFO
+logger.org.elasticsearch.index: INFO
+logger.org.elasticsearch.indices: INFO
+logger.org.elasticsearch.search: INFO
+logger.org.elasticsearch.transport: INFO
+
+# Custom Settings for DoganAI Compliance
+# Optimize for compliance document search
+indices.memory.index_buffer_size: 30%
+
+# Enable slow query logging
+search.slowlog.threshold.query.warn: 10s
+search.slowlog.threshold.query.info: 5s
+search.slowlog.threshold.query.debug: 2s
+search.slowlog.threshold.query.trace: 500ms
+
+search.slowlog.threshold.fetch.warn: 1s
+search.slowlog.threshold.fetch.info: 800ms
+search.slowlog.threshold.fetch.debug: 500ms
+search.slowlog.threshold.fetch.trace: 200ms
+
+# Index slow log
+index.search.slowlog.threshold.query.warn: 10s
+index.search.slowlog.threshold.query.info: 5s
+index.search.slowlog.threshold.query.debug: 2s
+index.search.slowlog.threshold.query.trace: 500ms
+
+index.search.slowlog.threshold.fetch.warn: 1s
+index.search.slowlog.threshold.fetch.info: 800ms
+index.search.slowlog.threshold.fetch.debug: 500ms
+index.search.slowlog.threshold.fetch.trace: 200ms
+
+# Optimize for compliance data
+indices.mapping.nested_fields.limit: 100
+indices.mapping.total_fields.limit: 1000
+indices.mapping.depth.limit: 20
+
+# Enable script security
+script.allowed_types: [inline, stored]
+script.allowed_contexts: [score, update, filter, aggregation, field]
+
+# Custom analyzers for compliance documents
+# These will be created via API calls from the application

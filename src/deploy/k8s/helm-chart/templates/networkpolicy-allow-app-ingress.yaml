@@ -1,0 +1,28 @@
+{{- if .Values.security.networkPolicies.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "doganai.fullname" . }}-app-allow-ingress
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: app
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        # Allow from ingress controller namespace if provided
+        {{- if .Values.security.networkPolicies.ingressControllerNamespace }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.security.networkPolicies.ingressControllerNamespace | quote }}
+        {{- else }}
+        - {}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 8001
+{{- end }}

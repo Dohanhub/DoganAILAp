@@ -1,0 +1,244 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doganai-compliance-kit"
+version = "1.0.0"
+description = "DoganAI Compliance Kit - Comprehensive compliance and governance platform"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "DoganAI Team", email = "team@doganai.com"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aiofiles>=24.1.0",
+    "asyncpg>=0.30.0",
+    "bcrypt>=4.3.0",
+    "duckdb>=1.3.2",
+    "fastapi>=0.116.1",
+    "jose>=1.0.0",
+    "numpy>=2.3.2",
+    "pandas>=2.3.2",
+    "passlib[bcrypt]>=1.7.4",
+    "plotly>=6.3.0",
+    "polars>=1.32.3",
+    "pydantic==2.10.4",
+    "python-dotenv>=1.0.0",
+    "python-jose[cryptography]>=3.5.0",
+    "python-multipart>=0.0.20",
+    "pyyaml>=6.0.2",
+    "pytz>=2024.1",
+    "beautifulsoup4>=4.12.3",
+    "openpyxl>=3.1.5",
+    "boto3>=1.34.162",
+    "redis>=6.4.0",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.43",
+    "prometheus-client>=0.20.0",
+    "uvicorn>=0.35.0",
+    "alembic>=1.13.2",
+    "opentelemetry-sdk>=1.26.0",
+    "opentelemetry-api>=1.26.0",
+    "opentelemetry-exporter-otlp>=1.26.0",
+    "opentelemetry-instrumentation-fastapi>=0.47b0",
+    "python-json-logger>=2.0.7",
+    "httpx>=0.27.2",
+    "Jinja2>=3.1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "httpx>=0.27.2",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "bandit>=1.7.0",
+    "safety>=2.0.0",
+    "ruff>=0.1.0",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "httpx>=0.27.2",
+    "faker>=20.0.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.23.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Dohanhub/DoganAI-Compliance-Kit"
+Documentation = "https://doganai-compliance-kit.readthedocs.io/"
+Repository = "https://github.com/Dohanhub/DoganAI-Compliance-Kit"
+"Bug Tracker" = "https://github.com/Dohanhub/DoganAI-Compliance-Kit/issues"
+
+[project.scripts]
+doganai-server = "app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "backend*", "src*"]
+exclude = ["tests*", "docs*", "node_modules*", ".venv*", "migrations*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+    "S",   # bandit
+    "T20", # flake8-print
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "S101",  # use of assert
+    "T201",  # print statements
+]
+extend-exclude = [
+    "migrations/",
+    "node_modules/",
+    ".venv/",
+    "build/",
+    "dist/",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101", "S106", "S311"]
+"scripts/*" = ["T201"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --cov=app --cov=backend --cov=src --cov-report=term-missing --cov-report=html"
+testpaths = ["tests"]
+pythonpath = ["backend", "src", "app"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "security: marks tests as security tests",
+    "e2e: marks tests as end-to-end tests",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311", "py312"]
+extend-exclude = "(^e2e/|^apps/|^packages/|^migrations/|^node_modules/)"
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+src_paths = ["src", "app", "backend"]
+known_first_party = ["app", "backend", "src"]
+skip_glob = ["*/migrations/*", "*/node_modules/*"]
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+exclude = [
+    'migrations/',
+    'node_modules/',
+    '.venv/',
+    'build/',
+    'dist/',
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "boto3.*",
+    "botocore.*",
+    "prometheus_client.*",
+    "passlib.*",
+    "redis.*",
+    "psycopg2.*",
+    "duckdb.*",
+    "polars.*",
+    "plotly.*",
+]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["app", "backend", "src"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/node_modules/*",
+    "*/build/*",
+    "*/dist/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations", "node_modules", ".venv"]
+skips = ["B101", "B601"]

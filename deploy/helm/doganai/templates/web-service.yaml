@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-web
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "doganai.fullname" . }}-web
+  ports:
+    - port: {{ .Values.service.webPort }}
+      targetPort: 3001
+      name: http
+
+{{- if .Values.argoRollouts.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "doganai.fullname" . }}-web-canary
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "doganai.fullname" . }}-web
+  ports:
+    - port: {{ .Values.service.webPort }}
+      targetPort: 3001
+      name: http
+{{- end }}

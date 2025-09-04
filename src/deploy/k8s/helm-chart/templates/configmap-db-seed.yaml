@@ -1,0 +1,11 @@
+{{- if and .Values.database.seed .Values.database.seed.enabled .Values.database.seed.sql }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "doganai.fullname" . }}-db-seed
+  labels:
+    {{- include "doganai.labels" . | nindent 4 }}
+data:
+  seed.sql: |
+{{ .Values.database.seed.sql | indent 4 }}
+{{- end }}
